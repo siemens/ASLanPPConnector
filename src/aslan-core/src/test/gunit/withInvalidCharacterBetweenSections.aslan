@@ -1,0 +1,67 @@
+% Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia.
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%
+%     http://www.apache.org/licenses/LICENSE-2.0
+%
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+section typeSymbols:
+	nat(a) , {1,2,3,const}
+
+	
+section signature:
+	state_Person : message * nat * nat -> fact
+	succ : nat -> nat
+
+&
+
+section types:
+	sl_0 : nat
+	child, adult, old : message
+	dead : message
+	IID, SL : nat
+	
+section equations:
+	term1 = term2
+	
+section intruder:
+step alien(IID, SL) :=
+        state_Person(child, IID, SL)
+	=>
+	state_Person(adult, IID, succ(SL))
+section inits:
+	
+initial_state init :=
+	state_Person(child, 100, sl_0)
+
+
+
+section hornClauses:
+
+section rules:
+	
+step childhood(IID, SL) :=
+        state_Person(child, IID, SL)
+	=>
+	state_Person(adult, IID, succ(SL))
+
+step adulthood(IID, SL) :=
+        state_Person(adult, IID, SL)
+	=>
+	state_Person(old, IID, succ(SL))
+
+step oldage(IID, SL) :=
+        state_Person(old, IID, SL)
+	=>
+	iknows(dead)
+
+section goals:
+
+attack_state trouble :=
+        iknows(dead)

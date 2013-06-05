@@ -1,0 +1,43 @@
+% Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia.
+% Licensed under the Apache License, Version 2.0.
+
+section signature:
+	next : nat -> nat
+	state_Agent : nat * set(nat) -> fact	
+
+section types:
+	numbers : set(nat)
+	zero : nat
+	N : nat
+	S : set(nat)
+	debug : message
+
+section inits:
+
+initial_state init :=
+	state_Agent(zero, numbers).
+	state_Agent(next(zero), numbers).
+	contains(zero, numbers).
+	contains(next(zero), numbers)
+
+section hornClauses:
+
+section rules:
+	
+step next(N, S) :=
+        state_Agent(N, S).
+	contains(N, S)
+	=>
+	state_Agent(next(next(N)), S).
+%	contains(N, S). % if you uncomment this line, no attack can be found
+	contains(next(next(N)), S).
+	iknows(debug)
+
+section goals:
+
+attack_state debug_state :=
+	iknows(debug)
+
+attack_state five :=
+	not(contains(next(next(next(zero))), numbers)).
+	contains(next(next(next(next(next(zero))))), numbers)

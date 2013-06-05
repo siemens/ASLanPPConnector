@@ -1,0 +1,335 @@
+// Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+gunit ASLanPPNew;
+
+@header {
+  package org.avantssar.aslanpp;
+}
+
+constant:
+"Abc" FAIL
+"abc" -> "abc"
+
+type:
+"msg" -> "msg"
+"msg set" -> (SET msg)
+"msg.agent.key" -> (CONCAT msg agent key)
+"msg*agent*key" -> (TUPLE msg agent key)
+"(msg,agent,key)" -> (TUPLE msg agent key)
+"pair(msg,msg)" -> (FCALL pair (ARGS msg msg))
+"agent->call" -> (FCALL call (ARGS agent))
+"agent->call(msg,msg)" -> (FCALL call (ARGS agent msg msg))
+"agent->call(msg*key,pkey.skey)" -> (FCALL call (ARGS agent (TUPLE msg key) (CONCAT pkey skey)))
+"pair(enc(key),dec(key),msg)" -> (FCALL pair (ARGS (FCALL enc (ARGS key)) (FCALL dec (ARGS key)) msg))
+"agent*(trustServer(agent)*agent*agent*nat)*scrypt(symmetric_key,order)" -> (TUPLE agent (TUPLE (FCALL trustServer (ARGS agent)) agent agent nat) (FCALL scrypt (ARGS symmetric_key order)))
+"agent.(agent*agent)" -> (CONCAT agent (TUPLE agent agent))
+"agent.agent*agent" -> (CONCAT agent (TUPLE agent agent))
+
+
+expression_test:
+// numerals
+"0" -> (NUMERIC 0)
+"1" -> (NUMERIC 1)
+//"00" FAIL
+"10" -> (NUMERIC 10)
+"999999" -> (NUMERIC 999999)
+// constants
+"a" -> (CONST_VAR a)
+"a0'_bcde" -> (CONST_VAR a0'_bcde)
+"(a)" -> (PAREN (CONST_VAR a))
+"alice" -> (CONST_VAR alice)
+"a" -> (CONST_VAR a)
+// variables
+"A" -> (CONST_VAR A)
+"X" -> (CONST_VAR X)
+"U" -> (CONST_VAR U)
+"A'_BCDE" -> (CONST_VAR A'_BCDE)
+"Alice" -> (CONST_VAR Alice)
+"X" -> (CONST_VAR X)
+// invalid constant/variable names
+"<>" -> (CONST_VAR <>)
+"<->" -> (CONST_VAR <->)
+"[]" -> (CONST_VAR [])
+"[-]" -> (CONST_VAR [-])
+// matches
+"?" -> "MATCH"
+"?A" -> (MATCH A)
+// pseudonyms
+"[a]" -> (PSEUDONYM (CONST_VAR a))
+"[a]_[b]" -> (PSEUDONYM (CONST_VAR a) (CONST_VAR b))
+"[a]_[c]" -> (PSEUDONYM (CONST_VAR a) (CONST_VAR c))
+"[[b]]_[[F]]" -> (PSEUDONYM (PSEUDONYM (CONST_VAR b)) (PSEUDONYM (CONST_VAR F)))
+"[a]_[b->c((d,e))]" -> (PSEUDONYM (CONST_VAR a) (OOP_CALL (CONST_VAR b) (FCALL c (ARGS (TUPLE (CONST_VAR d) (CONST_VAR e))))))
+// tuples
+"(a,B,c',D_)" -> (TUPLE (CONST_VAR a) (CONST_VAR B) (CONST_VAR c') (CONST_VAR D_))
+"(a,B,(c',D_))" -> (TUPLE (CONST_VAR a) (CONST_VAR B) (TUPLE (CONST_VAR c') (CONST_VAR D_)))
+// concatenations
+"a.b" -> (CONCAT (CONST_VAR a) (CONST_VAR b))
+"a.B.c'.D_" -> (CONCAT (CONST_VAR a) (CONST_VAR B) (CONST_VAR c') (CONST_VAR D_))
+"E.[F]" -> (CONCAT (CONST_VAR E) (PSEUDONYM (CONST_VAR F)))
+"a.b=c.d" -> (EQUALITY (CONCAT (CONST_VAR a) (CONST_VAR b)) (CONCAT (CONST_VAR c) (CONST_VAR d)))
+// function calls
+"a()" FAIL
+"a(B)" -> (FCALL a (ARGS (CONST_VAR B)))
+"a(B,c',D_)" -> (FCALL a (ARGS (CONST_VAR B) (CONST_VAR c') (CONST_VAR D_)))
+"b(X)" -> (FCALL b (ARGS (CONST_VAR X)))
+"a->b" -> (OOP_CALL (CONST_VAR a) (CONST_VAR b))
+"a->b(c)" -> (OOP_CALL (CONST_VAR a) (FCALL b (ARGS (CONST_VAR c))))
+"a->b(c,D,e',F_)" -> (OOP_CALL (CONST_VAR a) (FCALL b (ARGS (CONST_VAR c) (CONST_VAR D) (CONST_VAR e') (CONST_VAR F_))))
+"a->b(c)->d(E)" -> (OOP_CALL (OOP_CALL (CONST_VAR a) (FCALL b (ARGS (CONST_VAR c)))) (FCALL d (ARGS (CONST_VAR E))))
+"a->b(c)->d(E,F)->g([H])" -> (OOP_CALL (OOP_CALL (OOP_CALL (CONST_VAR a) (FCALL b (ARGS (CONST_VAR c)))) (FCALL d (ARGS (CONST_VAR E) (CONST_VAR F)))) (FCALL g (ARGS (PSEUDONYM (CONST_VAR H)))))
+// encryption
+"{ a }_ b" -> (FCALL crypt (ARGS (CONST_VAR b) (CONST_VAR a)))
+"{a}_invb" -> (FCALL sign (ARGS (FCALL inv (ARGS (CONST_VAR b))) (CONST_VAR a)))
+"{| a |}_ b" -> (FCALL scrypt (ARGS (CONST_VAR b) (CONST_VAR a)))
+"{a.b}_pk(X)" -> (FCALL crypt (ARGS (FCALL pk (ARGS (CONST_VAR X))) (CONCAT (CONST_VAR a) (CONST_VAR b))))
+"{ a . b }_inv pk(X)" -> (FCALL sign (ARGS (FCALL inv (ARGS (FCALL pk (ARGS (CONST_VAR X))))) (CONCAT (CONST_VAR a) (CONST_VAR b))))
+"{|a.b|}_key(X)" -> (FCALL scrypt (ARGS (FCALL key (ARGS (CONST_VAR X))) (CONCAT (CONST_VAR a) (CONST_VAR b))))
+"{a}_(b.c)" -> (FCALL crypt (ARGS (PAREN (CONCAT (CONST_VAR b) (CONST_VAR c))) (CONST_VAR a)))
+"{a}_inv(b.c)" -> (FCALL sign (ARGS (FCALL inv (ARGS (PAREN (CONCAT (CONST_VAR b) (CONST_VAR c))))) (CONST_VAR a)))
+"{|a|}_(b.c)" -> (FCALL scrypt (ARGS (PAREN (CONCAT (CONST_VAR b) (CONST_VAR c))) (CONST_VAR a)))
+// LTL operators
+"X(a)" -> (FCALL X (ARGS (CONST_VAR a)))
+"X(X)" -> (FCALL X (ARGS (CONST_VAR X)))
+"X(b)" -> (FCALL X (ARGS (CONST_VAR b)))
+"X(a)" -> (FCALL X (ARGS (CONST_VAR a)))
+"Y(a)" -> (FCALL Y (ARGS (CONST_VAR a)))
+"<>(a)" -> (FCALL <> (ARGS (CONST_VAR a)))
+"<->(a)" -> (FCALL <-> (ARGS (CONST_VAR a)))
+"[](a)" -> (FCALL [] (ARGS (CONST_VAR a)))
+"[-](a)" -> (FCALL [-] (ARGS (CONST_VAR a)))
+"A(a)" -> (FCALL A (ARGS (CONST_VAR a)))
+"X(a,b)" -> (FCALL X (ARGS (CONST_VAR a) (CONST_VAR b)))
+"U(a,b)" -> (FCALL U (ARGS (CONST_VAR a) (CONST_VAR b)))
+"R(a,b)" -> (FCALL R (ARGS (CONST_VAR a) (CONST_VAR b)))
+"S(a,b)" -> (FCALL S (ARGS (CONST_VAR a) (CONST_VAR b)))
+"U(a)" -> (FCALL U (ARGS (CONST_VAR a)))
+"B(a,b)" -> (FCALL B (ARGS (CONST_VAR a) (CONST_VAR b)))
+"X(f(X))" -> (FCALL X (ARGS (FCALL f (ARGS (CONST_VAR X)))))
+"Y(Y=A)" -> (FCALL Y (ARGS (EQUALITY (CONST_VAR Y) (CONST_VAR A))))
+"<->(<->(O))" -> (FCALL <-> (ARGS (FCALL <-> (ARGS (CONST_VAR O)))))
+"[]([G]=X.Y)" -> (FCALL [] (ARGS (EQUALITY (PSEUDONYM (CONST_VAR G)) (CONCAT (CONST_VAR X) (CONST_VAR Y)))))
+"[-](!(a=b))" -> (FCALL [-] (ARGS (NEGATION (PAREN (EQUALITY (CONST_VAR a) (CONST_VAR b))))))
+"U(X=Y,U=R)" -> (FCALL U (ARGS (EQUALITY (CONST_VAR X) (CONST_VAR Y)) (EQUALITY (CONST_VAR U) (CONST_VAR R))))
+"R(a(b),c(R))" -> (FCALL R (ARGS (FCALL a (ARGS (CONST_VAR b))) (FCALL c (ARGS (CONST_VAR R)))))
+"S(f(R.S),r=R)" -> (FCALL S (ARGS (FCALL f (ARGS (CONCAT (CONST_VAR R) (CONST_VAR S)))) (EQUALITY (CONST_VAR r) (CONST_VAR R))))
+"[](a -> b : c)" -> (FCALL [] (ARGS (TRANSMISSION_ANN (OOP_CALL (CONST_VAR a) (CONST_VAR b)) (CONST_VAR c))))
+"U(a->b:c,d->e:f)" -> (FCALL U (ARGS (TRANSMISSION_ANN (OOP_CALL (CONST_VAR a) (CONST_VAR b)) (CONST_VAR c)) (TRANSMISSION_ANN (OOP_CALL (CONST_VAR d) (CONST_VAR e)) (CONST_VAR f))))
+// sets
+"{}" -> "SET"
+"{a}" -> (SET (CONST_VAR a))
+"{a,B,c',D_}" -> (SET (CONST_VAR a) (CONST_VAR B) (CONST_VAR c') (CONST_VAR D_))
+"{a,B,{c',D_}}" -> (SET (CONST_VAR a) (CONST_VAR B) (SET (CONST_VAR c') (CONST_VAR D_)))
+// channels
+"a -> b : c" -> (TRANSMISSION_ANN (OOP_CALL (CONST_VAR a) (CONST_VAR b)) (CONST_VAR c))
+"a -> b -> c : d" -> (TRANSMISSION_ANN (OOP_CALL (OOP_CALL (CONST_VAR a) (CONST_VAR b)) (CONST_VAR c)) (CONST_VAR d))
+"a -> (b -> c) : d" -> (TRANSMISSION_ANN (OOP_CALL (CONST_VAR a) (PAREN (OOP_CALL (CONST_VAR b) (CONST_VAR c)))) (CONST_VAR d))
+"a *-> b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *-> (CONST_VAR b)) (CONST_VAR c))
+"a -> b *-> c : d" -> (TRANSMISSION_ANN (CHANNEL (OOP_CALL (CONST_VAR a) (CONST_VAR b)) *-> (CONST_VAR c)) (CONST_VAR d))
+"a *-> (b -> c) : d" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *-> (PAREN (OOP_CALL (CONST_VAR b) (CONST_VAR c)))) (CONST_VAR d))
+"a ->* b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) ->* (CONST_VAR b)) (CONST_VAR c))
+"a -> b ->* c : d" -> (TRANSMISSION_ANN (CHANNEL (OOP_CALL (CONST_VAR a) (CONST_VAR b)) ->* (CONST_VAR c)) (CONST_VAR d))
+"a ->* (b -> c) : d" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) ->* (PAREN (OOP_CALL (CONST_VAR b) (CONST_VAR c)))) (CONST_VAR d))
+"a *->* b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *->* (CONST_VAR b)) (CONST_VAR c))
+"a -> b *->* c : d" -> (TRANSMISSION_ANN (CHANNEL (OOP_CALL (CONST_VAR a) (CONST_VAR b)) *->* (CONST_VAR c)) (CONST_VAR d))
+"a *->* (b -> c) : d" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *->* (PAREN (OOP_CALL (CONST_VAR b) (CONST_VAR c)))) (CONST_VAR d))
+"a *=> b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *=> (CONST_VAR b)) (CONST_VAR c))
+"a -> b *=> c : d" -> (TRANSMISSION_ANN (CHANNEL (OOP_CALL (CONST_VAR a) (CONST_VAR b)) *=> (CONST_VAR c)) (CONST_VAR d))
+"a *=> (b -> c) : d" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *=> (PAREN (OOP_CALL (CONST_VAR b) (CONST_VAR c)))) (CONST_VAR d))
+"a =>* b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) =>* (CONST_VAR b)) (CONST_VAR c))
+"a -> b =>* c : d" -> (TRANSMISSION_ANN (CHANNEL (OOP_CALL (CONST_VAR a) (CONST_VAR b)) =>* (CONST_VAR c)) (CONST_VAR d))
+"a =>* (b -> c) : d" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) =>* (PAREN (OOP_CALL (CONST_VAR b) (CONST_VAR c)))) (CONST_VAR d))
+"a *=>* b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *=>* (CONST_VAR b)) (CONST_VAR c))
+"a -> b *=>* c : d" -> (TRANSMISSION_ANN (CHANNEL (OOP_CALL (CONST_VAR a) (CONST_VAR b)) *=>* (CONST_VAR c)) (CONST_VAR d))
+"a *=>* (b -> c) : d" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *=>* (PAREN (OOP_CALL (CONST_VAR b) (CONST_VAR c)))) (CONST_VAR d))
+"a ->> b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) ->> (CONST_VAR b)) (CONST_VAR c))
+"a *->> b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *->> (CONST_VAR b)) (CONST_VAR c))
+"a ->>* b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) ->>* (CONST_VAR b)) (CONST_VAR c))
+"a *->>* b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *->>* (CONST_VAR b)) (CONST_VAR c))
+"a =>> b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) =>> (CONST_VAR b)) (CONST_VAR c))
+"a *=>> b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *=>> (CONST_VAR b)) (CONST_VAR c))
+"a =>>* b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) =>>* (CONST_VAR b)) (CONST_VAR c))
+"a *=>>* b : c" -> (TRANSMISSION_ANN (CHANNEL (CONST_VAR a) *=>>* (CONST_VAR b)) (CONST_VAR c))
+"a -ch-> b : c" -> (TRANSMISSION_ANN (CHANNEL_NAMED (CONST_VAR a) ch (CONST_VAR b)) (CONST_VAR c))
+"a -Ch_C2S-> b : c" -> (TRANSMISSION_ANN (CHANNEL_NAMED (CONST_VAR a) Ch_C2S (CONST_VAR b)) (CONST_VAR c))
+"send(a)" -> (FCALL send (ARGS (CONST_VAR a)))
+"send(a,b)" -> (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b)))
+"a->send(b)" -> (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b))))
+"send(a,b,c,d)" -> (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c) (CONST_VAR d)))
+"a->send(b,c,d)" -> (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b) (CONST_VAR c) (CONST_VAR d))))
+"receive(a)" -> (FCALL receive (ARGS (CONST_VAR a)))
+"receive(a,b)" -> (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b)))
+"a->receive(b)" -> (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b))))
+"receive(a,b,c,d)" -> (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c) (CONST_VAR d)))
+"a->receive(b,c,d)" -> (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b) (CONST_VAR c) (CONST_VAR d))))
+"send(a,b,c)" -> (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c)))
+"a->send(b,c)" -> (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b) (CONST_VAR c))))
+"send(a,b,c) over authCh" -> (TRANSMISSION_FNC (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) authCh)
+"a->send(b,c) over authCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b) (CONST_VAR c)))) authCh)
+"send(a,b,c) over confCh" -> (TRANSMISSION_FNC (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) confCh)
+"a->send(b,c) over confCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b) (CONST_VAR c)))) confCh)
+"send(a,b,c) over secCh" -> (TRANSMISSION_FNC (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) secCh)
+"a->send(b,c) over secCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b) (CONST_VAR c)))) secCh)
+"send(a,b,c) over resCh" -> (TRANSMISSION_FNC (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) resCh)
+"a->send(b,c) over resCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b) (CONST_VAR c)))) resCh)
+"send(a,b,c) over res_authCh" -> (TRANSMISSION_FNC (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) res_authCh)
+"a->send(b,c) over res_authCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b) (CONST_VAR c)))) res_authCh)
+"send(a,b,c) over res_confCh" -> (TRANSMISSION_FNC (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) res_confCh)
+"a->send(b,c) over res_confCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b) (CONST_VAR c)))) res_confCh)
+"send(a,b,c) over res_secCh" -> (TRANSMISSION_FNC (FCALL send (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) res_secCh)
+"a->send(b,c) over res_secCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL send (ARGS (CONST_VAR b) (CONST_VAR c)))) res_secCh)
+"receive(a,b,c)" -> (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c)))
+"a->receive(b,c)" -> (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b) (CONST_VAR c))))
+"receive(a,b,c) over authCh" -> (TRANSMISSION_FNC (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) authCh)
+"a->receive(b,c) over authCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b) (CONST_VAR c)))) authCh)
+"receive(a,b,c) over confCh" -> (TRANSMISSION_FNC (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) confCh)
+"a->receive(b,c) over confCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b) (CONST_VAR c)))) confCh)
+"receive(a,b,c) over secCh" -> (TRANSMISSION_FNC (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) secCh)
+"a->receive(b,c) over secCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b) (CONST_VAR c)))) secCh)
+"receive(a,b,c) over resCh" -> (TRANSMISSION_FNC (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) resCh)
+"a->receive(b,c) over resCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b) (CONST_VAR c)))) resCh)
+"receive(a,b,c) over res_authCh" -> (TRANSMISSION_FNC (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) res_authCh)
+"a->receive(b,c) over res_authCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b) (CONST_VAR c)))) res_authCh)
+"receive(a,b,c) over res_confCh" -> (TRANSMISSION_FNC (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) res_confCh)
+"a->receive(b,c) over res_confCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b) (CONST_VAR c)))) res_confCh)
+"receive(a,b,c) over res_secCh" -> (TRANSMISSION_FNC (FCALL receive (ARGS (CONST_VAR a) (CONST_VAR b) (CONST_VAR c))) res_secCh)
+"a->receive(b,c) over res_secCh" -> (TRANSMISSION_FNC (OOP_CALL (CONST_VAR a) (FCALL receive (ARGS (CONST_VAR b) (CONST_VAR c)))) res_secCh)
+"a -> b : {c}_d" -> (TRANSMISSION_ANN (OOP_CALL (CONST_VAR a) (CONST_VAR b)) (FCALL crypt (ARGS (CONST_VAR d) (CONST_VAR c))))
+"a -> b : {{c}_inv(d)}_e" -> (TRANSMISSION_ANN (OOP_CALL (CONST_VAR a) (CONST_VAR b)) (FCALL crypt (ARGS (CONST_VAR e) (FCALL sign (ARGS (FCALL inv (ARGS (PAREN (CONST_VAR d)))) (CONST_VAR c))))))
+"X" -> (CONST_VAR X)
+"a => b => c : d" -> (IMPLICATION (CONST_VAR a) (IMPLICATION (CONST_VAR b) (TRANSMISSION_ANN (CONST_VAR c) (CONST_VAR d))))
+"a => b : c" -> (IMPLICATION (CONST_VAR a) (TRANSMISSION_ANN (CONST_VAR b) (CONST_VAR c)))
+"a -> b : c.d" -> (TRANSMISSION_ANN (OOP_CALL (CONST_VAR a) (CONST_VAR b)) (CONCAT (CONST_VAR c) (CONST_VAR d)))
+"a -> b => c : d" -> (IMPLICATION (OOP_CALL (CONST_VAR a) (CONST_VAR b)) (TRANSMISSION_ANN (CONST_VAR c) (CONST_VAR d)))
+"a -> (b => c) : d" -> (TRANSMISSION_ANN (OOP_CALL (CONST_VAR a) (PAREN (IMPLICATION (CONST_VAR b) (CONST_VAR c)))) (CONST_VAR d))
+"a => (b -> c) : d" -> (IMPLICATION (CONST_VAR a) (TRANSMISSION_ANN (PAREN (OOP_CALL (CONST_VAR b) (CONST_VAR c))) (CONST_VAR d)))
+"a => b" -> (IMPLICATION (CONST_VAR a) (CONST_VAR b))
+"a | b" -> (DISJUNCTION (CONST_VAR a) (CONST_VAR b))
+"X & Y" -> (CONJUNCTION (CONST_VAR X) (CONST_VAR Y))
+"a | B & [C] | [D]_[E]" -> (DISJUNCTION (CONST_VAR a) (DISJUNCTION (CONJUNCTION (CONST_VAR B) (PSEUDONYM (CONST_VAR C))) (PSEUDONYM (CONST_VAR D) (CONST_VAR E))))
+"A & b | C => d" -> (IMPLICATION (DISJUNCTION (CONJUNCTION (CONST_VAR A) (CONST_VAR b)) (CONST_VAR C)) (CONST_VAR d))
+"?A=?" -> (EQUALITY (MATCH A) MATCH)
+"Actor->operation(const,Var)" -> (OOP_CALL (CONST_VAR Actor) (FCALL operation (ARGS (CONST_VAR const) (CONST_VAR Var))))
+"receive(Actor,Partner,token)" -> (FCALL receive (ARGS (CONST_VAR Actor) (CONST_VAR Partner) (CONST_VAR token)))
+"!Actor->op(arg)" -> (NEGATION (OOP_CALL (CONST_VAR Actor) (FCALL op (ARGS (CONST_VAR arg)))))
+"(f(a)=g(b))" -> (PAREN (EQUALITY (FCALL f (ARGS (CONST_VAR a))) (FCALL g (ARGS (CONST_VAR b)))))
+"(op1(a))" -> (PAREN (FCALL op1 (ARGS (CONST_VAR a))))
+"f(a)=>g(b)=>h(c)" -> (IMPLICATION (FCALL f (ARGS (CONST_VAR a))) (IMPLICATION (FCALL g (ARGS (CONST_VAR b))) (FCALL h (ARGS (CONST_VAR c)))))
+"f(a)|g(b)|h(c)" -> (DISJUNCTION (FCALL f (ARGS (CONST_VAR a))) (DISJUNCTION (FCALL g (ARGS (CONST_VAR b))) (FCALL h (ARGS (CONST_VAR c)))))
+"f(a)&(((g(b))))&h(c)" -> (CONJUNCTION (FCALL f (ARGS (CONST_VAR a))) (CONJUNCTION (PAREN (PAREN (PAREN (FCALL g (ARGS (CONST_VAR b)))))) (FCALL h (ARGS (CONST_VAR c)))))
+"(f(a)&g(b)|h(c)=>i(d)=((j(e))))" -> (PAREN (IMPLICATION (DISJUNCTION (CONJUNCTION (FCALL f (ARGS (CONST_VAR a))) (FCALL g (ARGS (CONST_VAR b)))) (FCALL h (ARGS (CONST_VAR c)))) (EQUALITY (FCALL i (ARGS (CONST_VAR d))) (PAREN (PAREN (FCALL j (ARGS (CONST_VAR e))))))))
+"forall A B C . (A=f(B,C))" -> (FORALL (VARS A B C) (PAREN (EQUALITY (CONST_VAR A) (FCALL f (ARGS (CONST_VAR B) (CONST_VAR C))))))
+"forall A B C . A=f(B,C)" -> (FORALL (VARS A B C) (EQUALITY (CONST_VAR A) (FCALL f (ARGS (CONST_VAR B) (CONST_VAR C)))))
+"exists X Y Z . (X=Y & X=Z)" -> (EXISTS (VARS X Y Z) (PAREN (CONJUNCTION (EQUALITY (CONST_VAR X) (CONST_VAR Y)) (EQUALITY (CONST_VAR X) (CONST_VAR Z)))))
+"exists X Y Z . X=Y & X=Z" -> (EXISTS (VARS X Y Z) (CONJUNCTION (EQUALITY (CONST_VAR X) (CONST_VAR Y)) (EQUALITY (CONST_VAR X) (CONST_VAR Z))))
+"(forall A1 A2 . ((initial(A1) & final(A2)) => !A1->lt(A2)))" -> (PAREN (FORALL (VARS A1 A2) (PAREN (IMPLICATION (PAREN (CONJUNCTION (FCALL initial (ARGS (CONST_VAR A1))) (FCALL final (ARGS (CONST_VAR A2))))) (NEGATION (OOP_CALL (CONST_VAR A1) (FCALL lt (ARGS (CONST_VAR A2)))))))))
+"Actor -> i: signed(nr_evidence(R),Actor)" -> (TRANSMISSION_ANN (OOP_CALL (CONST_VAR Actor) (CONST_VAR i)) (FCALL signed (ARGS (FCALL nr_evidence (ARGS (CONST_VAR R))) (CONST_VAR Actor))))
+"f => g => (h & i)" -> (IMPLICATION (CONST_VAR f) (IMPLICATION (CONST_VAR g) (PAREN (CONJUNCTION (CONST_VAR h) (CONST_VAR i)))))
+
+stmt:
+// assignment
+"X:=O->f(U);" -> (ASSIGNMENT (VAR (CONST_VAR X)) (TERM (OOP_CALL (CONST_VAR O) (FCALL f (ARGS (CONST_VAR U))))))
+"A := B;" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR B)))
+"A := B => C : D;" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (IMPLICATION (CONST_VAR B) (TRANSMISSION_ANN (CONST_VAR C) (CONST_VAR D)))))
+"A := B | C;" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (DISJUNCTION (CONST_VAR B) (CONST_VAR C))))
+"A := B & C;" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONJUNCTION (CONST_VAR B) (CONST_VAR C))))
+"A := B = C;" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (EQUALITY (CONST_VAR B) (CONST_VAR C))))
+"A := !B;" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (NEGATION (CONST_VAR B))))
+"A := forall B C . D;" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (FORALL (VARS B C) (CONST_VAR D))))
+"A := exists B C . D;" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (EXISTS (VARS B C) (CONST_VAR D))))
+"X:=fresh();" -> (FRESH (VAR (CONST_VAR X)))
+"new Entity(X,y,[Z]);" -> (NEW (ENTITYINST Entity (ARGS (CONST_VAR X) (CONST_VAR y) (PSEUDONYM (CONST_VAR Z)))))
+"any Entity(X,y);" -> (ANY (ENTITYINST Entity (ARGS (CONST_VAR X) (CONST_VAR y))) GUARD)
+"any X Y Z . Entity(X,y);" -> (ANY (VARS X Y Z) (ENTITYINST Entity (ARGS (CONST_VAR X) (CONST_VAR y))) GUARD)
+"any Entity(a,B) where a=B & h(a);" -> (ANY (ENTITYINST Entity (ARGS (CONST_VAR a) (CONST_VAR B))) (GUARD (CONJUNCTION (EQUALITY (CONST_VAR a) (CONST_VAR B)) (FCALL h (ARGS (CONST_VAR a))))))
+"any A B O. X([Z]) where Z=j;" -> (ANY (VARS A B O) (ENTITYINST X (ARGS (PSEUDONYM (CONST_VAR Z)))) (GUARD (EQUALITY (CONST_VAR Z) (CONST_VAR j))))
+"Actor->func(a1,A2);" -> (INTRODUCE (TERM (OOP_CALL (CONST_VAR Actor) (FCALL func (ARGS (CONST_VAR a1) (CONST_VAR A2))))) CHANNEL_GOALS)
+"retract X->y([Z]);" -> (RETRACT (TERM (OOP_CALL (CONST_VAR X) (FCALL y (ARGS (PSEUDONYM (CONST_VAR Z)))))))
+"if (a=b) A := b;" -> (IF (GUARD (EQUALITY (CONST_VAR a) (CONST_VAR b))) (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR b))))
+"if (a=b) A:=b; else B:=b;" -> (IF (GUARD (EQUALITY (CONST_VAR a) (CONST_VAR b))) (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR b))) (ASSIGNMENT (VAR (CONST_VAR B)) (TERM (CONST_VAR b))))
+"while (a=b) A:=b;" -> (WHILE (GUARD (EQUALITY (CONST_VAR a) (CONST_VAR b))) (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR b))))
+"select { on (a=b): A:=b; on (c=d):C:=d;}" -> (SELECT (SELECT_OPTION (GUARD (EQUALITY (CONST_VAR a) (CONST_VAR b))) CHANNEL_GOALS (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR b)))) (SELECT_OPTION (GUARD (EQUALITY (CONST_VAR c) (CONST_VAR d))) CHANNEL_GOALS (ASSIGNMENT (VAR (CONST_VAR C)) (TERM (CONST_VAR d)))))
+"assert a : a=b;" -> (ASSERT a (GUARD (EQUALITY (CONST_VAR a) (CONST_VAR b))))
+"assert x: exists X  Y Z.X=Y&X=Z;" -> (ASSERT x (GUARD (EXISTS (VARS X Y Z) (CONJUNCTION (EQUALITY (CONST_VAR X) (CONST_VAR Y)) (EQUALITY (CONST_VAR X) (CONST_VAR Z))))))
+"A:=b;" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR b)))
+"{A:=b;C:=d;}" -> (BLOCK (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR b))) (ASSIGNMENT (VAR (CONST_VAR C)) (TERM (CONST_VAR d))))
+"{}" -> "BLOCK"
+"{{{}}}" -> (BLOCK (BLOCK BLOCK))
+"{{A:=b;} C:=d; {E:=f;} {} G:=h;}" -> (BLOCK (BLOCK (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR b)))) (ASSIGNMENT (VAR (CONST_VAR C)) (TERM (CONST_VAR d))) (BLOCK (ASSIGNMENT (VAR (CONST_VAR E)) (TERM (CONST_VAR f)))) BLOCK (ASSIGNMENT (VAR (CONST_VAR G)) (TERM (CONST_VAR h))))
+"A:={};" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM SET))
+"A:={a};" -> (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (SET (CONST_VAR a))))
+"A':={a,B,c',D_};" -> (ASSIGNMENT (VAR (CONST_VAR A')) (TERM (SET (CONST_VAR a) (CONST_VAR B) (CONST_VAR c') (CONST_VAR D_))))
+"A'_:={a,B,{c',D_}};" -> (ASSIGNMENT (VAR (CONST_VAR A'_)) (TERM (SET (CONST_VAR a) (CONST_VAR B) (SET (CONST_VAR c') (CONST_VAR D_)))))
+"if(Flag) {}" -> (IF (GUARD (CONST_VAR Flag)) BLOCK)
+"Flag := Flag & Flag;" -> (ASSIGNMENT (VAR (CONST_VAR Flag)) (TERM (CONJUNCTION (CONST_VAR Flag) (CONST_VAR Flag))))
+"Actor -> Alice : Payload; channel_goal bob_to_alice : Actor -> Alice : Payload.NA.NB;" -> (INTRODUCE (TERM (TRANSMISSION_ANN (OOP_CALL (CONST_VAR Actor) (CONST_VAR Alice)) (CONST_VAR Payload))) (CHANNEL_GOALS (CHANNEL_GOAL bob_to_alice (TRANSMISSION_ANN (OOP_CALL (CONST_VAR Actor) (CONST_VAR Alice)) (CONCAT (CONST_VAR Payload) (CONST_VAR NA) (CONST_VAR NB))))))
+"secrecy_goal secrecy_of_Na : Actor, A : Na;" -> (SECRECY_GOAL secrecy_of_Na (KNOWERS (CONST_VAR Actor) (CONST_VAR A)) (PAYLOAD (CONST_VAR Na)))
+"ann:(A) := x;" -> (ASSIGNMENT (VAR (ANNOTATED ann (CONST_VAR A))) (TERM (CONST_VAR x)))
+
+argumentsDeclaration:
+"A : text" -> (DECLARATION text (VARS A))
+"A, B : agent" -> (DECLARATION agent (VARS A B))
+
+argumentsDeclarations:
+"(A, B : text, C, D : agent)" -> (ARGUMENTS (DECLARATION text (VARS A B)) (DECLARATION agent (VARS C D)))
+
+symbolDeclaration:
+"A, B, C : message;" -> (DECLARATION message (VARS A B C))
+"a, b, c : (agent,message);" -> (DECLARATION (TUPLE agent message) (CONSTS a b c))
+"nonpublic d, e : text;" -> (DECLARATION text (CONSTS (FLAGS nonpublic) d e))
+"lt(text,text) : fact;" -> (DECLARATION fact (FUNCTION lt text text))
+"nonpublic tag(agent) : message;" -> (DECLARATION message (FUNCTION (FLAGS nonpublic) tag agent))
+"noninvertible sign(message) : message;" -> (DECLARATION message (FUNCTION (FLAGS noninvertible) sign message))
+"nonpublic noninvertible fnc(agent, agent) : text;" -> (DECLARATION text (FUNCTION (FLAGS nonpublic noninvertible) fnc agent agent))
+"noninvertible nonpublic fnc(agent, agent) : text;" -> (DECLARATION text (FUNCTION (FLAGS nonpublic noninvertible) fnc agent agent))
+"nonpublic nonpublic c : text;" -> (DECLARATION text (CONSTS (FLAGS nonpublic) c))
+"nonpublic nonpublic fnc(text) : text;" -> (DECLARATION text (FUNCTION (FLAGS nonpublic) fnc text))
+"noninvertible noninvertible fnc(text) : text;" -> (DECLARATION text (FUNCTION (FLAGS noninvertible) fnc text))
+"noninvertible nonpublic noninvertible nonpublic fnc(text) : text;" -> (DECLARATION text (FUNCTION (FLAGS nonpublic noninvertible) fnc text))
+
+macroDeclaration:
+"clash = clash;" -> (MACRO clash (CONST_VAR clash))
+"doubleExpand(M) = expand(expand(M));" -> (MACRO doubleExpand (ARGS M) (FCALL expand (ARGS (FCALL expand (ARGS (CONST_VAR M))))))
+"A->relate(B) = some_relation(A->decorate, B->decorate);" -> (MACRO relate (ARGS A B) (FCALL some_relation (ARGS (OOP_CALL (CONST_VAR A) (CONST_VAR decorate)) (OOP_CALL (CONST_VAR B) (CONST_VAR decorate)))))
+
+hornClauseDeclaration:
+"lt_refl : forall A . A->lt(A);" -> (HORN_CLAUSE lt_refl (FORALL A) (HEAD (OOP_CALL (CONST_VAR A) (FCALL lt (ARGS (CONST_VAR A))))) BODY)
+"lt_trans(A, B, C) : A->lt(C) :- lt(A, B) & B->lt(C);" -> (HORN_CLAUSE lt_trans (ARGS A B C) (HEAD (OOP_CALL (CONST_VAR A) (FCALL lt (ARGS (CONST_VAR C))))) (BODY (FCALL lt (ARGS (CONST_VAR A) (CONST_VAR B))) (OOP_CALL (CONST_VAR B) (FCALL lt (ARGS (CONST_VAR C))))))
+
+equationDeclaration:
+"f1(A, B) = f2(B, A);" -> (EQUATION (FCALL f1 (ARGS (CONST_VAR A) (CONST_VAR B))) (FCALL f2 (ARGS (CONST_VAR B) (CONST_VAR A))))
+
+body:
+"body A := a;" -> (BODY (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR a))))
+"breakpoints { tick, tack } body { tick; tack; }" -> (BODY (BREAKPOINTS tick tack) (BLOCK (INTRODUCE (TERM (CONST_VAR tick)) CHANNEL_GOALS) (INTRODUCE (TERM (CONST_VAR tack)) CHANNEL_GOALS)))
+"uncompressed body { A:=b; }" -> (BODY UNCOMPRESSED (BLOCK (ASSIGNMENT (VAR (CONST_VAR A)) (TERM (CONST_VAR b)))))
+
+goalDeclaration:
+"negated_lt_okay : (forall A1 A2 . ((initial(A1) & final(A2)) => !A1->lt(A2)));" -> 
+(INVARIANT_GOAL negated_lt_okay (PAREN (FORALL (VARS A1 A2) (PAREN (IMPLICATION (PAREN (CONJUNCTION (FCALL initial (ARGS (CONST_VAR A1))) (FCALL final (ARGS (CONST_VAR A2))))) (NEGATION (OOP_CALL (CONST_VAR A1) (FCALL lt (ARGS (CONST_VAR A2))))))))))
+"g : [](!exists A1 A2 M . accepted(A1, A2, M));" -> (INVARIANT_GOAL g (FCALL [] (ARGS (NEGATION (EXISTS (VARS A1 A2 M) (FCALL accepted (ARGS (CONST_VAR A1) (CONST_VAR A2) (CONST_VAR M))))))))
+"g :(_) A -> B;" -> (SESSION_CHANNEL_GOAL g (OOP_CALL (CONST_VAR A) (CONST_VAR B)))
+"g :(_) A *-> B;" -> (SESSION_CHANNEL_GOAL g (CHANNEL (CONST_VAR A) *-> (CONST_VAR B)))
+"g :(_) A ->* B;" -> (SESSION_CHANNEL_GOAL g (CHANNEL (CONST_VAR A) ->* (CONST_VAR B)))
+"g :(_) A *->* B;" -> (SESSION_CHANNEL_GOAL g (CHANNEL (CONST_VAR A) *->* (CONST_VAR B)))
+"g :(_) A => B;" -> (SESSION_CHANNEL_GOAL g (IMPLICATION (CONST_VAR A) (CONST_VAR B)))
+"g :(_) A *=> B;" -> (SESSION_CHANNEL_GOAL g (CHANNEL (CONST_VAR A) *=> (CONST_VAR B)))
+"g :(_) A =>* B;" -> (SESSION_CHANNEL_GOAL g (CHANNEL (CONST_VAR A) =>* (CONST_VAR B)))
+"g :(_) A *=>* B;" -> (SESSION_CHANNEL_GOAL g (CHANNEL (CONST_VAR A) *=>* (CONST_VAR B)))
+"g :(_) {A,B};" -> (SESSION_SECRECY_GOAL g (SET (CONST_VAR A) (CONST_VAR B)))
+"g :(_) A & B;" -> (SESSION_SECRECY_GOAL g (CONJUNCTION (CONST_VAR A) (CONST_VAR B)))
+
+
+selectOption:
+"on (RegOffice *->* Actor : notAuthorized(Token)) : {}" -> (SELECT_OPTION (GUARD (TRANSMISSION_ANN (CHANNEL (CONST_VAR RegOffice) *->* (CONST_VAR Actor)) (FCALL notAuthorized (ARGS (CONST_VAR Token))))) CHANNEL_GOALS BLOCK)

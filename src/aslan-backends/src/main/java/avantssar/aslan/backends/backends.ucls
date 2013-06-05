@@ -1,0 +1,130 @@
+<!-- Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia. -->
+<!-- Licensed under the Apache License, Version 2.0. -->
+
+<class-diagram version="0.9.86" automaticImage="PNG" icons="true" always-add-relationships="false" 
+  generalizations="true" realizations="true" associations="false" dependencies="false" nesting-relationships="true">  
+  <class corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.AbstractBackendRunner" 
+    project="aslan-backends" file="/aslan-backends/src/main/java/avantssar/aslan/backends/AbstractBackendRunner.java" 
+    binary="false">    
+    <position x="732" y="37" width="266" height="385"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.BackendsManager" project="aslan-backends" 
+    file="/aslan-backends/src/main/java/avantssar/aslan/backends/BackendsManager.java" binary="false">    
+    <position x="1137" y="37" width="242" height="257"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.SATMCBackendRunner" 
+    project="aslan-backends" file="/aslan-backends/src/main/java/avantssar/aslan/backends/SATMCBackendRunner.java" 
+    binary="false">    
+    <position x="144" y="462" width="266" height="129"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <interface corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.IBackendRunner" 
+    project="aslan-backends" file="/aslan-backends/src/main/java/avantssar/aslan/backends/IBackendRunner.java" 
+    binary="false">    
+    <position x="450" y="462" width="242" height="241"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </interface>  
+  <class corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.BackendsManager.SortedProperties" 
+    project="aslan-backends" file="/aslan-backends/src/main/java/avantssar/aslan/backends/BackendsManager.java" 
+    binary="false">    
+    <position x="1251" y="462" width="128" height="81"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.OFMCBackendRunner" 
+    project="aslan-backends" file="/aslan-backends/src/main/java/avantssar/aslan/backends/OFMCBackendRunner.java" 
+    binary="false">    
+    <position x="732" y="462" width="266" height="113"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <enumeration corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.Verdict" project="aslan-backends" 
+    file="/aslan-backends/src/main/java/avantssar/aslan/backends/Verdict.java" binary="false">    
+    <position x="47" y="37" width="117" height="129"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </enumeration>  
+  <class corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.CLAtSeBackendRunner" 
+    project="aslan-backends" file="/aslan-backends/src/main/java/avantssar/aslan/backends/CLAtSeBackendRunner.java" 
+    binary="false">    
+    <position x="1038" y="462" width="173" height="97"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.BackendRunnerInstantiationException" 
+    project="aslan-backends" 
+    file="/aslan-backends/src/main/java/avantssar/aslan/backends/BackendRunnerInstantiationException.java" 
+    binary="false">    
+    <position x="204" y="37" width="293" height="129"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <class corner="BOTTOM_RIGHT" language="java" name="avantssar.aslan.backends.InterruptScheduler" 
+    project="aslan-backends" file="/aslan-backends/src/main/java/avantssar/aslan/backends/InterruptScheduler.java" 
+    binary="false">    
+    <position x="537" y="37" width="155" height="97"/>    
+    <display autosize="true" package="true" initial-value="false" signature="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true"/>      
+      <operations public="true" package="true" protected="true" private="true"/>    
+    </display>  
+  </class>  
+  <generalization>    
+    <source project="aslan-backends" name="avantssar.aslan.backends.OFMCBackendRunner" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/OFMCBackendRunner.java" binary="false"/>    
+    <target project="aslan-backends" name="avantssar.aslan.backends.AbstractBackendRunner" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/AbstractBackendRunner.java" binary="false"/>  
+  </generalization>  
+  <nesting>    
+    <source project="aslan-backends" name="avantssar.aslan.backends.BackendsManager" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/BackendsManager.java" binary="false"/>    
+    <target project="aslan-backends" name="avantssar.aslan.backends.BackendsManager.SortedProperties" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/BackendsManager.java" binary="false"/>  
+  </nesting>  
+  <generalization>    
+    <source project="aslan-backends" name="avantssar.aslan.backends.SATMCBackendRunner" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/SATMCBackendRunner.java" binary="false"/>    
+    <target project="aslan-backends" name="avantssar.aslan.backends.AbstractBackendRunner" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/AbstractBackendRunner.java" binary="false"/>  
+  </generalization>  
+  <realization>    
+    <source project="aslan-backends" name="avantssar.aslan.backends.AbstractBackendRunner" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/AbstractBackendRunner.java" binary="false"/>    
+    <target project="aslan-backends" name="avantssar.aslan.backends.IBackendRunner" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/IBackendRunner.java" binary="false"/>  
+  </realization>  
+  <generalization>    
+    <source project="aslan-backends" name="avantssar.aslan.backends.CLAtSeBackendRunner" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/CLAtSeBackendRunner.java" binary="false"/>    
+    <target project="aslan-backends" name="avantssar.aslan.backends.AbstractBackendRunner" 
+      file="/aslan-backends/src/main/java/avantssar/aslan/backends/AbstractBackendRunner.java" binary="false"/>  
+  </generalization>  
+  <classifier-display autosize="true" package="true" initial-value="false" signature="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true"/>    
+    <operations public="true" package="true" protected="true" private="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

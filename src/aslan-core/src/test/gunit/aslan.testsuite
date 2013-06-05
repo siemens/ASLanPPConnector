@@ -1,0 +1,584 @@
+// Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia.
+// Licensed under the Apache License, Version 2.0.
+
+gunit aslan;
+@header {
+		package org.avantssar.aslan;
+		}
+	
+/*** TESTING PARSER RULES ***/
+aslanSpecification:
+person.aslan  OK //correct
+philosophers.aslan FAIL //has a negated fact in the facts list from a rule
+sets.aslan OK //correct
+withEquationsSection.aslan OK
+withTwoSignatureSections.aslan FAIL
+withInvalidCharacterBetweenSections.aslan FAIL 
+withWrongOrderOfSections.aslan FAIL
+
+/*** RULES + HORNCLAUSES ***/
+
+/*intruderSection:
+"section intruder: " OK //checking simple declaration without any hornClauses or rules declared
+<<section intruder: 
+	step constId(Var1,Var2) := not(fact1).fact2 => fact3>> OK   //checking section intruder with one rule declared
+<<section intruder: 
+	step constId(Var1,Var2) := not(fact1).fact2 => fact3
+	step constId2(Var3,Var4) := not(fact4).fact5 => fact6>> OK  //checking section intruder with multiple rules declared
+<<section intruder: 
+	hc constId(Var1) := fact1 :- fact2 >> OK //checking section intruder with one hornClause declared
+<<section intruder: 
+	hc constId(Var1) := fact1 :- fact2
+	hc constId2(Var2) := fact3 :- fact4 >> OK //checking section intruder with multiple hornClauses declared
+<<section intruder: 
+	step constId(Var1,Var2) := not(fact1).fact2 => fact3 
+	hc constId(Var1) := fact1 :- fact2 >> OK //checking section intruder with one rule and one hornClause declared
+<<section intruder: 
+	step constId(Var1,Var2) := not(fact1).fact2 => fact3 .
+	hc constId(Var1) := fact1 :- fact2 >> FAIL //checking section intruder with invalid separator between the rules and hornClauses declared
+"sect intruder: " FAIL //checking misspeclling or  abreviation of section
+"section intrude: " FAIL //checking misspelling or abreviation of 'intruder'
+"section intruder " FAIL //checking ':' missing
+*/
+
+/***************************/
+
+/******* RULES *******/
+
+rulesSection:
+"section rules: " OK //checking simple declaration without any rules declared
+"section rules: step constId(Var1,Var2) := not(fact1).fact2 => fact3" OK //checking section rules with one rule declared
+<<section rules: 
+	step constId(Var1,Var2) := not(fact1).fact2 => fact3
+	step constId2(Var3,Var4) := not(fact4).fact5 => fact6>> OK //checking section rules with multiple rules declared
+"sect rules: " FAIL //checking misspeclling or  abreviation of section
+"section rule: " FAIL //checking misspelling or abreviation of 'rules'
+"section rules " FAIL //checking ':' missing
+<<section rules: 
+	step constId(Var1,Var2) := not(fact1).fact2 => fact3 .
+	step constId2(Var3,Var4) := not(fact4).fact5 => fact6>> FAIL //checking section rules with invalid separator between the multiple rules declared 
+
+rule: // 'step' ConstId '(' vars ')' 	':=' pNFacts conditions ex=existsVars? '=>' facts
+"step constId (Var1) := not(fact1) & equal(term1,term2) & not(leq(term3,term4)) =[exists Var1,Var2] => fact1.fact2" OK //checking correct rule containing everything
+"step constId(Var1,Var2) := not(fact1).fact2 => fact3" OK //checking correct rule containing multiple vars, pNFacts containing one negated fact and one fact, lack of conditions and existsVars and list of facts containing only one fact
+" constId(Var1) := not(fact1) => fact2 " FAIL //checking missing 'step'
+"step (Var1) := not(fact1) => fact2 " FAIL //checking missing ConstId
+"step constIdVar1,Var2) := not(fact1).fact2 => fact3" FAIL //checking missing first parenthesis
+"step constId(Var1,Var2 := not(fact1).fact2 => fact3"  FAIL //checking missing second parenthesis
+"step constId(Var1.Var2) := not(fact1).fact2 => fact3" FAIL //checking invalid separator between vars (in case separator manually specified - not 'vars' - )
+"step constId(Var1,Var2) = not(fact1).fact2 => fact3" FAIL //checking missing ':'
+"step constId(Var1,Var2) : not(fact1).fact2 => fact3" FAIL //checking missing first '='
+"step constId(Var1,Var2) := not(fact1),fact2 => fact3" FAIL //checking invalid separator between pNFacts (in case separator manyally specified)
+"step constId(Var1,Var2) := not(fact1).fact2 > fact3" FAIL //checking missing second '='
+"step constId(Var1,Var2) := not(fact1).fact2 = fact3" FAIL //checking missing '>'
+"step constId(Var1,Var2) := not(fact1).fact2 => fact3,fact4" FAIL //checking invalid separator between facts( but correct separator at hornClauses
+"step constId := not(fact1).fact2 => fact3" OK //checking missing Vars
+"step constId() := not(fact1).fact2 => fact3" FAIL //checking missing Vars but existing parenthesis
+"step constId(Var1,Var2) :=  => fact3" FAIL //checking missing pNFacts
+"step constId(Var1,Var2) := not(fact1).fact2 => " FAIL //checking missing facts
+/**********************/
+
+/**** HORNCLAUSES ****/
+
+hornClausesSection:
+"section hornClauses: " OK //checking simple declaration without any hornClauses declared
+"section hornClauses: hc constId(Var1) := fact1 :- fact2"  OK //checking hornClausesSection containing one hornClause
+<<section hornClauses:
+	hc constId(Var1) := fact1 :- fact2
+	hc constId(Var1,Var2) := fact1 :- fact2,fact3>> OK  //checking hornClausesSection containing multiple hornClause
+<<section hornClauses:
+	hc constId(Var1) := fact1 :- fact2   .
+	hc constId(Var1,Var2) := fact1 :- fact2,fact3>> FAIL  //checking invalid separator hornClausesSection containing multiple hornClause
+"sect hornClauses: " FAIL //checking misspelling or  abbreviation of section
+"section hornClause: " FAIL //checking misspelling or abbreviation of 'hornClauses'
+"section hornClauses " FAIL //checking ':' missing
+
+hornClause: // 'hc' ConstId '(' vars ')' ':=' fact ':-' fact ( ',' fact)*
+
+"hc constId(Var1) := fact1 :- fact2" OK // correct hornClause containing a list of one fact and one var
+"hc constId(Var1,Var2) := fact1 :- fact2,fact3" OK // correct hornClause containing a list of multiple facts and multiple Vars
+
+//"hc constId(Var1,Var2) := fact1 :- fact2,not(fact3)" FAIL // invalid hornClause containing a list of multiple facts having a negated fact inside
+"hc constId(constId) := fact1 :- fact2" FAIL //invalid hornClause containing constId instead of Var 
+"constId(Var1) := fact1 :- fact2" FAIL //checking missing 'hc'
+"hc (Var1,Var2) := fact1 :- fact2" FAIL //checking missing ConstId
+"hc ConstId Var1) := fact1 :- fact2" FAIL //checking missing first parenthesis
+"hc ConstId (Var1 := fact1 :- fact2" FAIL //checking missing second parenthesis
+"hc ConstId (Var1) = fact1 :- fact2" FAIL //checking missing first ':'
+"hc ConstId (Var1) : fact1 :- fact2" FAIL //checking missing '='
+"hc ConstId (Var1) := fact1 : fact2" FAIL //checking missing '-'
+"hc ConstId (Var1) := fact1 - fact2" FAIL //checking missing second ':'
+"hc ConstId (Var1) := fact1 :- " FAIL //checking missing list of facts
+"hc ConstId := fact1 :- fact2" FAIL //checking missing Vars
+"hc ConstId () := fact1 :- fact2" FAIL //checking missing Vars but existing parenthesis
+"hc ConstId (Var1) := fact1 :- fact2.fact3" FAIL //checking invalid separator between facts but correct separator if 'facts' used
+"hc ConstId (Var1) :=  :- fact2" FAIL //checking missing first fact
+/**********************/
+
+/******* GOALS *******/
+
+goalsSection:
+"section goals: " OK //checking simple declaration without any goals declared
+"sect goals: " FAIL //checking misspelling or  abbreviation of section
+"section goal: " FAIL //checking misspelling or abbreviation of 'goals' but possible mistake
+"section goals " FAIL //checking ':' missing
+"section goals: goal constId := equal(term1,term2)" OK //checking section goals with one lTLGoal declared
+<<section goals:
+	goal constId := equal(term1,term2)
+	goal constId := equal(term1,term2)>> OK //checking section goals with multiple lTLGoals declared
+<<section goals:
+	goal constId := equal(term1,term2) .
+	goal constId := equal(term1,term2)>> FAIL  //invalid separation
+<<section goals:
+	attack_state constId(Var1) := not(fact1) & equal(term1,term2)
+	attack_state constId(Var1) := not(fact1) & equal(term1,term2)>> OK  //checking section goals with multiple attackStates declared
+<<section goals:
+	attack_state constId(Var1) := not(fact1) & equal(term1,term2) . 
+	attack_state constId(Var1) := not(fact1) & equal(term1,term2)>>  FAIL //invalid separation
+<<section goals:
+	goal constId := equal(term1,term2)
+	attack_state constId(Var1) := not(fact1) & equal(term1,term2)>> OK  //checking section goals with lTLGoals and attackStates declared together
+<<section goals:
+	goal constId := equal(term1,term2)   .
+	attack_state constId(Var1) := not(fact1) & equal(term1,term2)>> FAIL //checking section goals with invalid separator between goals 
+	
+goal:
+"goal constId := equal(term1,term2)" OK //checking correct goal being an lTLGoal
+"attack_state constId(Var1) := not(fact1) & equal(term1,term2) " OK //checking correct goal being an attackState
+<<goal constId := equal(term1,term2)
+attack_state constId(Var1) := not(fact1) & equal(term1,term2) >> FAIL //checking goal containing two goals (one lTLGoal and an attackState separated by whitespace_
+<<goal constId := equal(term1,term2)
+goal constId := equal(term1,term2)>> FAIL //checking goal containing two lTLGoals 
+<<attack_state constId(Var1) := not(fact1) & equal(term1,term2)
+attack_state constId(Var1) := not(fact1) & equal(term1,term2) >> FAIL //checking goal containing two attackStates
+
+lTLGoal:
+//'goal' ConstId ('(' v1=vars ')')? ':=' formula
+"goal constId := equal(term1,term2)" OK //checking correct lTLGoal with missing vars 
+"goal constId(Var) := not(term1)" OK //checking correct lTLGoal with one var and different type of formula
+"goal constId(Var1,Var2) := and(fact1,fact2) " OK //checking correct lTLGoal with multiple vars and different type of formula
+"goal (Var1,Var2) := and(fact1,fact2) " FAIL //checking missing constId
+" constId(Var1,Var2) := and(fact1,fact2) " FAIL //checking missing 'goal'
+"goal constId Var1,Var2) := and(fact1,fact2) " FAIL //checking missing first parenthesis at the list of vars
+"goal constId(Var1,Var2 := and(fact1,fact2) " FAIL //checking missing second parenthesis at the list of vars
+"goal constId(Var1,Var2,):= and(fact1,fact2) " FAIL //checking  extra separator between vars
+"goal constId(Var1.Var2) := and(fact1,fact2) " FAIL //checking invalid separator at the list of vars in case of mamually specified
+"goal constId(Var1 Var2) := and(fact1,fact2) " FAIL //checking missing separator at the list of vars in case of manually specified
+"goal constId(Var1,Var2) :=  " FAIL //checking missing formula
+"goal constId() := and(fact1,fact2) " FAIL //checking missing vars but existing parenthesis
+"goal constId(Var1,Var2) := and(fact1,fact2) not(fact3) " FAIL //checking multiple formulas separated by whitespace
+
+attackState:
+// AttackState ConstId  ('(' v1=vars ')')? ':='  pNFacts conditions 
+"attack_state constId(Var1) := not(fact1) & equal(term1,term2) " OK //checking correct attackState with missing vars and missing conditions
+"attack_state constId := not(fact1).fact2 & not(equal(term1,term2)) " OK //checking correct attackState with existing negated atomicCondition
+"attack_state constId(Var1,Var2) := not(fact1).fact2 &not(equal(term1,term2))" OK //checking correct attackState with everything -> cheching separators also
+"attack_state debug_state := iknows(debug) " OK //checking pNFacts containing one fact missing Vars and missing Conditions
+
+"constId(Var1) := not(fact1)" FAIL //checking missing 'attackState'
+"attack_state (Var1,Var2) := not(fact1).fact2 " FAIL //checking missing constId
+"attack_state constId() := not(fact1).fact2 " FAIL //checking missing Vars but existing parenthesis
+"attack_state constIdVar1,Var2) := not(fact1).fact2 " FAIL //checking missing first parenthesis at Vars
+"attack_state constId(Var1,Var2 := not(fact1).fact2 " FAIL //checking missing second parenthesis at Vars
+"attack_state constId(Var1,Var2) = not(fact1).fact2 " FAIL //checking missing ':'
+"attack_state constId(Var1,Var2) : not(fact1).fact2 " FAIL //checking missing '='
+"attack_state constId(Var1,Var2) :=  " FAIL //checking missing pNFacts
+
+/**********************/
+
+/****** FORMULA *******/
+formula:
+/*formula   returns [AbstractFormula f]
+		:  
+		  fact {$f = new FactFormula($fact.f); }
+		| Equal '(' t1=term  ',' t2=term   ')'
+		| Not '(' f1=formula ')' 
+		| And '(' f2=formula ',' f3=formula  ')' 
+		| Or '(' f4=formula  ',' f5=formula  ')' 
+		| Implies '(' f6=formula  ',' f7=formula ')' 
+		| Forall (v1=Var   | l1=LTLOp   )  '.' f8=formula 
+		| Exists (v2=Var   | l2=LTLOp )  '.' f9=formula
+		| l3=LTLOp '(' f0=formula ( ',' formula )? ')' 
+		;*/
+"nat(a)" OK //correct formula containing only a fact (term)
+"nat(a).fact2" FAIL //invalid formula containing multiple facts (only one fact is allowed)
+
+"equal(term1,term2)" OK //correct equality formula
+"equal(term1,term2,term3)" FAIL //invalid equality formula containing more than two terms
+"equal(term1)" FAIL //invalid equality formula containing only one term
+"equal term1,term2)" FAIL //invalid equality formula missing first parenthesis
+"equal (term1,term2" FAIL //invalid equality formula missing second parenthesis
+"equal (term1.term2)" FAIL //invalid equality formula containing invalid separator between terms
+"(term1,term2)" FAIL //invalid formula missing 'equal'
+"equal(term1,term2) equal(term3,term4)" FAIL //invalid formula containing more than one equality formulas
+
+"not(fact1)" OK //correct negation formula
+"not(equal(term1,term2))" OK //correct negation formula containing an equality formula; 
+"(fact1)" FAIL //invalid negation formula missing 'not'
+"not fact1)" FAIL //checking missing first parenthesis
+"not(fact1" FAIL //checking missing second parenthesis
+"not(fact1.fact2)" FAIL //checking negation formula containing facts
+
+"and(fact1,fact2)" OK //correct addition formula
+"and(equal(term1,term2),not(equal(term3,term4)))" OK //correct addition formula containing other formulas
+"(fact1,equal(term1,term2))" FAIL //invalid addition formula missing 'and'
+"and fact1,fact2)" FAIL //invalid addition formula missing first parenthesis
+"and(fact1,fact2" FAIL //invalid addition formula missing second parenthesis
+"and(fact1.fact2)" FAIL //invalid separator between formulas contained by the addition formula
+"and(fact1,fact2,fact3)" FAIL //invalid addition formula containing too many formulas
+
+"or(fact1,fact2)" OK //correct or formula
+"or(equal(term1,term2),not(equal(term3,term4)))" OK //correct or formula containing other formulas
+"(fact1,equal(term1,term2))" FAIL //invalid addition formula missing 'or'
+"or fact1,fact2)" FAIL //invalid or formula missing first parenthesis
+"or(fact1,fact2" FAIL //invalid or formula missing second parenthesis
+"or(fact1.fact2)" FAIL //invalid separator between formulas contained by the or formula
+"or(fact1,fact2,fact3)" FAIL //invalid or formula containing too many formulas
+
+"implies(fact1,fact2)" OK //correct implication formula
+"implies(equal(term1,term2),not(equal(term3,term4)))" OK //correct implication formula containing other formulas
+"(fact1,equal(term1,term2))" FAIL //invalid addition formula missing 'implies'
+"implies fact1,fact2)" FAIL //invalid implication formula missing first parenthesis
+"implies(fact1,fact2" FAIL //invalid implication formula missing second parenthesis
+"implies(fact1.fact2)" FAIL //invalid separator between formulas contained by the implication formula
+"implies(fact1,fact2,fact3)" FAIL //invalid implication formula containing too many formulas
+
+"forall Var1 . and(fact1,fact2)" OK //correct ForAllFormula containing an addition formula and one Var
+"forall V . and(fact1,fact2)" OK // correct ForAllFormula containing a Var of only one character
+"forall Var1,Var2 . and(fact1,fact2)" FAIL //invalid ForAllFormula containing too many Vars
+"Var1 . and(fact1,fact2)" FAIL //invalid ForAllFormula missing 'forall'
+"forall . and(fact1,fact2)" FAIL //invalid ForAllFormula  missing Var
+"forall Var and(fact1,fact2)" FAIL //invalid ForAllFormula  missing '.'
+"forall Var . " FAIL //invalid ForAllFormula  missing formula 
+"forall Var . and(fact1,fact2) equal(term1,term2) " FAIL //invalid ForAllFormula  containing too many formulas
+
+"exists Var1 . and(fact1,fact2)" OK //correct ExistanceFormula containing an addition formula and one Var
+"exists V . and(fact1,fact2)" OK // correct ExistanceFormula containing a Var of only one character
+"exists Var1,Var2 . and(fact1,fact2)" FAIL //invalid ExistanceFormula containing too many Vars
+"Var1 . and(fact1,fact2)" FAIL //invalid ExistanceFormula missing 'exists'
+"exists . and(fact1,fact2)" FAIL //invalid ExistanceFormula  missing Var
+"exists Var and(fact1,fact2)" FAIL //invalid ExistanceFormula  missing '.'
+"exists Var . " FAIL //invalid ExistanceFormula  missing formula 
+"exists Var . and(fact1,fact2) equal(term1,term2) " FAIL //invalid ExistanceFormula  containing too many formulas
+
+"X(and(fact1,fact2))" OK //correct LTLOpFormula containing one formula
+"U(and(fact1,fact2), equal(term1,term2))" OK //correct LTLOpFormula containing two formulas
+"U(and(fact1,fact2), )" FAIL //missing second formula but existing separator
+"U(and(fact1,fact2). equal(term1,term2))" FAIL //checking invalid separator between formulas
+"U(and(fact1,fact2)  equal(term1,term2))" FAIL // missing separator between formulas
+"X()" FAIL //missing formula of LTLOpFormula
+"X( and(fact1,fact2)" FAIL //missing last parenthesis of LTLOpFormula
+"X and(fact1,fact2))" FAIL //missing first parenthesis of LTLOpFormula
+
+/**********************/
+
+/**** DECLARATIONS ****/
+signatureSection:
+//section signature: (superType | opDecl)*
+"section signature: " OK //checking simple declaration without any signatures declared
+"sect signature: " FAIL //checking misspelling or  abbreviation of section
+"section sign: " FAIL //checking misspelling or abbreviation of 'signature' but possible mistake
+"section signature " FAIL //checking ':' missing
+<<section signature: 
+		constId : type*nat(type) -> nat(a) >> OK //checking section signature containing one opDecl
+<<section signature: 
+		constId1 > constId2 >> OK //checking section signature containing one superType
+<<section signature: 
+		constId : type*nat(type) -> nat(a) 
+		constId : type*nat(type) -> nat(a) >> OK //checking section signature containing multiple opDecl
+<<section signature: 
+		constId1 > constId2 
+		constId1 > constId2 >> OK //checking section signature containing multiple superTypes
+<<section signature: 
+		constId : type*nat(type) -> nat(a) 
+		constId1 > constId2 >> OK //checking section signature containing  opDecl	and superType	
+<<section signature: 
+		constId : type*nat(type) -> nat(a)  ,
+		constId1 > constId2 >> FAIL //checking section signature with invalid separator between the contained  opDecl	and superType	
+
+functionDecl:
+//ConstId ':' typeStar '->' type
+//!!!!!!!!!!!!!!!"constId : type*nat(type) -> constIdType" OK <- FAILURE
+"constId : type*nat(type) -> nat(a)" OK //checking correct opDecl
+" : type*nat(type) -> nat(a)" FAIL //checking missing constId
+"constId  type*nat(type) -> nat(a)" FAIL //checking missing ':'
+"constId : -> nat(a)" FAIL //checking missing typeStar
+"constId : type.nat(type) -> nat(a)" FAIL //checking invalid separator in typeStar in case of manually specification
+"constId : type*nat(type) > nat(a)" FAIL //checking missing '-'
+"constId : type*nat(type) - nat(a)" FAIL //checking missing '>'
+"constId : type*nat(type) -> " FAIL //checking missing type
+
+//typeDecl checked at types section
+
+/**********************/
+
+/***** CONDITIONS *****/
+conditions:
+"" FAIL
+"& equal(term1,term2)" OK //checking list of conditions containing one atomicCondition
+"& equal(term1,term2) & leq(term3,term4)" OK //checking list of conditions containing multiple atomicConditions
+"& not(equal(term1,term2))" OK //checking list of conditions containing one negated atomicCondition
+"& not(leq(term1,term2)) & not(equal(term1,term2)) " OK //checking list of conditions containing multiple negated atomicCondition
+"& not(leq(term1,term2)) & equal(term1,term2) " OK //checking list of conditions containing one atomicCondition and one negated atomicCondition
+
+" not(leq(term1,term2))" FAIL //checking missing first &
+"& not(leq(term1,term2))  equal(term1,term2)" FAIL //checking missing separator between conditions
+"& not(leq(term1,term2)) ^ equal(term1,term2)" FAIL //checking invalid separator between conditions
+
+condition:
+"equal(term1,term2)" OK //checking correct condition : atomicCondition
+"not(leq(term1,term2))" OK //checking correct negated atomicCondition
+"not leq(term1,term2))" FAIL //checking missing first parenthesis for negated atomicCondition
+"not(equal(term1,term2) " FAIL //checking missing last parenthesis for negated atomicCondition or inside the atomicCondition
+"not(term1,term2)" FAIL //checking missing condition for negated atomicCondition
+"not(equal term1,term2))" FAIL //checking missing first parenthesis inside the negated atomicCondition
+"(equal(term1,term2))" FAIL //checking missing "not" of the negated atomicCondition
+"equal(term1,term2)"  OK //checking correct atomicCondition
+"leq(term1,term2)" OK //checking correct atomicCondition
+"equal(term1,term2,)" FAIL //checking extra separator in terms list
+"leq(term1,term2, )" FAIL //checking extra separator in terms list
+//"constId(term1,term2)" FAIL //checking strictness concerning the condition(only equal or leq allowed)
+"equal(term1)" FAIL //checking missing second term
+"equal(term1,term2,term3)" FAIL //checking too many terms
+"equal(term1.term2)" FAIL //checking invalid separator
+"equal term1,term2)" FAIL //checking missing first parenthesis
+"equal(term1,term2" FAIL //checking missing last parenthesis
+"leq(term1)" FAIL //checking missing second term
+"leq(term1,term2,term3)" FAIL //checking too many terms
+"leq(term1.term2)" FAIL //checking invalid separator
+"leq term1,term2)" FAIL //checking missing first parenthesis
+"leq(term1,term2" FAIL //checking missing last parenthesis
+
+/**********************/
+
+/******* FACTS ********/
+
+initsSection:
+// 'section inits:' 	( 'initial_state' ConstId ':=' f1=facts )+
+"section inits: " FAIL //no initial_state specified although it is mandatory
+"section inits: initial_state constId := fact1.fact2" OK //correct initsSection containing a list of facts correctly separated
+"section inits: initial_state constId := fact1" OK //correct initsSection containing only one fact
+"sect inits: initial_state constId := fact1" FAIL //checking misspelling or abbreviation of 'section'
+"section init: initial_state constId := fact1" FAIL //checking misspelling or abbreviation of 'inits'
+"section inits: initialState constId := fact1" FAIL //checking misspelling or abbreviation of 'initial_state'
+"section inits: initial_state  := fact1" FAIL //checking missing constId
+"section inits: initial_state constId = fact1" FAIL //checking missing ':'
+"section inits: initial_state constId : fact1" FAIL //checking missing '='
+"section inits: initial_state constId := " FAIL //checking missing facts
+"section inits: initial_state constId := fact1,fact2" FAIL //checking invalid separator between facts but correct in hornClauses in case of manually specified
+<<section inits:
+	initial_state constId := fact1
+	initial_state constId := fact2 >> OK  //checking more than one initial_state declared
+<<section inits:
+	initial_state constId := fact1 ,
+	initial_state constId := fact2 >> FAIL  //checking more than one initial_state declared with invalid separator in between
+	 
+pNFacts:
+//Same tests as for 'facts' but added a few
+"fact1" OK //checking correct list of facts containing only one fact
+"fact1.fact2.fact3" OK //checking correct list of facts containg multiple facts
+"fact1,fact2" FAIL //checking wrong separator between facts
+"fact1 fact2" FAIL //checking missing separator between facts
+"fact1.(fact2.fact3)" FAIL// checking added invalid character but possibly considered
+
+"fact1.not(fact2).fact3" OK //checking list containing a negated fact
+
+pNFact:
+"fact" OK //checking correct pNFact;
+"fact1.fact2" FAIL //checking multiple facts 
+" not(fact) " OK //checking correct negated pNFact
+"(fact)" FAIL //checking missing "not"
+"not(fact" FAIL //checking missing last parenthesis
+"not fact1)" FAIL //checking missing first parenthesis
+"not(fact1.fact2)" FAIL //checking more than one fact
+
+facts:
+"fact1" OK //checking correct list of facts containing only one fact
+"fact1.fact2.fact3" OK //checking correct list of facts containg multiple facts
+"fact1,fact2" FAIL //checking wrong separator between facts
+"fact1 fact2" FAIL //checking missing separator between facts
+"fact1.(fact2.fact3)"  FAIL// checking added invalid character but possibly considered
+
+fact:
+// Same tests like term since "fact: term"
+"Var" OK
+"constant" OK
+"1234" OK //numeral
+"constId(terms)" OK
+"constId(Var,1234,V,c)" OK
+"123AAA" FAIL
+"constId<Var,1234,V,c)" FAIL
+"constId(Var,1234,V,c>" FAIL
+"constId(Var,1234,V,c" FAIL
+"constId(Var&1234)" FAIL
+"Var(Var,1234,V,c)" FAIL
+"constId,Var,124" FAIL
+
+/**********************/
+
+/******* TERMS ********/
+equationsSection:
+"section equations: " OK //checking simple declaration without any equations declared
+"sect equations: " FAIL //checking misspeclling or  abreviation of section
+"section equation: " FAIL //checking misspelling or abreviation of 'equations'
+"section equations " FAIL //checking ':' missing
+"section equations: term1 = term2" OK //checking with only one equation
+<<section equations:
+	term1=term2
+	Term3=1234 
+	>> OK 	//checking separation between equations which should be WHITESPACE
+
+equation:
+"term1=term2" OK  //checking equation with 2 terms
+"term1=term2=term3" FAIL //checking equation with more than 2 terms
+"term1&term2" FAIL //checking different sign of separation
+"term1" FAIL //checking second term missing
+"term1term2" FAIL //checking '=' missing, although considered as only one term by the parser
+
+terms:
+"Var" OK
+"term1" OK
+"1234" OK
+"constant,1234" OK
+"constant&1245" FAIL
+"Var(term1,term2)" FAIL //testing separation by ','
+
+
+term:
+"Var" OK
+"constant" OK
+"1234" OK //numeral
+"constId(terms)" OK
+"constId(Var,1234,V,c)" OK
+"123AAA" FAIL
+"constId<Var,1234,V,c)" FAIL
+"constId(Var,1234,V,c>" FAIL
+"constId(Var,1234,V,c" FAIL
+"constId(Var&1234)" FAIL
+"Var(Var,1234,V,c)" FAIL
+"constId,Var,124" FAIL
+
+/**********************/
+
+/******* TYPES ********/
+/*typeSymbolsSection:
+"section typeSymbols: nat(a), notnat(a)" OK
+"sect typeSymbols: nat(a)" FAIL
+"section typeS: nat(a)" FAIL
+"section typeSymbols: " FAIL
+*/
+
+typesSection:
+"section types:" OK
+"section types: a:nat(a)" OK
+"sect types: a:nat(a)" FAIL
+"section type: a:nat(a)" FAIL
+"section types: :type" FAIL
+"section types: var:" FAIL
+"section types: " OK
+"section types " FAIL
+
+varConstDecl:
+//!!!!!!!!!"a:nat" OK <-failure
+"a:nat(a)" OK 	//1 constId typeConstIdDecl
+//"a,xY1_2 :{1,2}" OK //2 constId typeConstIdDeclaration
+"A:nat(a)" OK	//typeVarDeclaration
+
+superType: 
+//constId > constId 
+"a>a" OK
+"A>a" FAIL
+"a>A" FAIL
+"a*a" FAIL
+
+typeStar:
+//type ('*' type)*
+"a(a)*a(a)"  OK
+"a*a(a)" OK
+"a&a(a)" FAIL
+"A*a(a)" FAIL
+"a(a)*A" FAIL
+
+//!!!!!!!!"a(a)*a" OK <- failure
+
+types:
+"A" FAIL
+//"a" OK <- FAILURE
+"a(a)" OK
+//"a,{1,2}" OK
+
+type:
+//"a" OK // <- failure
+"a(a)" OK
+//"{1,2}" OK
+"A" FAIL  //not constID
+
+/***************************************/
+
+
+/******* VARS *********/
+
+existsVars:
+"=[ exists Var1,Var2,Var3 ]" OK //checking correct existsVars with multiple Vars
+"=[ exists Var1]" OK //checking with only one Var
+"=[ exist Var1,Var2]" FAIL //checking misspelling of 'exists'
+" exists Var1,Var2]" FAIL //checking missing first part of existsVars
+"=[ Var1,Var2]" FAIL //checking missing "exists"
+"=[ exists Var1,Var2" FAIL //checking missing last parenthesis 
+"=[ exists (Vars1,Var2) ]" FAIL //checking added invalid characters
+ 
+
+vars:
+"Var1,Var2"  OK //checking correct list of two vars
+"Var1" OK //checking list containg only one var
+"Var1&Var2" FAIL//checking incorrect separation marker between vars
+
+/**********************/
+
+/****** Consts ********/
+
+/*consts: 
+"1,1" OK
+"constant1,constant2" OK
+"A,2" FAIL
+"a" OK
+"1,2,a" OK
+*/
+
+constant:
+"1" FAIL
+"aZ" OK
+
+numericConstant:
+"1" OK
+"aZ" FAIL
+
+/**********************/
+		
+/*** TESTING LEXER RULES ***/
+UPPERLETTER:
+"X" OK
+"x" FAIL
+"1" FAIL
+"_" FAIL
+
+LOWERNAME:
+"xYZ_999" OK   
+"xyz_10" OK 
+"x9" OK
+"x_" OK
+"x" OK
+"a" OK
+"Abc123" FAIL    
+"123abc" FAIL  //expect failure
+"_23abc" FAIL
+
+UPPERNAME:
+"XYZ_999" OK   //expect success
+"Xyz_10" OK 
+"X9" OK
+"X_" OK
+"X" OK
+"abc123" FAIL    //expect failure
+"_23abc" FAIL  //expect failure
+

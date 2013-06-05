@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia. -->
+<!-- Licensed under the Apache License, Version 2.0. -->
+
+<enunciate label="aslanpp-connector" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://enunciate.codehaus.org/schemas/enunciate-1.18.xsd">
+   <namespaces>
+      <namespace id="aslanpp" uri="http://aslanpp.avantssar.org/" />
+   </namespaces>
+   <!-- modules>
+      <docs splashPackage="org.avantssar.api" title="aslanpp-translator-service" copyright="Example.com">
+         <download name="License" file="LICENSE.txt" description="The license file governing the use of this API." />
+      </docs>
+   </modules-->
+</enunciate>
+

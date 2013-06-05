@@ -1,0 +1,483 @@
+<!-- Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia. -->
+<!-- Licensed under the Apache License, Version 2.0. -->
+
+<html>
+  <head>
+    <title>AVANTSSAR ASLan++ and ASLan Language Tools</title>
+    <style type="text/css">
+      <!--
+	 body {
+	 margin: 0;
+	 padding: 0;
+	 background-color: #F0F0F0;
+	 font-family: Helvetica, Arial, sans-serif;
+	 text-align: center;
+	 }
+
+	 h1 {
+	 font-size: 1.8em;
+	 }
+	 
+	 h2 {
+	 font-size: 1.4em;
+	 }
+	 
+	 .wrapper {
+	 margin: 0 auto; 
+	 width: 800px; 
+	 text-align: left; 
+	 background-color: #FFFFFF; 
+	 padding: 1px 20px;	 
+	 }
+
+	 .left {
+	 padding: 2px 30px 2px 2px;
+	 text-align: left;
+	 }
+
+	 .right {
+	 padding: 2px 10px 2px 10px;
+	 text-align: left;
+	 }
+	-->
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>Welcome</h1>
+
+      <p>This page is the home of some language tools for
+      the <a href="http://www.avantssar.eu/"
+      target="_blank">AVANTSSAR</a> project. The tools that you can
+      find here are the <a href="#connector">ASLan++ connector</a> and
+      the <a href="#converter">converter between ASLan and XML</a>. If
+      you are already familiar with them, you may wish to jump to
+      the <a href="#downloads">downloads and links</a> section.</p>
+
+      <h1><a name="downloads"/>Downloads and Links</h1>
+
+      <table cellspacing="0" border="1">
+	<tr>
+	  <td class="left">ASLan++ Connector 0.6.1 Web
+	  Service</td>
+	  <td class="right"><a href="aslanpp-connector">visit
+	  homepage</a>
+	  or <a href="aslanpp-connector-wsclient.jar">download
+	  client</a> (839K)</td>
+	</tr>
+	<tr>
+	  <td class="left">ASLan++ Connector 0.6.1
+	  Offline Version</td>
+	  <td class="right"><a href="aslanpp-connector.jar">download</a>
+	  (3.3M)</td>
+	</tr>
+	<tr>
+	  <td class="left">ASLan to XML Converter 0.0.1
+	  Web Service</td>
+	  <td class="right"><a href="aslan-xml">visit homepage</a>
+	  or <a href="aslan-xml-wsclient.jar">download client</a>
+	  (836K)</td>
+	</tr>
+	<tr>
+	  <td class="left">ASLan to XML Converter 0.0.1
+	  Offline Version</td>
+	  <td class="right"><a href="aslan-xml.jar">download</a>
+	  (3.6M)</td>
+	</tr>
+	<tr>
+	  <td class="left">ASLan Java Library</td>
+	  <td class="right"><a href="aslan-core.jar">download
+	    library</a> (4.4M)
+	    or <a href="aslan-core-javadoc.jar">download Javadoc</a>
+	    (619K)</td>
+	</tr>
+	<tr>
+	  <td class="left">XML Schema for ASLan specifications</td>
+	  <td class="right"><a href="aslan-xml.xsd">download</a>
+	  (13K)</td>
+	</tr>
+      </table>
+
+      <h1><a name="connector"/>ASLan++ Connector</h1>
+
+      The latest version of the ASLan++ Connector is 0.6.1.
+
+      <p>You can use the connector online, through a web
+	service. Visit <a href="aslanpp-connector">this page</a> for
+	more information on how to use the web service. We also
+	provide a <a href="aslanpp-connector-wsclient.jar">command
+	line client</a> for the web service. The download size is
+	839K and you need the Java runtime in order
+	to run it.</p>
+
+      <p>You can also use the connector offline, by
+	downloading <a href="aslanpp-connector.jar">this jar
+	file</a>. You will need the Java runtime in order to use
+	it. Just type
+	<pre>java -jar aslanpp-connector.jar -h</pre> to get some help
+	on available options.</p>
+
+      <h1><a name="converter"/>Converter between ASLan and XML</h1>
+
+      The latest version of the converter is 0.0.1.
+
+      <p>As its name already says, it converts ASLan specifications
+	into XML (and the other way around). The XML schema for ASLan
+	specifications is available <a href="aslan-xml.xsd">here</a>
+	(download size 13K).</p>
+
+      <p>The converter is accessible in several ways: online, by using
+      a web service (we provide a simple command line client for
+      this), offline, by downloading a self contained command line
+      application, or programatically, by using our Java library.</p>
+
+      <h2>Web Service</h2>
+
+      <p>You can use the converter online, through a web
+	service. Visit <a href="aslan-xml">this page</a> for more
+	information on how to use the web service, or download
+	a <a href="aslan-xml-wsclient.jar">command line client</a> for
+	the web service. The download size is 836K
+	and you will need the Java runtime for running the
+	client. Just type:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%">java -jar aslan-xml-wsclient.jar -h
+</pre></div>
+
+        <p>to get some help on how to use the client.</p> Also look at
+        the next section that shows some examples for the offline
+        version of the converter. The same style of usage applies to
+        the web service client too, just
+        replace <code>aslan-xml.jar</code>
+        with <code>aslan-xml-wsclient.jar</code>.
+
+      <h2>Offline Version</h2>
+
+      <p>You can use the converter offline, by
+      downloading <a href="aslan-xml.jar">this jar file</a>. The
+      download size is 3.6M and you will need the Java
+      runtime in order to use it. Just type:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%">java -jar aslan-xml.jar -h
+</pre></div>
+
+      <p>to get some help on available options.</p>
+
+      <p>In order to convert an ASLan specification stored in a file <code>simple.aslan</code> to XML and write it to a file called <code>simple.xml</code>, you have to type:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%">java -jar aslan-xml.jar simple.aslan -o simple.xml
+</pre></div>
+
+      <p>In order to convert the XML representation from <code>simple.xml</code> back to plain text and store it into a file called <code>simple2.aslan</code>, you have to type:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%">java -jar aslan-xml.jar -x simple.xml -o simple2.xml
+</pre></div>
+
+      <p>The coverter can read input also from <code>stdin</code> and can write output also to <code>stdout</code>. This means that it can be piped. For example in order to check the correctness of the ASLan specification from the file <code>simple.aslan</code> and to have it pretty-printed to the file <code>simple2.aslan</code>, you can type:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%">java -jar aslan-xml.jar simple.aslan | java -jar aslan-xml.jar -x -o simple2.aslan -
+</pre></div>
+
+      <h2>Programmatic usage</h2>
+      
+      <p>In order to use our Java library, you have to
+      download <a href="aslan-core.jar">this JAR file</a> (download
+      size 4.4M). We provide
+      also <a href="aslan-core-javadoc.jar">this JAR file</a>
+      (download size 619K) which contains
+      Javadoc documentation for the library, but be warned that there
+      is not much documentation, so the only practical use is that you
+      can see the available classes and methods.</p>
+
+      <p>To get a feel of what can be done with the library, we present some simple examples.</p>
+
+      <p>First of all the library lets you programatically build ASLan
+      specifications, and then serialize them to plain text or to
+      XML. For example the following code builds a very simple
+      specification and writes it to a plain text file.</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.io.FileOutputStream</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.io.PrintStream</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.ASLanSpecificationBuilder</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.AttackState</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.Constant</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.Function</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.HornClause</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.IASLanSpec</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.InitialState</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.RewriteRule</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.Variable</span><span style="color: #666666">;</span>
+
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">ASLanFirst</span> <span style="color: #666666">{</span>
+
+	<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #B00040">void</span> <span style="color: #0000FF">main</span><span style="color: #666666">(</span>String<span style="color: #666666">[]</span> args<span style="color: #666666">)</span> <span style="color: #008000; font-weight: bold">throws</span> Exception <span style="color: #666666">{</span>
+		<span style="color: #408080; font-style: italic">// create a fresh ASLan specification</span>
+		IASLanSpec spec <span style="color: #666666">=</span> ASLanSpecificationBuilder<span style="color: #666666">.</span><span style="color: #7D9029">instance</span><span style="color: #666666">().</span><span style="color: #7D9029">createASLanSpecification</span><span style="color: #666666">();</span>
+		<span style="color: #408080; font-style: italic">// define a variable</span>
+		Variable m <span style="color: #666666">=</span> spec<span style="color: #666666">.</span><span style="color: #7D9029">variable</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;M&quot;</span><span style="color: #666666">,</span> IASLanSpec<span style="color: #666666">.</span><span style="color: #7D9029">MESSAGE</span><span style="color: #666666">);</span>
+		<span style="color: #408080; font-style: italic">// define a constant</span>
+		Constant a <span style="color: #666666">=</span> spec<span style="color: #666666">.</span><span style="color: #7D9029">constant</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;a&quot;</span><span style="color: #666666">,</span> IASLanSpec<span style="color: #666666">.</span><span style="color: #7D9029">MESSAGE</span><span style="color: #666666">);</span>
+		<span style="color: #408080; font-style: italic">// define two functions:</span>
+		<span style="color: #408080; font-style: italic">// premise : message -&gt; fact</span>
+		<span style="color: #408080; font-style: italic">// conclusion : message -&gt; fact</span>
+		Function premise <span style="color: #666666">=</span> spec<span style="color: #666666">.</span><span style="color: #7D9029">function</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;premise&quot;</span><span style="color: #666666">,</span> IASLanSpec<span style="color: #666666">.</span><span style="color: #7D9029">FACT</span><span style="color: #666666">,</span> IASLanSpec<span style="color: #666666">.</span><span style="color: #7D9029">MESSAGE</span><span style="color: #666666">);</span>
+		Function conclusion <span style="color: #666666">=</span> spec<span style="color: #666666">.</span><span style="color: #7D9029">function</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;conclusion&quot;</span><span style="color: #666666">,</span> IASLanSpec<span style="color: #666666">.</span><span style="color: #7D9029">FACT</span><span style="color: #666666">,</span> IASLanSpec<span style="color: #666666">.</span><span style="color: #7D9029">MESSAGE</span><span style="color: #666666">);</span>
+		<span style="color: #408080; font-style: italic">// define a Horn clause:</span>
+		<span style="color: #408080; font-style: italic">// premise(M) :- iknows(M)</span>
+		HornClause hc <span style="color: #666666">=</span> spec<span style="color: #666666">.</span><span style="color: #7D9029">hornClause</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;basic_premise&quot;</span><span style="color: #666666">,</span> premise<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">(</span>m<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">()));</span>
+		hc<span style="color: #666666">.</span><span style="color: #7D9029">addBodyFact</span><span style="color: #666666">(</span>IASLanSpec<span style="color: #666666">.</span><span style="color: #7D9029">IKNOWS</span><span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">(</span>m<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">()));</span>
+		<span style="color: #408080; font-style: italic">// define a rewrite rule:</span>
+		<span style="color: #408080; font-style: italic">// premise(M) =&gt; conclusion(M)</span>
+		RewriteRule rr <span style="color: #666666">=</span> spec<span style="color: #666666">.</span><span style="color: #7D9029">rule</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;inference&quot;</span><span style="color: #666666">);</span>
+		rr<span style="color: #666666">.</span><span style="color: #7D9029">addLHS</span><span style="color: #666666">(</span>premise<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">(</span>m<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">()));</span>
+		rr<span style="color: #666666">.</span><span style="color: #7D9029">addRHS</span><span style="color: #666666">(</span>conclusion<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">(</span>m<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">()));</span>
+		<span style="color: #408080; font-style: italic">// add an initial state:</span>
+		<span style="color: #408080; font-style: italic">// iknows(a)</span>
+		InitialState is <span style="color: #666666">=</span> spec<span style="color: #666666">.</span><span style="color: #7D9029">initialState</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;init&quot;</span><span style="color: #666666">);</span>
+		is<span style="color: #666666">.</span><span style="color: #7D9029">addFact</span><span style="color: #666666">(</span>IASLanSpec<span style="color: #666666">.</span><span style="color: #7D9029">IKNOWS</span><span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">(</span>a<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">()));</span>
+		<span style="color: #408080; font-style: italic">// add an attack state:</span>
+		<span style="color: #408080; font-style: italic">// !conclusion(a)</span>
+		AttackState as <span style="color: #666666">=</span> spec<span style="color: #666666">.</span><span style="color: #7D9029">attackState</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;trouble&quot;</span><span style="color: #666666">);</span>
+		as<span style="color: #666666">.</span><span style="color: #7D9029">addTerm</span><span style="color: #666666">(</span>conclusion<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">(</span>a<span style="color: #666666">.</span><span style="color: #7D9029">term</span><span style="color: #666666">()));</span>
+
+		<span style="color: #408080; font-style: italic">// write the ASLan specification to a file</span>
+		PrintStream out <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">new</span> PrintStream<span style="color: #666666">(</span><span style="color: #008000; font-weight: bold">new</span> FileOutputStream<span style="color: #666666">(</span><span style="color: #BA2121">&quot;simple.aslan&quot;</span><span style="color: #666666">));</span>
+		out<span style="color: #666666">.</span><span style="color: #7D9029">print</span><span style="color: #666666">(</span>spec<span style="color: #666666">.</span><span style="color: #7D9029">toPlainText</span><span style="color: #666666">());</span>
+		out<span style="color: #666666">.</span><span style="color: #7D9029">close</span><span style="color: #666666">();</span>
+	<span style="color: #666666">}</span>
+<span style="color: #666666">}</span>
+</pre></div>
+
+      <p>If you run the code, a file called <code>simple.aslan</code>
+      will be produced with the following content:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span style="color: #19177C">section</span> <span style="color: #19177C">signature:</span>
+	<span style="color: #19177C">conclusion</span> <span style="color: #19177C">:</span> <span style="color: #19177C">message</span> <span style="color: #19177C">-&gt;</span> <span style="color: #19177C">fact</span>
+	<span style="color: #19177C">hash</span> <span style="color: #19177C">:</span> <span style="color: #19177C">message</span> <span style="color: #19177C">-&gt;</span> <span style="color: #19177C">message</span>
+	<span style="color: #19177C">pk</span> <span style="color: #19177C">:</span> <span style="color: #19177C">agent</span> <span style="color: #19177C">-&gt;</span> <span style="color: #19177C">public_key</span>
+	<span style="color: #19177C">premise</span> <span style="color: #19177C">:</span> <span style="color: #19177C">message</span> <span style="color: #19177C">-&gt;</span> <span style="color: #19177C">fact</span>
+
+<span style="color: #19177C">section</span> <span style="color: #19177C">types:</span>
+	<span style="color: #19177C">M</span> <span style="color: #19177C">:</span> <span style="color: #19177C">message</span>
+	<span style="color: #19177C">a</span> <span style="color: #19177C">:</span> <span style="color: #19177C">message</span>
+
+<span style="color: #19177C">section</span> <span style="color: #19177C">inits:</span>
+
+<span style="color: #19177C">initial_state</span> <span style="color: #19177C">init</span> <span style="color: #19177C">:=</span>
+	<span style="color: #19177C">iknows</span>(<span style="color: #0000FF">a</span>)
+
+<span style="color: #19177C">section</span> <span style="color: #19177C">hornClauses:</span>
+
+<span style="color: #19177C">hc</span> <span style="color: #19177C">basic_premise</span>(<span style="color: #0000FF">M</span>) <span style="color: #19177C">:=</span>
+	<span style="color: #19177C">premise</span>(<span style="color: #0000FF">M</span>) <span style="color: #19177C">:-</span>
+		<span style="color: #19177C">iknows</span>(<span style="color: #0000FF">M</span>)
+
+<span style="color: #19177C">section</span> <span style="color: #19177C">rules:</span>
+
+<span style="color: #19177C">step</span> <span style="color: #19177C">inference</span>(<span style="color: #0000FF">M</span>) <span style="color: #19177C">:=</span>
+	<span style="color: #19177C">premise</span>(<span style="color: #0000FF">M</span>)
+	<span style="color: #19177C">=&gt;</span>
+	<span style="color: #19177C">conclusion</span>(<span style="color: #0000FF">M</span>)
+
+<span style="color: #19177C">section</span> <span style="color: #19177C">goals:</span>
+
+<span style="color: #19177C">attack_state</span> <span style="color: #19177C">trouble</span> <span style="color: #19177C">:=</span>
+	<span style="color: #19177C">conclusion</span>(<span style="color: #0000FF">a</span>)
+</pre></div>
+
+      <p>You can also load back specifications, either from plain
+      text, either from XML. For example the following code loads the
+      plain text representation from the
+      file <code>simple.aslan</code> and writes it as an XML
+      representation into the file <code>simple.xml</code>.</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.io.FileInputStream</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.io.FileOutputStream</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.io.PrintStream</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.util.Scanner</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.ASLanErrorMessages</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.ASLanSpecificationBuilder</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.IASLanSpec</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.commons.ErrorGatherer</span><span style="color: #666666">;</span>
+
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">ASLanSecond</span> <span style="color: #666666">{</span>
+
+	<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #B00040">void</span> <span style="color: #0000FF">main</span><span style="color: #666666">(</span>String<span style="color: #666666">[]</span> args<span style="color: #666666">)</span> <span style="color: #008000; font-weight: bold">throws</span> Exception <span style="color: #666666">{</span>
+		<span style="color: #408080; font-style: italic">// read the ASLan specification from the text file into a String</span>
+		StringBuffer sb <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">new</span> StringBuffer<span style="color: #666666">();</span>
+		String newline <span style="color: #666666">=</span> System<span style="color: #666666">.</span><span style="color: #7D9029">getProperty</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;line.separator&quot;</span><span style="color: #666666">);</span>
+		Scanner sc <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">new</span> Scanner<span style="color: #666666">(</span><span style="color: #008000; font-weight: bold">new</span> FileInputStream<span style="color: #666666">(</span><span style="color: #BA2121">&quot;simple.aslan&quot;</span><span style="color: #666666">));</span>
+		<span style="color: #008000; font-weight: bold">while</span> <span style="color: #666666">(</span>sc<span style="color: #666666">.</span><span style="color: #7D9029">hasNextLine</span><span style="color: #666666">())</span> <span style="color: #666666">{</span>
+			sb<span style="color: #666666">.</span><span style="color: #7D9029">append</span><span style="color: #666666">(</span>sc<span style="color: #666666">.</span><span style="color: #7D9029">nextLine</span><span style="color: #666666">()).</span><span style="color: #7D9029">append</span><span style="color: #666666">(</span>newline<span style="color: #666666">);</span>
+		<span style="color: #666666">}</span>
+		sc<span style="color: #666666">.</span><span style="color: #7D9029">close</span><span style="color: #666666">();</span>
+
+		<span style="color: #408080; font-style: italic">// load the specification from the String</span>
+		IASLanSpec spec <span style="color: #666666">=</span> ASLanSpecificationBuilder<span style="color: #666666">.</span><span style="color: #7D9029">instance</span><span style="color: #666666">().</span><span style="color: #7D9029">loadFromPlainText</span><span style="color: #666666">(</span>sb<span style="color: #666666">.</span><span style="color: #7D9029">toString</span><span style="color: #666666">(),</span> <span style="color: #008000; font-weight: bold">new</span> ErrorGatherer<span style="color: #666666">(</span>ASLanErrorMessages<span style="color: #666666">.</span><span style="color: #7D9029">DEFAULT</span><span style="color: #666666">));</span>
+
+		<span style="color: #408080; font-style: italic">// write the specification into another file in XML format</span>
+		PrintStream out <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">new</span> PrintStream<span style="color: #666666">(</span><span style="color: #008000; font-weight: bold">new</span> FileOutputStream<span style="color: #666666">(</span><span style="color: #BA2121">&quot;simple.xml&quot;</span><span style="color: #666666">));</span>
+		out<span style="color: #666666">.</span><span style="color: #7D9029">print</span><span style="color: #666666">(</span>spec<span style="color: #666666">.</span><span style="color: #7D9029">toXML</span><span style="color: #666666">());</span>
+		out<span style="color: #666666">.</span><span style="color: #7D9029">close</span><span style="color: #666666">();</span>
+	<span style="color: #666666">}</span>
+<span style="color: #666666">}</span>
+</pre></div>
+
+      <p>The content of the <code>simple.xml</code> file is:</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span style="color: #BC7A00">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+<span style="color: #008000; font-weight: bold">&lt;aslan</span> <span style="color: #7D9029">xmlns=</span><span style="color: #BA2121">&quot;http://avantssar.eu/&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;signature&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;conclusion&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;returnType&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;fact&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/returnType&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;parameterTypes&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;message&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/parameterTypes&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;hash&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;returnType&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;message&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/returnType&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;parameterTypes&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;message&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/parameterTypes&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;pk&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;returnType&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;public_key&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/returnType&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;parameterTypes&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;agent&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/parameterTypes&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;premise&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;returnType&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;fact&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/returnType&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;parameterTypes&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;message&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/parameterTypes&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;/signature&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;types&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;variable</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;M&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;message&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/variable&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;constant</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;a&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;type</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;message&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/constant&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;/types&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;inits&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;initialState</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;init&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;facts&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;iknows&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;parameters&gt;</span>
+                        <span style="color: #008000; font-weight: bold">&lt;constant</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;a&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;/parameters&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/facts&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/initialState&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;/inits&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;hornClauses&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;hornClause</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;basic_premise&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;parameters&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;variable</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;M&quot;</span> <span style="color: #7D9029">position=</span><span style="color: #BA2121">&quot;1&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/parameters&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;head&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;premise&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;parameters&gt;</span>
+                        <span style="color: #008000; font-weight: bold">&lt;variable</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;M&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;/parameters&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/head&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;body&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;iknows&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;parameters&gt;</span>
+                        <span style="color: #008000; font-weight: bold">&lt;variable</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;M&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;/parameters&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/body&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/hornClause&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;/hornClauses&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;rules&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;step</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;inference&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;parameters&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;variable</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;M&quot;</span> <span style="color: #7D9029">position=</span><span style="color: #BA2121">&quot;1&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/parameters&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;lhs&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;facts&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;premise&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+                        <span style="color: #008000; font-weight: bold">&lt;parameters&gt;</span>
+                            <span style="color: #008000; font-weight: bold">&lt;variable</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;M&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+                        <span style="color: #008000; font-weight: bold">&lt;/parameters&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;/facts&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/lhs&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;rhs&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;facts&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;conclusion&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+                        <span style="color: #008000; font-weight: bold">&lt;parameters&gt;</span>
+                            <span style="color: #008000; font-weight: bold">&lt;variable</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;M&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+                        <span style="color: #008000; font-weight: bold">&lt;/parameters&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;/facts&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/rhs&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/step&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;/rules&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;goals&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;attackState</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;trouble&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;facts&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;function</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;conclusion&quot;</span><span style="color: #008000; font-weight: bold">&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;parameters&gt;</span>
+                        <span style="color: #008000; font-weight: bold">&lt;constant</span> <span style="color: #7D9029">name=</span><span style="color: #BA2121">&quot;a&quot;</span><span style="color: #008000; font-weight: bold">/&gt;</span>
+                    <span style="color: #008000; font-weight: bold">&lt;/parameters&gt;</span>
+                <span style="color: #008000; font-weight: bold">&lt;/function&gt;</span>
+            <span style="color: #008000; font-weight: bold">&lt;/facts&gt;</span>
+        <span style="color: #008000; font-weight: bold">&lt;/attackState&gt;</span>
+    <span style="color: #008000; font-weight: bold">&lt;/goals&gt;</span>
+<span style="color: #008000; font-weight: bold">&lt;/aslan&gt;</span>
+</pre></div>
+
+      <p>The following code does the reversed operation: reads the XML
+      representation from <code>simple.xml</code> and writes it as
+      plain text representation into the
+      file <code>simple2.aslan</code>. If everything goes on as it
+      should, then the file <code>simple2.aslan</code> should be
+      identical with <code>simple.aslan</code>.</p>
+
+<div class="highlight" style="background: #f8f8f8"><pre style="line-height: 125%"><span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.io.FileInputStream</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.io.FileOutputStream</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.io.PrintStream</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">java.util.Scanner</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.ASLanErrorMessages</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.ASLanSpecificationBuilder</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.aslan.IASLanSpec</span><span style="color: #666666">;</span>
+<span style="color: #008000; font-weight: bold">import</span> <span style="color: #0000FF; font-weight: bold">org.avantssar.commons.ErrorGatherer</span><span style="color: #666666">;</span>
+
+<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">class</span> <span style="color: #0000FF; font-weight: bold">ASLanThird</span> <span style="color: #666666">{</span>
+
+	<span style="color: #008000; font-weight: bold">public</span> <span style="color: #008000; font-weight: bold">static</span> <span style="color: #B00040">void</span> <span style="color: #0000FF">main</span><span style="color: #666666">(</span>String<span style="color: #666666">[]</span> args<span style="color: #666666">)</span> <span style="color: #008000; font-weight: bold">throws</span> Exception <span style="color: #666666">{</span>
+		<span style="color: #408080; font-style: italic">// read the ASLan specification from the XML file into a String</span>
+		StringBuffer sb <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">new</span> StringBuffer<span style="color: #666666">();</span>
+		String newline <span style="color: #666666">=</span> System<span style="color: #666666">.</span><span style="color: #7D9029">getProperty</span><span style="color: #666666">(</span><span style="color: #BA2121">&quot;line.separator&quot;</span><span style="color: #666666">);</span>
+		Scanner sc <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">new</span> Scanner<span style="color: #666666">(</span><span style="color: #008000; font-weight: bold">new</span> FileInputStream<span style="color: #666666">(</span><span style="color: #BA2121">&quot;simple.xml&quot;</span><span style="color: #666666">));</span>
+		<span style="color: #008000; font-weight: bold">while</span> <span style="color: #666666">(</span>sc<span style="color: #666666">.</span><span style="color: #7D9029">hasNextLine</span><span style="color: #666666">())</span> <span style="color: #666666">{</span>
+			sb<span style="color: #666666">.</span><span style="color: #7D9029">append</span><span style="color: #666666">(</span>sc<span style="color: #666666">.</span><span style="color: #7D9029">nextLine</span><span style="color: #666666">()).</span><span style="color: #7D9029">append</span><span style="color: #666666">(</span>newline<span style="color: #666666">);</span>
+		<span style="color: #666666">}</span>
+		sc<span style="color: #666666">.</span><span style="color: #7D9029">close</span><span style="color: #666666">();</span>
+
+		<span style="color: #408080; font-style: italic">// load the specification from the XML String</span>
+		IASLanSpec spec <span style="color: #666666">=</span> ASLanSpecificationBuilder<span style="color: #666666">.</span><span style="color: #7D9029">instance</span><span style="color: #666666">().</span><span style="color: #7D9029">loadFromXML</span><span style="color: #666666">(</span>sb<span style="color: #666666">.</span><span style="color: #7D9029">toString</span><span style="color: #666666">(),</span> <span style="color: #008000; font-weight: bold">new</span> ErrorGatherer<span style="color: #666666">(</span>ASLanErrorMessages<span style="color: #666666">.</span><span style="color: #7D9029">DEFAULT</span><span style="color: #666666">));</span>
+
+		<span style="color: #408080; font-style: italic">// write the specification into another file in XML format</span>
+		PrintStream out <span style="color: #666666">=</span> <span style="color: #008000; font-weight: bold">new</span> PrintStream<span style="color: #666666">(</span><span style="color: #008000; font-weight: bold">new</span> FileOutputStream<span style="color: #666666">(</span><span style="color: #BA2121">&quot;simple2.aslan&quot;</span><span style="color: #666666">));</span>
+		out<span style="color: #666666">.</span><span style="color: #7D9029">print</span><span style="color: #666666">(</span>spec<span style="color: #666666">.</span><span style="color: #7D9029">toPlainText</span><span style="color: #666666">());</span>
+		out<span style="color: #666666">.</span><span style="color: #7D9029">close</span><span style="color: #666666">();</span>
+	<span style="color: #666666">}</span>
+<span style="color: #666666">}</span>
+</pre></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia. -->
+<!-- Licensed under the Apache License, Version 2.0. -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://avantssar.eu/" xmlns="http://avantssar.eu/"
+	elementFormDefault="qualified">
+	<!-- types -->
+	<xs:element name="type">
+		<xs:complexType>
+			<xs:attribute name="name" type="lowerName" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="pairType">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="1" maxOccurs="1" name="left" type="anyType" />
+				<xs:element minOccurs="1" maxOccurs="1" name="right"
+					type="anyType" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="setType" type="anyType" />
+	<xs:element name="compoundType">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="typesList">
+					<xs:attribute name="name" type="lowerName" use="required" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="anyType">
+		<xs:sequence>
+			<xs:element minOccurs="0" maxOccurs="1" ref="comments" />
+			<xs:choice minOccurs="1" maxOccurs="1">
+				<xs:element ref="type" />
+				<xs:element ref="pairType" />
+				<xs:element ref="setType" />
+				<xs:element ref="compoundType" />
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="typesList">
+		<xs:sequence>
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element ref="type" />
+				<xs:element ref="pairType" />
+				<xs:element ref="setType" />
+				<xs:element ref="compoundType" />
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<!-- terms -->
+	<xs:element name="variable">
+		<xs:complexType>
+			<xs:attribute name="name" type="upperName" use="required" />
+			<xs:attribute name="position" type="xs:int" use="optional" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="constant">
+		<xs:complexType>
+			<xs:attribute name="name" type="lowerName" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="functionConstant">
+		<xs:complexType>
+			<xs:attribute name="name" type="lowerName" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="function">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="1" maxOccurs="1" name="parameters"
+					type="termsList" />
+			</xs:sequence>
+			<xs:attribute name="name" type="lowerName" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ltl">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="1" maxOccurs="1" name="parameters"
+					type="termsList" />
+			</xs:sequence>
+			<xs:attribute name="name" type="upperName" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="number">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:integer" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="not" type="anyTerm" />
+	<xs:element name="forall">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="anyTerm">
+					<xs:attribute name="variable" type="upperName" use="required" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="exists">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="anyTerm">
+					<xs:attribute name="variable" type="upperName" use="required" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="anyTerm">
+		<xs:choice minOccurs="1" maxOccurs="1">
+			<xs:element ref="functionConstant" />
+			<xs:element ref="variable" />
+			<xs:element ref="constant" />
+			<xs:element ref="function" />
+			<xs:element ref="ltl" />
+			<xs:element ref="number" />
+			<xs:element ref="not" />
+			<xs:element ref="forall" />
+			<xs:element ref="exists" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="termsList">
+		<xs:choice minOccurs="1" maxOccurs="unbounded">
+			<xs:element ref="functionConstant" />
+			<xs:element ref="variable" />
+			<xs:element ref="constant" />
+			<xs:element ref="function" />
+			<xs:element ref="ltl" />
+			<xs:element ref="number" />
+			<xs:element ref="not" />
+			<xs:element ref="forall" />
+			<xs:element ref="exists" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="parametersList">
+		<xs:sequence>
+			<xs:element minOccurs="1" maxOccurs="unbounded" ref="variable" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- comments and meta info -->
+	<xs:element name="comments">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="1" maxOccurs="unbounded">
+					<xs:element ref="metainfo" />
+					<xs:element name="commentLine" type="xs:string" />
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="metainfo">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="flag" type="xs:string" />
+					<xs:element name="parameter">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element minOccurs="1" maxOccurs="1" name="name"
+									type="xs:string" />
+								<xs:element minOccurs="1" maxOccurs="1" name="value"
+									type="xs:string" />
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<!-- root element -->
+	<xs:element name="aslan">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="1" ref="comments" />
+				<xs:element minOccurs="0" maxOccurs="1" ref="signature" />
+				<xs:element minOccurs="0" maxOccurs="1" ref="types" />
+				<xs:element minOccurs="0" maxOccurs="1" ref="equations" />
+				<xs:element minOccurs="0" maxOccurs="1" ref="inits" />
+				<xs:element minOccurs="0" maxOccurs="1" ref="hornClauses" />
+				<xs:element minOccurs="0" maxOccurs="1" ref="rules" />
+				<xs:element minOccurs="0" maxOccurs="1" ref="goals" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- signature section -->
+	<xs:element name="signature">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="1" maxOccurs="unbounded">
+					<xs:element name="type">
+						<xs:complexType>
+							<xs:attribute name="name" type="lowerName" use="required" />
+							<xs:attribute name="superType" type="lowerName" use="required" />
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="function">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element minOccurs="0" maxOccurs="1" ref="comments" />
+								<xs:element minOccurs="1" maxOccurs="1" name="returnType"
+									type="anyType" />
+								<xs:element minOccurs="1" maxOccurs="1" name="parameterTypes"
+									type="typesList" />
+							</xs:sequence>
+							<xs:attribute name="name" type="lowerName" use="required" />
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- types section -->
+	<xs:element name="types">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="1" maxOccurs="unbounded">
+					<xs:element name="variable">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="anyType">
+									<xs:attribute name="name" type="upperName" use="required" />
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="constant">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:extension base="anyType">
+									<xs:attribute name="name" type="lowerName" use="required" />
+								</xs:extension>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- equations section -->
+	<xs:element name="equations">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="1" maxOccurs="unbounded" ref="equation">
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="equation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="1" maxOccurs="1" name="left" type="anyTerm" />
+				<xs:element minOccurs="1" maxOccurs="1" name="right"
+					type="anyTerm" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- inits section -->
+	<xs:element name="inits">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="1" maxOccurs="unbounded" ref="initialState" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="initialState">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="1" ref="comments" />
+				<xs:element minOccurs="0" maxOccurs="1" name="parameters"
+					type="parametersList" />
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="facts"
+					type="termsList" />
+			</xs:sequence>
+			<xs:attribute name="name" type="lowerName" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<!-- hornClauses section -->
+	<xs:element name="hornClauses">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="hornClause" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="hornClause">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="1" ref="comments" />
+				<xs:element minOccurs="0" maxOccurs="1" name="parameters"
+					type="parametersList" />
+				<xs:element minOccurs="1" maxOccurs="1" name="head" type="anyTerm" />
+				<xs:element minOccurs="0" maxOccurs="1" name="body" type="termsList" />
+			</xs:sequence>
+			<xs:attribute name="name" type="lowerName" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<!-- rules section -->
+	<xs:element name="rules">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="step" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="step">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="1" ref="comments" />
+				<xs:element minOccurs="0" maxOccurs="1" name="parameters"
+					type="parametersList" />
+				<xs:element minOccurs="1" maxOccurs="1" name="lhs">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="facts"
+								type="termsList" />
+							<xs:element minOccurs="0" maxOccurs="unbounded" name="conditions"
+								type="termsList" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element minOccurs="0" name="exists" type="parametersList" />
+				<xs:element minOccurs="1" maxOccurs="1" name="rhs">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element minOccurs="1" maxOccurs="unbounded" name="facts"
+								type="termsList" />
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+			<xs:attribute name="name" type="lowerName" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<!-- goals section -->
+	<xs:element name="goals">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="1" maxOccurs="unbounded">
+					<xs:element ref="attackState" />
+					<xs:element ref="goal" />
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="attackState">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="1" ref="comments" />
+				<xs:element minOccurs="0" maxOccurs="1" name="parameters"
+					type="parametersList" />
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="facts"
+					type="termsList" />
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="conditions"
+					type="termsList" />
+			</xs:sequence>
+			<xs:attribute name="name" type="lowerName" use="required" />
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="goal">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="1" ref="comments" />
+				<xs:element minOccurs="0" maxOccurs="1" name="parameters"
+					type="parametersList" />
+				<xs:element minOccurs="0" maxOccurs="unbounded" name="formula"
+					type="anyTerm" />
+			</xs:sequence>
+			<xs:attribute name="name" type="lowerName" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<!-- helper types -->
+	<xs:simpleType name="lowerName">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-z][a-zA-Z0-9_]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="upperName">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z][a-zA-Z0-9_]*" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

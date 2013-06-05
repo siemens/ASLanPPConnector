@@ -1,0 +1,713 @@
+# Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+1.4.3 (released on 2013-06-06)
+==============================
+- added Horn clause for iknows(Element) derived from iknows(Set)
+- resurrected some error messages, e.g. on type checking
+- improved various warning and error messages
+
+1.4.2 (released on 2013-05-29)
+==============================
+- improved warning/error messages on ?-variables in guards
+- removed duplicate error/warning message output on some fatal errors
+- added subtype relation 'message > set'
+- added iknows(empty_ST) facts for every set type ST used for variables
+
+1.4.1 (released on 2013-05-14)
+==============================
+- tweaked error output to logger and console on fundamental translation errors
+- fixed bug: conditions like '!(? -> Actor: ?)' lead to a NullPointerException
+- fixed bug: infinite recursion on 'while(true) {}'
+
+1.4 (released on 2013-04-08)
+==============================
+- tweaked error/warning output to logger and stderr
+- corrected orchestrationFinalState goal ('G' was missing)
+- fixed NullPointerException on iknows({})
+- added copyright and license information
+
+1.3.9 (released on 2013-01-30)
+==============================
+- reverted TranslatorOutput; introduced TranslatorOutputExt for ASLanPP4Eclipse
+- fixed obscure bug in assignment metainfo used for analysis result display
+- fixed missing guard variable metainfo needed for analysis result display
+
+1.3.8 (released on 2013-01-28)
+==============================
+- fixed NullPointerException in error reporting of -ar option
+- made prettyprinting a bit more pretty (mostly layout)
+- adapted TranslatorOutput and ASLanSpecificationBuilder for ASLanPP4Eclipse
+- tried to improve version reporting from data in MANIFEST.MF
+
+1.3.7 (released on 2013-01-21)
+==============================
+- the --help option now gives a hint on the semantics of the Graphviz output
+- fixed bug 6: using "-opt" and "-gv" options together now does work 
+- fixed bug 61: breakpoint facts should not break when being retracted
+- refined warning on lumping symbolic session instantiation with "where" clause
+- ASLan output (file) only produced if there are no translation errors
+- aslan.log no longer contains lumping diagnostics as errors
+
+1.3.6 (released on 2013-01-21)
+==============================
+- adapted result type of translate() function for better Eclipse integration
+- corrected parsing of traces produced by the backends in the Output Format
+- symbolic session instantiation with "where" clause now allows for lumping
+- added recognition of constantly true equalities of the form "t=t"
+- on fatal translation errors, any previous warnings/errors are now shown, too
+
+1.3.5 (released on 2012-11-22)
+==============================
+- removed duplicate introduction of "[]" operator in LTL goals with -ltl option
+- added the "leq" relation on natural numbers (so far not defined for ASLan++)
+
+1.3.4 (released on 2012-09-20)
+==============================
+- bugfix: re-introduced outer "[]" operator in LTL goals, which had been dropped
+- for old-style channel goals, improved warnings and extended errors (bugfix)
+- improved session goal warning/error messages
+
+1.3.3 (released on 2012-08-16)
+==============================
+- more flexible argument handling for session goals, improved warnings
+
+1.3.2 (released on 2012-08-13)
+==============================
+- allowing '?' as sender and/or receiver in channel goals
+- improved warnings and error messages on session goals
+
+1.3.1 (released on 2012-08-10)
+==============================
+- added Error::getNextColumn()
+
+1.3 (released on 2012-08-09)
+==============================
+- fixed scope bug for macro expansion (affecting checks on channel goals)
+- fixed NullPointerException on non-fact appearing in clause
+- fixed NullPointerException on unavailable location info
+- added location info to several more warnings/errors/exceptions
+- improved a couple of warnings and error messages
+- preliminary support for 'next token column' info in error messages
+
+1.2 (released on 2012-05-22)
+==============================
+- fixed critical bug: annotations for secrecy goals were lost
+- improved warnings and error messages on annotations
+- improved various warnings on other issues, e.g. LTL goals/attack states
+
+1.1 (released on 2012-05-14)
+==============================
+- removed implicit outermost "G" operator for LTL goals
+- now warns if outermost "[]" operator is not given by modeler
+
+1.0 (released on 2012-05-11)
+==============================
+- now fully supports local&inherited variables in LTL goals (invariants)
+- fixed critical bugs by disallowing set literals in guards and payloads
+- replaced dynamic entity descendant computation by static child chains
+- added an outer 'G'/'[]' operator to all invariant goals (for SATMC)
+- now prohibiting secret, witness, and request symbols in head of clauses
+- fixed obscure bugs in handling of annotations for LHS variable names
+
+0.7.0 (released on 2012-05-07)
+==============================
+- further improved error handling for channel and secrecy goals
+- fixed obscure bugs in parsing and semantic propagation of annotations
+
+0.6.9
+========================
+- for channel and secrecy goals, now allowing deeper nesting of sub-entities
+- corrected warnings and errors on wrong argument use for channel/secrecy goals
+- agents in channel goals may now be arbitrary terms (not only consts and vars)
+- new feature: undirected authentication, needed for broadcasts e.g. A *->? ?
+- added checks for duplicate goal declarations and unused session goal decls
+- added checks if sender and receiver match the computed channel goal arguments
+- channel freshness goals now only accepted for at least authentic channels
+- freshness and resilience not accepted as assumed CCM/ICM channel properties
+- corrected obscure bugs (e.g. when printing singleton '?' match term)
+
+0.6.8
+========================
+- added -ltl (--goals-as-ltl-formulas) option and made the -gas option the default
+- textual MSC output by -ar option now gives actual ACM channel names/terms
+- improved checks on variables in clauses and debugging on pre-defined clauses
+- continued fixing obscure scoping bugs when referring to (p)redefined functions
+- improved many error messages and warnings
+
+0.6.7
+========================
+- changed references to local variables in Horn clauses (-> no state facts)
+- added check for universally bound variable occurring in body of Horn clause
+- dropped forcing state fact in invariants (helps OFMC and CL-AtSe --lvl 2)
+- added warnings on local or inherited variables used in invariants
+- prevented NullPointerException due to unhandled parser error
+- added two error location getter methods for better Eclipse integration
+
+0.6.6
+========================
+- removed wrong (and so far unsupported by all backends) semantics of 'link'
+- added missing declarations of various ACM functions like 'confidential_to'
+- partially fixed obscure scoping bugs when referring to (p)redefined functions
+
+0.6.5
+========================
+- added LTL constraints
+- completed(?) ACM translation: link, bilateral_conf_auth, unilateral_conf_auth
+- natural number literals up to 9 are translated as succ(succ(...0...)) terms
+
+0.6.4
+========================
+- corrected check for quantification problem of ?-variables in guards
+- added warning for partial assignment of ?-variables in guards
+- made Output Format handling more robust w.r.t. illegal input e.g. by OFMC
+- IID values output by -ar option now contain crucial instance indexes
+- The -ar option now repeats the violated goals early in its output format
+- slightly improved layout of message sequence chart produced by -ar option
+- improved error handling for -gv option (when 'dot' absent or no lumping)
+
+0.6.3a
+========================
+- fixed bug on ACM prelude initialization introduced in 0.6.3 
+
+0.6.3
+========================
+- fixed bug w.r.t. attack state for A => B => (C & D): DNF was incomplete
+- fixed bug w.r.t. nested implications: '=>' (as well as '&' and '|') 
+  is now right-associative (claimed fix in version 0.6.2 was not present)
+- fixed bug w.r.t. invariants: now local variables are correctly referenced
+- avoiding singleton negated attack state term, 
+  which CL-AtSe and SATMC cannot handle
+- added few more syntax checks and changed some warnings into errors
+- made several error messages more helpful and less misleading
+  by re-phrasing them and/or adding extra information
+
+0.6.2 (work in progress)
+========================
+- Support for named channels for ACM channel model. Not all
+  ACM-related predicates are predefined, but, until they will, if
+  really needed, it should be possible to manually define them.
+- Add the "succ" predicate to the set of predefined symbols at ASLan++
+  level.
+- Added "iknows(0)" to the initial knowledge.
+- Errors are now raised if in the "breakpoints" section undefined
+  symbols are used. The error are not stopping the translation and the
+  ASLan model is still generated.
+- Fixed the associativity of the "=>" logical operator. Before the
+  expression "a => b => c" was interpreted as "(a => b) => c". Now it
+  is interpreted as "a => (b => c)".
+- In send/receives, in the CCM model, if the receiver is a
+  "public_key" then the "pk" function is no longer applied to it.
+- If a matched variable (e.g. ?X) is used in more than one conjunct in
+  the DNF of a guard then an exception is raised and the translation
+  fails.
+
+
+0.6.0 (released in 2010.12.30)
+==============================
+- New syntax with session level channel/secrecy goals is now
+  supported. Old syntax with inline channel/secrecy goals is still
+  supported, but warnings are raised for any inline channel/secrecy
+  goal.
+- Session goals now use sets of agents linked to the enclosing session
+  entity. This is done via the 'child' predicate.
+- When channel goals include secrecy, upon reception of the message
+  the intruder is added to the set of agents who share the secret.
+- Analysis results given by the backends (in the standard OF) can be
+  translated back to ASLan++ with the '-a' option.
+- The root entity is instantiated with a 'root' agent and with an IID
+  of '0'. Moreover the 'child(dummy_nat, 0)' predicate is introduced
+  in the initial state.
+
+
+0.5.11 (released in 2010.12.29)
+===============================
+- Refined the set of metainfo annotations that are used in order to be
+  able to reconstruct the attack trace in ASLan++ concepts.
+- Fixed type at metainfo annotations. Changed the order of the
+  metainfo annotations in the generated ASLan output.
+- Some fixes and enhancements at checking of compound types.
+- Extended the initial knowledge of the OrchestrationGoal, in case the
+  translation is done for orchestration. All public constants, and all
+  public keys of all agents are given as initial knowledge.
+- Added the 'hash' function to the prelude. It is still explicitly
+  listed in the generated ASLan translation, because not all backends
+  recognize it implicitly.
+- Fixed a bug at translation of transmissions (sending) for ACM
+  channel model.
+- Fixed a bug at translation for the ACM channel model. The pseudonym
+  was wrongly used as the real sender.
+- Fixed a bug at type inference for empty sets. All empty sets were
+  assigned the type 'message set', while in assignments a more precise
+  type could be inferred.
+- Added type checking at the ASLan level.
+- Fixed the translation of sends and receives when using pseudonyms.
+- The 'defaultPseudonym' function now has the type 'public_key'.
+- The labels used by CCM and ACM (atag, ctag, stag, etc.) now have the
+  type 'slabel', which is a subtype of 'text'.
+- Better type checking for sends/receives.
+- Tuples are regarded as subtypes of 'message'.
+
+
+0.5.10 (released in 2010.12.10)
+===============================
+- Step numbers have their index padded with 0 to the left, on three
+  positions (000, 001, 002, etc.)
+- Equalities in Horn clauses are now supported. However a warning is
+  issued when they are used, since they are not supported by all
+  backends.
+- Public/invertible Horn clauses are generated also for symbols that
+  have a set type, not only for symbols that have 'message' type (or a
+  subtype of it).
+- 'iknows' facts cannot be retracted.
+- Fixed a couple of bugs at parsing of terms built from a single
+  variable.
+- Terms of set types are now accepted in equalities/inequalities
+  without any warnings being issued.
+- Added support for meta information at the ASLan++ level. Currently 5
+  tags are supported: @clatse, @ofmc, @satmc, @modeler and
+  @verbatim. The first three are meant for sending parameters to the
+  backends. The @modeler is meant for listing persons who contributed
+  to the model. The @verbatim is meant for outputting a verbatim
+  comment into the generated ASLan file.
+
+
+0.5.9 (released in 2010.12.06)
+==============================
+- Fixed a bug at disambiguation of Horn clauses (the disambiguated
+  name started with an uppercase letter.
+- Added verification for implicit/explicit symbols. Now if a symbol
+  is used as implicit symbol (on LHS of a Horn clause) and then it
+  is also used as explicit symbol (on RHS of a transition rule) 
+  then an error is raised.
+- Made the default value of the '-hc' option be 'ALL' (that is by
+  default all Horn clauses are rendered in the generated ASLan 
+  translation).
+- Fixed two bugs at lumping of transitions. One bug was causing
+  variables to be wrongly reported as fresh variables. The other bug
+  was generating duplicated transitions between the same states.
+- Removed the 'sign' function from the generated translation. It seems
+  that all backends are able to handle it considering it to be part of
+  the prelude.
+- Enhanced the Graphviz output to also include the lumped
+  transitions. Makes debugging easier.
+- Enhanced the ASLan translation so that the transition rules that
+  start from the initial state of any entity (except the root entity)
+  have 'not(dishonest(Actor))' on LHS. Of course, 'Actor' is replaced
+  with the Actor variable of the respective entity.
+- Changed the generation of public Horn clauses so that a public Horn
+  clause is generated only if all arguments of the Horn clause are
+  subtypes of 'message'.
+- Changed the generation of invertible Horn clauses so that an
+  invertible Horn clause for a certain argument is generated only if
+  the argument is a subtype of 'message'.
+- Fixed the exception that was thrown when the input file was not
+  beginning with 'specification'.
+- Error is now raised if equations are used in non-root entities.
+- Added verifications to detect duplicate constants, duplicate
+  variables, duplicate macros and duplicate Horn clauses defined in the
+  same entity. Until now only duplicate variables in the same entity
+  were checked. Errors are now raised in all mentioned situations.
+- Added verifications to detect macros, constants and functions that
+  hide symbols with the same names defined in ancestor
+  entities. Warnings are issues in such situations.
+- Made 'public_key' be a subtype of 'agent'.
+- Added verifications for parameters and universally quantified
+  variables in Horn clauses. Errors are raised if a universally
+  quantified variables is used in the body of a Horn clause or if a
+  universally quantified variable is not used in the head of a Horn
+  clause. Warnings are raised if a parameter is not used in a Horn
+  clause (and the unused parameters are removed during translation).
+- Fixed a bug at type inheritance for types that are in the
+  prelude. The 'text' type was not defined as a subtype of 'message'.
+- Fixed NPE when macros were used in channel goals.
+- Fixed a bug at lumping of transitions. The bug could appear when
+  'while (true)' loops were lumped.
+- Improved the translation of goals into attack_states. Now relatively
+  more complex LTL constructs can be simplified and rendered as
+  attack_states.
+- Fixed a bug at translation of goals into attack_states. If there
+  were disjunctions in the goal formula, all disjunctions were put
+  into the same attack_state, while they should have been places each
+  in a separate attack_state.
+- Errors are now thrown if constants 'true' or 'false' are introduced
+  or retracted, or if they appear by themselves in the head of any
+  Horn clause.
+- Error is thrown if the 'dishonest' predicate is retracted.
+- Error is now throw if a term which is not a 'fact' (or a subtype of
+  'fact') is used in a guard or in a LTL formula.
+- Error is now thrown if an equality has on the left and/or right side
+  a term whose type is not 'message' (or a subtype of 'message').
+- Error is now thrown if inside a Horn clause (head or body) terms are
+  used which don't have the type 'fact' (or a subtype of 'fact').
+- Error is now thrown if a type is defined more than once.
+- Type errors are now reported as errors. Before they were reported as
+  warnings.
+- Adapted the translation of symbolic instances to reflect the latest
+  changes in the deliverables. The 'isAgent' predicate is no longer
+  used, only 'iknows' is used. Also the appropriate number of fresh
+  constants are declared for each symbolic instantiation: a constant
+  for each universally quantified variable that appears in the
+  instantiation (the constant has the same type as the universally
+  quantified variable).
+- Fixed a bug at translation of default pseudonyms. Also added the
+  second (IID) parameter to the 'defaultPseudonym' symbol.
+- Introduced the operator '!=', meaning inequality. It is similar with
+  '=' and can be used as a shorthand: 'a != b' instead of '! a=b'.
+- Added support for fresh channels goals.
+
+
+0.5.8 (released in 2010.09.28)
+==============================
+- Fixed a bug at entity imports.
+- Reverted the names of public/invertible Horn clauses to their
+  original form.
+
+
+0.5.7 (released in 2010.09.27)
+==============================
+- Cleanup of source code. Added pretty much testing code.
+- Nested macros are now supported (macros that call other macros).
+- Equations are now outputted into the ASLan specification. Note that,
+  according to D2.1, the equations section is part only of prelude
+  files, so the backends may have troubles parsing them from
+  non-prelude files.
+- Changed 'private' to 'nonpublic'.
+- Removed the '-ntc' option for disabling type checking. I guess
+  nobody was really not using type checking.
+- Removed the '-eq' option that could be used for filtering equations
+  from the generated translation. If you don't want equations in the
+  translation, just don't put them in the ASLan++ model.
+- Centralized the error messages into a single place. Now they are
+  relatively easy to customize. Maybe in a future version they can be
+  externalized so that they can be edited without recompiling.
+- Added a '-pp' option for pretty-printing the ASLan++ specification,
+  without any translation. For formulas the result is not so pretty at
+  the moment, but for entities and statements in general it can help
+  get an clean overview of the code.
+- Added a '-E' option for dumping the ASLan++ specification just after
+  preprocessing, without translation to ASLan. This also prints out the
+  entire symbols table. Can be useful for debugging.
+- Added warnings when variables from parent entities are used in child
+  entities.
+- Added numeric constants to the grammar.
+- Maybe more, but can't remember right now.
+- Created a dedicated application to test the translator together with
+  the backends. Runs multi-threading and generates some HTML report to
+  get an easy overview of the results.
+
+
+0.5.6 (released in 2010.08.30)
+==============================
+- Fixed a bug at detecting the direction of transmission events
+  (sending vs. receiving).
+
+
+0.5.5 (released in 2010.08.25)
+==============================
+- Variable assignments (including fresh()) are now included into
+  transitions lumping.
+- New entity instantiations are now included into transitions
+  lumping. 
+- Symbolic entity instantiations without guards are now included into
+  transitions lumping. When guards are present new transitions are
+  started because of the guards.
+- When Horn clauses are generated for public functions, the public
+  functions are no longer listed with 'iknows(...)' in the initial
+  state.
+- Function symbols that are automatically generated for set literals
+  ('set_...') are now private and non-invertible, so no Horn clauses
+  are generated for them. This also applies for functions generated for
+  secrecy goals.
+- Made some performance improvements so that the translation is done
+  faster.
+- Warnings are now given if a matched variable is not consistently
+  marked with '?' in all places where it appears in a term/expression.
+- For asserts, the first generated transition can now be lumped
+  together with any previous transitions, and only the second
+  generated transition introduces a breakpoint.
+
+
+0.5.4 (released in 2010.08.21)
+==============================
+- Added a temporary option (-hc or --horn-clauses-level) that can be
+  used to completely or partially leave out the Horn clauses from the
+  generated output. For the moment the default behavior is to leave
+  out only the Horn clauses related to public and invertible symbols.
+- Fixed the 'descendant' closure Horn clause to have arguments of type
+  'nat' instead of 'agent'.
+- The type 'text' is now automatically added to the output as a
+  subtype of 'message'.
+- The symbols 'atag', 'ctag' and 'stag' used by CCM are now of type
+  'text'.
+- Goals that have the form 'G(formula)' are now rendered as attack
+  states if 'formula' can be rendered as attack state. This directly
+  affects assert statements, where usual formulas (for example '!x=y')
+  are now rendered as attack states.
+- Fix: goals are no longer filled in with missing 'state_' facts when
+  they are rendered as attack states.
+- Fix: made 'crypt' non-invertible and 'sign' invertible only for the
+  second argument.
+
+
+0.5.3 (released in 2010.07.25)
+==============================
+- Channel goals no longer give warning when sender or receiver is a
+  subtype of 'agent'.
+- When channel goals are used after guards, the guards can now have a
+  more complex structure, with the restriction that there is exactly
+  one 'receive' inside the goal.
+- Parameters of Horn clauses (those explicitly listed as parameters in
+  the ASLan++ model) are no longer inherited from the parent
+  entity(s). Instead they are declared as distinct symbols, visible
+  only in the scope of the Horn clause.
+- Horn clauses for public functions are now generated.
+- Horn clauses for invertible functions are now always
+  generated. Before they were disabled by default and could be enabled
+  with an option of the translator (the '-inv' option which was
+  removed).
+- The 'isAgent' fact for agent constants is now always added to the
+  initial state. Before it was added only if symbolic entity
+  instantiation was used in the model.
+- The Horn clause for the transitive closure of 'descendant' is now
+  generated.
+- Fixed the order or arguments for the 'descendant' fact (it was
+  reversed until now, i.e. the descendant was the first and the
+  ancestor was the second).
+- Fixed a bug at symbolic entity instantiation (symbolic entity
+  instantiations were being rendered as regular new entity
+  instantiations, without considering guards, etc).
+- Added 'dishonest(i)' to the initial state.
+- Made the asserts be translated into two distinct steps, one for
+  introducing the assert predicate and one for removing it. The two
+  steps cannot be lumped together with any other steps.
+- Adapted the authentication goals to use the formula from D2.3, which
+  uses the 'dishonest' fact. For now this is enabled only if the
+  '-gas' option is not used. If the option is used, then the old
+  formula for authentication goals is used, because it does not
+  require LTL operators.
+
+
+0.5.2 (released in 2010.06.25)
+==============================
+- Extended the syntax with the 'specification <name>' construct.
+- Extended the syntax so that the channel model is now specified in
+  the specification.
+- Removed the -cm command line option for specifying the channel
+  model. 
+- Added support for specifying channel goals after receive guards (in
+  select statements).
+- Added an option (-orch <Entity name>) for making the output of the
+  translator suitable as input for the orchestrator.
+
+
+0.5.1 (released in 2010.06.21)
+==============================
+- Fixed a bug at transitions lumping: introductions and retractions of
+  the same fact were not canceling out each other.
+- Fixed a bug at type checking of pseudonyms.
+
+
+0.5.0 (released in 2010.06.20)
+==============================
+- Fixed the bug that variables were not listed for goals rendered with
+  the 'goal' keyword.
+- 'compressed' cannot be used anymore inside the body of entities.
+- Added lumping of states in the generated output. Now there are three
+  levels of optimization, configurable with the -opt option. 
+  * NONE means the output is not optimized at all;
+  * NOPS means that NOP transitions and always true/false guard
+    transitions are removed;
+  * LUMP means that transitions are lumped together where
+    possible. Lumping is done with regards to the defined breakpoints
+    (defaults to {'receive'}).
+  The default option is LUMP. For now lumping is done only for fact
+  introduction/retraction. Variable assignments (including fresh) and
+  new entity instantiations are left un-lumped.
+- Added support for using the bang operator '!' is state_ facts in the
+  generated ASLan output. Since the backends have trouble parsing the
+  bang operator, this feature is disabled by default and can be
+  enabled with the -bang option. If lumping of states is done as
+  optimization (which is the default; read the previous paragraph)
+  then the -bang option cannot be used.
+
+
+0.4.0 (released in 2010.06.18)
+==============================
+- Fixed a bug at matched variables that appeared in both positive and
+  negative facts. Such variables were not linked to the state fact in
+  RHS, although they should have been linked.
+- Added support for cryptographic shorthands: {...}_...,
+  {...}_inv... and {|...|}_...
+- Added support for new LTL operators [], [-], <> and <->. Old
+  operators G, H, F and O are now obsolete.
+- Channel goals are now accepted only directly after a channel
+  transmission and are rendered in the same transition as the
+  transmission (even when optimization is disabled).
+- The Actor parameter can be used in any position without a warning
+  being emitted.
+- 'honest' was replaced with 'dishonest' at symbolic entity
+  instantiation.
+- 'several' was replaced with 'any' at symbolic entity instantiation,
+  and the loop transition was replaced with a simple transition.
+- Added support for public vs. private constants.
+- Added support for public vs. private functions. 
+- Added support for invertible vs. noninvertible functions. For the
+  moment invertibility is expressed through Horn clauses, but this is
+  not supported by all backends.
+- Replaced the 'equalities' keyword with 'equations'.
+- Replaced 'compressed' keyword with 'breakpoints' and moved it in
+  front of 'body'. Still not really handled yet, just syntactically
+  accepted.
+- The "'" character in symbol names is replaced with the "_" character
+  and proper disambiguation is done, because on the ASLan level the
+  "'" is not supported.
+- Goals, channel goals, secrecy goals and asserts can now have names
+  starting with uppercase letter. For the ASLan level the first letter
+  is still transformed to lowercase.
+- Channel goals are no longer accepted in the 'goals' section of an
+  entity.
+- Variables of type 'fact' or its subtypes are no longer accepted.
+
+
+
+0.3.2 (released in 2010.06.01)
+==============================
+- Fixed a bug in rendering goals with the 'goal' keyword (not with the
+  'attack_state' keyword). Even when using the 'goal' keyword, the
+  output format from 'attack_state' was used.
+- Fixed a bug in the translation of channel goals. The old
+  interpretation was wrong. The current interpretation is that: 
+   - if the * appears in front of the arrow (*->), then authentication
+     goal is generated
+   - if the * appears after the arrow (->*), then secrecy goal is
+     generated
+   - if there are two *, both in front and after the arrow (*->*) then
+     both authentication and secrecy goals are generated.
+- Inline secrecy goals now accept a single agent. Before they were
+  expecting at least two agents.
+- For inline channel goals a distinction is now made between the
+  protocol ids related to secrecy and to authentication. They are now
+  prefixed with 'secr_' and 'auth_' respectively.
+- The 'crypt' symbol is now generated in the output.
+- The 'sign' symbol now has its first parameter of type 'private_key'
+  instead of 'message'.
+- The 'inv' symbol now has the signature 
+  'inv : public_key -> private_key' instead of the old
+  'inv : message -> message' (although it is not explicitly listed in
+  the generated translation).
+
+
+0.3.1 (released in 2010.05.27)
+==============================
+- Fixed a bug at negative conditions on branches with variable
+  matching. Matched variables that appeared in negative conditions of
+  branches should not have been linked to any state_ fact in the RHS.
+- If a goal uses universal/existential quantifiers or LTL operators,
+  then it will not be rendered as 'attack_state', even if the '-gas'
+  option is specified. A warning is printed and the goal is rendered
+  as a 'goal'. An exception is made when there is only one universal
+  quantifier that surrounds the entire goal. In this case the
+  universal quantifier is dropped and the goal is rendered as an
+  'attack_state'. I left in this compromise so that it is possible to
+  define goals with variables that are not bound to the state of an
+  entity.
+- Now it's possible to define inline secrecy goals in the body of
+  entities.
+- Now it's possible to define inline channel goals in the body of
+  entities.
+- Removed the "fi;" part from branches.
+- Replaced "publicKey" with "pk".
+- Replaced "crypt(inv(ak)...)" with "sign(inv(ak),...)" at
+  Cryptographic Channel Model.
+- Added a temporary "-satmc" option to the translator, to handle the
+  case when there are variables appearing only in negative
+  facts. SATMC does not like these variables to be listed as
+  parameters of the transition rule.
+
+
+0.3.0 (released in 2010.04.25)
+==============================
+- The comments now contain the disambiguated names of symbols. This
+  should make debugging easier, as suggested by Yohan. The expressions
+  are still rendered in ASLan++ syntax.
+- Fixed a strange bug when an imported file was not found (when
+  ASLANPATH not configured correctly).
+- Fixed a bug in the numbering of states when using 'select'. This was
+  an old bug spotted by David at some point that got fixed and then
+  was reintroduced in the previous version.
+- Introduced an optimization of the generated output. Empty
+  transitions are now removed. Also transitions which could never be
+  taken (like those guarded by 'false') are dropped. Also transitions
+  which are guarded by 'true' are optimized away. The optimization can
+  be disabled by the '-noopt' or '--no-optimization' flag.
+- Removed the '-nsl' option for generating numeric step labels. Now
+  only numeric step labels can be generated. Hopefully nobody was
+  relying on the non-numeric step labels. If yes, then I'll
+  reintroduce them in a future version, even if due to the
+  optimization of transitions there won't be a clear structure of
+  branch() and succ().
+- Removed the option to declare numeric constants. At some point it
+  was needed by SATMC in order to recognize numeric step labels, but I
+  guess this should be fixed in SATMC anyway, so it was removed from
+  the translator.
+- The 'true' fact is introduced automatically as a first step in the
+  generated output.
+- I added an option to generate Graphviz files with the transitions of
+  each entity. If the 'dot' program is available in the PATH, then the
+  translator will generate also .png files with the
+  transitions. Otherwise it will generate only .dot files which can be
+  converted then to images. This feature should help in debugging
+  models. It can be enabled with the '-gv' or '--graphviz' flag.
+- Removed two unused options in the translator: '-afnc' which was
+  supposed to use 'apply' for functions, but never got implemented,
+  and '-noc' to not output comments.
+- The line number from the ASLan++ source is now encoded in the names
+  of the steps, to make debugging and interpreting the attacks easier.
+
+
+0.2.5 (released in 2010.04.19)
+==============================
+
+- Reversed the order of arguments for "descendant", so that the first
+  argument represents the descendant and the second argument
+  represents the ancestor.
+- Removed the "--use-constants-for-fresh" option from the
+  translator. It seems that the back-end tools can handle "exists ..."
+  in transitions, so this option is not really useful.
+- At new entity instantiation made use of the new entity's IID symbol,
+  instead of generating always new IID_x variables. This reduces the
+  number of symbols that are defined in the translation.
+- Minimized the number of dummy_ symbols that are declared in the
+  generated output. Now only the dummy symbols that are actually used
+  are declared.
+- Added more detailed comments into generated output, to ease
+  debugging.
+- When outputting goals as LTL formulas (not as attack states) the
+  state_ facts are no longer outputted. Please use proper signaling
+  ('secret' etc.) instead of relying on state_ facts in LTL formulas.
+- Now the output is generated only if there are no errors in the
+  input. Before, even if there were errors in the input, an empty
+  output file was generated.
+- Transitions are now numbered in order. This should ease the
+  debugging, at least with OFMC.
+- The local directory . is automatically included in the ASLANPATH, so
+  there is need to explicitly specify ASLANPATH if the imported files
+  are in the local directory.
+- Various bug fixes.
+
+
+LocalWords:  backends defaultPseudonym isAgent IID Graphviz atag ctag slabel fi
+LocalWords:  OrchestrationGoal metainfo orch NOPS inv publicKey ak satmc gv png
+LocalWords:  graphviz noc ASLANPATH succ nat clatse ofmc hc secr auth noopt nsl
+LocalWords:  afnc ar lvl consts decls pre ltl un ntc eq conf

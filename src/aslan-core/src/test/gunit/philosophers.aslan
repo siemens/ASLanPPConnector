@@ -1,0 +1,122 @@
+% Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia.
+% Licensed under the Apache License, Version 2.0 (the "License");
+% you may not use this file except in compliance with the License.
+% You may obtain a copy of the License at
+%
+%     http://www.apache.org/licenses/LICENSE-2.0
+%
+% Unless required by applicable law or agreed to in writing, software
+% distributed under the License is distributed on an "AS IS" BASIS,
+% WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+% See the License for the specific language governing permissions and
+% limitations under the License.
+
+% Dining Philosophers Problem
+% http://en.wikipedia.org/wiki/Dining_philosophers_problem
+%
+% Solution to avoid deadlock: resource hierarchy.
+% 
+% Uncomment the two lines with lower_prio from the steps
+% to avoid the attack.
+
+section signature:
+	succ : nat -> nat
+	state_Philosopher : name * fork * fork * nat -> fact
+	lower_prio : fork * fork -> fact
+	can_use_left : name * fork -> fact
+	can_use_right : name * fork -> fact
+	is_free : fork -> fact
+
+section types:
+	sl_0 : nat
+	leucippus, socrates, plato, aristotle, cicero : name
+	fork_one, fork_two, fork_three, fork_four, fork_five, no_fork : fork
+	F1, F2, F3 : fork
+	FL, FLNow, FLPotential, FR, FRNow, FRPotential : fork
+	SL, SL1, SL2, SL3, SL4, SL5 : nat
+	P : name
+
+section inits:
+
+initial_state init :=
+	state_Philosopher(leucippus, no_fork, no_fork, sl_0).
+	state_Philosopher(socrates, no_fork, no_fork, sl_0).
+	state_Philosopher(plato, no_fork, no_fork, sl_0).
+	state_Philosopher(aristotle, no_fork, no_fork, sl_0).
+	state_Philosopher(cicero, no_fork, no_fork, sl_0).
+	lower_prio(fork_one, fork_two).
+	lower_prio(fork_two, fork_three).
+	lower_prio(fork_three, fork_four).
+	lower_prio(fork_four, fork_five).
+	can_use_left(leucippus, fork_one).
+	can_use_right(leucippus, fork_five).
+	can_use_left(socrates, fork_two).
+	can_use_right(socrates, fork_one).
+	can_use_left(plato, fork_three).
+	can_use_right(plato, fork_two).
+	can_use_left(aristotle, fork_four).
+	can_use_right(aristotle, fork_three).
+	can_use_left(cicero, fork_five).
+	can_use_right(cicero, fork_four).
+	is_free(fork_one).
+	is_free(fork_two).
+	is_free(fork_three).
+	is_free(fork_four).
+	is_free(fork_five)
+	
+section hornClauses:
+
+hc lower_prio_transitive(F1, F2, F3) :=
+   	lower_prio(F1, F3) :- lower_prio(F1, F2), lower_prio(F2, F3)
+
+section rules:
+
+step pick_left_fork(P, FL, FRNow, FRPotential, SL) :=
+        state_Philosopher(P, no_fork, FRNow, SL).
+	can_use_left(P, FL).
+	can_use_right(P, FRPotential).
+%	lower_prio(FL, FRPotential).
+	is_free(FL)
+	=>
+	state_Philosopher(P, FL, FRNow, succ(SL)).
+	not(is_free(FL))
+
+step drop_left_fork(P, FL, FR, SL) :=
+        state_Philosopher(P, FL, FR, SL).
+	can_use_left(P, FL) % to avoid dropping no_fork
+	=>
+	state_Philosopher(P, no_fork, FR, succ(SL)).
+	is_free(FL)
+
+step pick_right_fork(P, FLNow, FLPotential, FR, SL) :=
+        state_Philosopher(P, FLNow, no_fork, SL).
+	can_use_left(P, FLPotential).
+	can_use_right(P, FR).
+%	lower_prio(FLPotential, FR).
+	is_free(FR)
+	=>
+	state_Philosopher(P, FLNow, FR, succ(SL)).
+	not(is_free(FR))
+
+step drop_right_fork(P, FL, FR, SL) :=
+        state_Philosopher(P, FL, FR, SL).
+	can_use_right(P, FR) % to avoid dropping no_fork
+	=>
+	state_Philosopher(P, FL, no_fork, SL).
+	is_free(FR)
+
+section goals:
+
+attack_state starve_with_left_fork(SL1, SL2, SL3, SL4, SL5) :=
+	state_Philosopher(leucippus, fork_one, no_fork, SL1).
+	state_Philosopher(socrates, fork_two, no_fork, SL2).
+	state_Philosopher(plato, fork_three, no_fork, SL3).
+	state_Philosopher(aristotle, fork_four, no_fork, SL4).
+	state_Philosopher(cicero, fork_five, no_fork, SL5)
+
+attack_state starve_with_right_fork(SL1, SL2, SL3, SL4, SL5) :=
+	state_Philosopher(leucippus, no_fork, fork_five, SL1).
+	state_Philosopher(socrates, no_fork, fork_one, SL2).
+	state_Philosopher(plato, no_fork, fork_two, SL3).
+	state_Philosopher(aristotle, no_fork, fork_three, SL4).
+	state_Philosopher(cicero, no_fork, fork_four, SL5)

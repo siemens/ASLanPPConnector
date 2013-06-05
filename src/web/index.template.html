@@ -1,0 +1,223 @@
+<!-- Copyright 2010-2013 (c) IeAT, Siemens AG, AVANTSSAR and SPaCIoS consortia. -->
+<!-- Licensed under the Apache License, Version 2.0. -->
+
+<html>
+  <head>
+    <title>AVANTSSAR ASLan++ and ASLan Language Tools</title>
+    <style type="text/css">
+      <!--
+	 body {
+	 margin: 0;
+	 padding: 0;
+	 background-color: #F0F0F0;
+	 font-family: Helvetica, Arial, sans-serif;
+	 text-align: center;
+	 }
+
+	 h1 {
+	 font-size: 1.8em;
+	 }
+	 
+	 h2 {
+	 font-size: 1.4em;
+	 }
+	 
+	 .wrapper {
+	 margin: 0 auto; 
+	 width: 800px; 
+	 text-align: left; 
+	 background-color: #FFFFFF; 
+	 padding: 1px 20px;	 
+	 }
+
+	 .left {
+	 padding: 2px 30px 2px 2px;
+	 text-align: left;
+	 }
+
+	 .right {
+	 padding: 2px 10px 2px 10px;
+	 text-align: left;
+	 }
+	-->
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>Welcome</h1>
+
+      <p>This page is the home of some language tools for
+      the <a href="http://www.avantssar.eu/"
+      target="_blank">AVANTSSAR</a> project. The tools that you can
+      find here are the <a href="#connector">ASLan++ connector</a> and
+      the <a href="#converter">converter between ASLan and XML</a>. If
+      you are already familiar with them, you may wish to jump to
+      the <a href="#downloads">downloads and links</a> section.</p>
+
+      <h1><a name="downloads"/>Downloads and Links</h1>
+
+      <table cellspacing="0" border="1">
+	<tr>
+	  <td class="left">ASLan++ Connector $connector-version$ Web
+	  Service</td>
+	  <td class="right"><a href="aslanpp-connector">visit
+	  homepage</a>
+	  or <a href="aslanpp-connector-wsclient.jar">download
+	  client</a> ($connector-client-size$)</td>
+	</tr>
+	<tr>
+	  <td class="left">ASLan++ Connector $connector-version$
+	  Offline Version</td>
+	  <td class="right"><a href="aslanpp-connector.jar">download</a>
+	  ($connector-size$)</td>
+	</tr>
+	<tr>
+	  <td class="left">ASLan to XML Converter $converter-version$
+	  Web Service</td>
+	  <td class="right"><a href="aslan-xml">visit homepage</a>
+	  or <a href="aslan-xml-wsclient.jar">download client</a>
+	  ($converter-client-size$)</td>
+	</tr>
+	<tr>
+	  <td class="left">ASLan to XML Converter $converter-version$
+	  Offline Version</td>
+	  <td class="right"><a href="aslan-xml.jar">download</a>
+	  ($converter-size$)</td>
+	</tr>
+	<tr>
+	  <td class="left">ASLan Java Library</td>
+	  <td class="right"><a href="aslan-core.jar">download
+	    library</a> ($aslan-library-size$)
+	    or <a href="aslan-core-javadoc.jar">download Javadoc</a>
+	    ($aslan-library-javadoc-size$)</td>
+	</tr>
+	<tr>
+	  <td class="left">XML Schema for ASLan specifications</td>
+	  <td class="right"><a href="aslan-xml.xsd">download</a>
+	  ($aslan-schema-size$)</td>
+	</tr>
+      </table>
+
+      <h1><a name="connector"/>ASLan++ Connector</h1>
+
+      The latest version of the ASLan++ Connector is $connector-version$.
+
+      <p>You can use the connector online, through a web
+	service. Visit <a href="aslanpp-connector">this page</a> for
+	more information on how to use the web service. We also
+	provide a <a href="aslanpp-connector-wsclient.jar">command
+	line client</a> for the web service. The download size is
+	$connector-client-size$ and you need the Java runtime in order
+	to run it.</p>
+
+      <p>You can also use the connector offline, by
+	downloading <a href="aslanpp-connector.jar">this jar
+	file</a>. You will need the Java runtime in order to use
+	it. Just type
+	<pre>java -jar aslanpp-connector.jar -h</pre> to get some help
+	on available options.</p>
+
+      <h1><a name="converter"/>Converter between ASLan and XML</h1>
+
+      The latest version of the converter is $converter-version$.
+
+      <p>As its name already says, it converts ASLan specifications
+	into XML (and the other way around). The XML schema for ASLan
+	specifications is available <a href="aslan-xml.xsd">here</a>
+	(download size $aslan-schema-size$).</p>
+
+      <p>The converter is accessible in several ways: online, by using
+      a web service (we provide a simple command line client for
+      this), offline, by downloading a self contained command line
+      application, or programatically, by using our Java library.</p>
+
+      <h2>Web Service</h2>
+
+      <p>You can use the converter online, through a web
+	service. Visit <a href="aslan-xml">this page</a> for more
+	information on how to use the web service, or download
+	a <a href="aslan-xml-wsclient.jar">command line client</a> for
+	the web service. The download size is $converter-client-size$
+	and you will need the Java runtime for running the
+	client. Just type:</p>
+
+$aslan-xml-ws-sh-help$
+
+        <p>to get some help on how to use the client.</p> Also look at
+        the next section that shows some examples for the offline
+        version of the converter. The same style of usage applies to
+        the web service client too, just
+        replace <code>aslan-xml.jar</code>
+        with <code>aslan-xml-wsclient.jar</code>.
+
+      <h2>Offline Version</h2>
+
+      <p>You can use the converter offline, by
+      downloading <a href="aslan-xml.jar">this jar file</a>. The
+      download size is $converter-size$ and you will need the Java
+      runtime in order to use it. Just type:</p>
+
+$aslan-xml-sh-help$
+
+      <p>to get some help on available options.</p>
+
+      <p>In order to convert an ASLan specification stored in a file <code>simple.aslan</code> to XML and write it to a file called <code>simple.xml</code>, you have to type:</p>
+
+$aslan-xml-sh-usage-1$
+
+      <p>In order to convert the XML representation from <code>simple.xml</code> back to plain text and store it into a file called <code>simple2.aslan</code>, you have to type:</p>
+
+$aslan-xml-sh-usage-2$
+
+      <p>The coverter can read input also from <code>stdin</code> and can write output also to <code>stdout</code>. This means that it can be piped. For example in order to check the correctness of the ASLan specification from the file <code>simple.aslan</code> and to have it pretty-printed to the file <code>simple2.aslan</code>, you can type:</p>
+
+$aslan-xml-sh-piped$
+
+      <h2>Programmatic usage</h2>
+      
+      <p>In order to use our Java library, you have to
+      download <a href="aslan-core.jar">this JAR file</a> (download
+      size $aslan-library-size$). We provide
+      also <a href="aslan-core-javadoc.jar">this JAR file</a>
+      (download size $aslan-library-javadoc-size$) which contains
+      Javadoc documentation for the library, but be warned that there
+      is not much documentation, so the only practical use is that you
+      can see the available classes and methods.</p>
+
+      <p>To get a feel of what can be done with the library, we present some simple examples.</p>
+
+      <p>First of all the library lets you programatically build ASLan
+      specifications, and then serialize them to plain text or to
+      XML. For example the following code builds a very simple
+      specification and writes it to a plain text file.</p>
+
+$aslan-xml-example-1$
+
+      <p>If you run the code, a file called <code>simple.aslan</code>
+      will be produced with the following content:</p>
+
+$aslan-xml-simple-aslan$
+
+      <p>You can also load back specifications, either from plain
+      text, either from XML. For example the following code loads the
+      plain text representation from the
+      file <code>simple.aslan</code> and writes it as an XML
+      representation into the file <code>simple.xml</code>.</p>
+
+$aslan-xml-example-2$
+
+      <p>The content of the <code>simple.xml</code> file is:</p>
+
+$aslan-xml-simple-xml$
+
+      <p>The following code does the reversed operation: reads the XML
+      representation from <code>simple.xml</code> and writes it as
+      plain text representation into the
+      file <code>simple2.aslan</code>. If everything goes on as it
+      should, then the file <code>simple2.aslan</code> should be
+      identical with <code>simple.aslan</code>.</p>
+
+$aslan-xml-example-3$
+    </div>
+  </body>
+</html>
