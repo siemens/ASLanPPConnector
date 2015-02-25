@@ -37,10 +37,10 @@ public class TupleTerm extends AbstractTerm {
 		this(location, scope, Arrays.asList(terms));
 	}
 
-	protected TupleTerm(LocationInfo location, IScope scope, List<ITerm> terms) {
+	public TupleTerm(LocationInfo location, IScope scope, List<ITerm> terms) {
 		super(location, scope, false);
-		this.terms = terms;
-		for (ITerm t : terms) {
+		this.terms = ConcatTerm.flattenTupleOrConcatTerms(true, terms);
+		for (ITerm t : this.terms) {
 			super.addChildrenTerm(t);
 		}
 	}
@@ -72,14 +72,12 @@ public class TupleTerm extends AbstractTerm {
 
 	@Override
 	public boolean isTypeCertain() {
-		boolean certain = true;
-		for (ITerm t : terms) {
-			if (!t.isTypeCertain()) {
-				certain = false;
-				break;
-			}
-		}
-		return certain;
+		return isTypeCertainAll(terms);
+	}
+
+	@Override
+	public boolean wasTypeSet() {
+		return wasTypeSetAll(terms);
 	}
 
 }

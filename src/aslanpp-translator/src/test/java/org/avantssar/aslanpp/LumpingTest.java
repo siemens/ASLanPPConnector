@@ -590,14 +590,16 @@ public class LumpingTest extends TestCase {
 		AssignmentEdge a4 = new AssignmentEdge(ent, a3.getTargetNode(), varD.term(), set, false, null, builder);
 		IntroduceRetractEdge ir4 = new IntroduceRetractEdge(ent, a4.getTargetNode(), fncMyFact.term(varD.term()), true, null, builder);
 
-		String setTerm = MockTransition.renderFunction(set.getSymbol().getName(), new String[] { ent.getIDSymbol().getName() });
+		String setTerm = set.getSymbolName(); /* MockTransition.renderFunction(set.getSymbol().getName(), new String[] { ent.getIDSymbol().getName() }); */
 		mockt.addLhsStateItem(ent.getName(), new String[] { ent.getActorSymbol().getName(), ent.getIDSymbol().getName(), "1", varA.getName(), varB.getName(), varC.getName(), varD.getName() });
 		mockt.addRhsStateItem(ent.getName(), new String[] { ent.getActorSymbol().getName(), ent.getIDSymbol().getName(), "6", constA.getName(), constB.getName(), constC.getName(), setTerm });
 		mockt.addRhsItem(Prelude.CONTAINS, new String[] { constA.getName(), setTerm });
 		mockt.addRhsItem(Prelude.CONTAINS, new String[] { constB.getName(), setTerm });
 		mockt.addRhsItem(Prelude.CONTAINS, new String[] { constC.getName(), setTerm });
 		mockt.addRhsItem(fncMyFact.getName(), new String[] { setTerm });
-		mockt.addParameters(new String[] { ent.getActorSymbol().getName(), ent.getIDSymbol().getName(), varA.getName(), varB.getName(), varC.getName(), varD.getName() });
+		mockt.addParameters(new String[] { ent.getActorSymbol().getName(), ent.getIDSymbol().getName(), varA.getName(), varB.getName(), varC.getName(), varD.getName(), setTerm });
+		mockt.addFreshVar( setTerm );
+		
 	}
 
 	// % Env has variable A

@@ -51,7 +51,6 @@ import org.avantssar.aslanpp.model.Goal;
 import org.avantssar.aslanpp.model.HornClause;
 import org.avantssar.aslanpp.model.IChannelGoalHolder;
 import org.avantssar.aslanpp.model.IExpression;
-import org.avantssar.aslanpp.model.IScope;
 import org.avantssar.aslanpp.model.IStatement;
 import org.avantssar.aslanpp.model.ISymbol;
 import org.avantssar.aslanpp.model.ITerm;
@@ -196,10 +195,9 @@ public class Validator implements IASLanPPVisitor {
 							t.setMatched(dummy);
 						}
 						else {
-							// make sure all appearances use the same dummy
-							// symbol
+							// make sure all appearances use the same dummy symbol
 							VariableSymbol oldDummy = t.getDummySymbol();
-							if (!oldDummy.equals(dummy)) {
+							if (/*oldDummy != null && */!oldDummy.equals(dummy)) {
 								t.setMatched(dummy);
 								// remove unused dummy symbol
 								oldDummy.transferTo(null);
@@ -323,12 +321,14 @@ public class Validator implements IASLanPPVisitor {
 	@Override
 	public void visit(CompoundType type) {
 		FunctionSymbol fnc = ent.findFunction(type.getName());
-		if (fnc == null) {
-			ent.getErrorGatherer().addException(type.getLocation(), ErrorMessages.UNKNOWN_FUNCTION_USED_IN_COMPOUND_TYPE, type);
-		}
-		if (fnc.getArgumentsTypes().size() != type.getArgumentTypes().size()) {
-			ent.getErrorGatherer().addException(type.getLocation(), ErrorMessages.FUNCTION_IN_COMPOUND_TYPE_WRONG_NUMBER_OF_ARGUMENTS, fnc.getOriginalName(), fnc.getArgumentsTypes().size(),
-					type.getArgumentTypes().size());
+		if (type.getName() != CompoundType.CONCAT) {
+			if (fnc == null) {
+				ent.getErrorGatherer().addException(type.getLocation(), ErrorMessages.UNKNOWN_FUNCTION_USED_IN_COMPOUND_TYPE, type);
+			}
+			if (fnc.getArgumentsTypes().size() != type.getArgumentTypes().size()) {
+				ent.getErrorGatherer().addException(type.getLocation(), ErrorMessages.FUNCTION_IN_COMPOUND_TYPE_WRONG_NUMBER_OF_ARGUMENTS, 
+						fnc.getOriginalName(), fnc.getArgumentsTypes().size(), type.getArgumentTypes().size());
+			}
 		}
 		// TODO: check arguments types
 		for (IType t : type.getArgumentTypes()) {
@@ -355,8 +355,7 @@ public class Validator implements IASLanPPVisitor {
 	public void visit(VariableSymbol var) {
 		var.getType().accept(this);
 		if (ent.findType(Prelude.FACT).isAssignableFrom(var.getType())) {
-			ent.getErrorGatherer().addException(var.getLocation(), ErrorMessages.VARIABLE_OF_TYPE_FACT_NOT_ACCEPTED, var.getName(), var.getType(),
-					ent.findType(Prelude.FACT));
+			ent.getErrorGatherer().addError(var.getLocation(), ErrorMessages.ELEMENT_OF_TYPE_FACT_NOT_ACCEPTED, var.getName(), var.getType());
 		}
 	}
 
@@ -479,6 +478,7 @@ public class Validator implements IASLanPPVisitor {
 	@Override
 	public void visit(AssignmentStatement stmt) {
 		validateSimpleTerm(stmt.getTerm());
+		checkActorAssignment(stmt.getSymbolTerm());
 		checkVariableOwner(stmt.getSymbol(), stmt.getLocation());
 	}
 
@@ -536,6 +536,7 @@ public class Validator implements IASLanPPVisitor {
 
 	@Override
 	public void visit(FreshStatement stmt) {
+		checkActorAssignment(stmt.getSymbolTerm());
 		checkVariableOwner(stmt.getSymbol(), stmt.getLocation());
 	}
 
@@ -578,10 +579,13 @@ public class Validator implements IASLanPPVisitor {
 		if (ctx.sends + ctx.receives != 1 && stmt.getChannelGoals().size() > 0) {
 			err.addError(stmt.getLocation(), ErrorMessages.CHANNEL_GOALS_ONE_TRANSMISSION, t);
 		}
-		if (t instanceof CommunicationTerm && !((CommunicationTerm)t).isReceive() && ((CommunicationTerm)t).getReceiver() instanceof UnnamedMatchTerm) {
-			err.addError(stmt.getLocation(), ErrorMessages.DUMMY_RECEIVER_ONLY_FOR_SENDING);
+		if (t instanceof CommunicationTerm) {
+			CommunicationTerm ct = (CommunicationTerm)t;
+			if (!ct.isReceive() &&  ct.getReceiver() instanceof UnnamedMatchTerm && !ct.getSender().holdsActor()) {
+				err.addError(stmt.getLocation(), ErrorMessages.DUMMY_RECEIVER_ONLY_FOR_SENDING);
+			}
 		} 
-		else if (ctx.hasMatches() && ctx.receives == 0) {
+		if (ctx.hasMatches() && ctx.receives == 0) {
 			err.addError(stmt.getLocation(), ErrorMessages.MATCHES_CAN_ONLY_BE_USED_IN_GUARDS_AND_RECEIVES, t);
 		}
 		ctx.checkOwners();
@@ -742,27 +746,13 @@ public class Validator implements IASLanPPVisitor {
 		visitEqualityOrInequality(expr);
 	}
 
-	private boolean typeOK(IScope scope, IType t) {
-		// allow sets also here
-		return scope.findType(Prelude.MESSAGE).isAssignableFrom(t) || (t instanceof SetType);
-	}
-
 	private void visitEqualityOrInequality(EqualityExpression expr) {
-		if (!typeOK(ent, expr.getLeftTerm().inferType())) {
-			ent.getErrorGatherer().addError(expr.getLeftTerm().getLocation(), ErrorMessages.MESSAGE_TYPE_EXPECTED_IN_EQUALITY_OR_INEQUALITY, expr.getLeftTerm(), expr.getLeftTerm().inferType());
-		}
-		if (!typeOK(ent, expr.getRightTerm().inferType())) {
-			ent.getErrorGatherer().addError(expr.getRightTerm().getLocation(), ErrorMessages.MESSAGE_TYPE_EXPECTED_IN_EQUALITY_OR_INEQUALITY, expr.getRightTerm(), expr.getRightTerm().inferType());
-		}
 		expr.getLeftTerm().accept(this);
 		expr.getRightTerm().accept(this);
 	}
 
 	@Override
 	public void visit(BaseExpression expr) {
-		if (!ent.findType(Prelude.FACT).isAssignableFrom(expr.getBaseTerm().inferType())) {
-			ent.getErrorGatherer().addException(expr.getBaseTerm().getLocation(), ErrorMessages.FACT_TYPE_EXPECTED_IN_GUARD_OR_FORMULA, expr.getBaseTerm(), expr.getBaseTerm().inferType());
-		}
 		expr.getBaseTerm().accept(this);
 	}
 
@@ -839,6 +829,9 @@ public class Validator implements IASLanPPVisitor {
 
 	@Override
 	public ITerm visit(VariableTerm term) {
+		if (term.isMatched()) {
+			checkActorAssignment(term);
+		}
 		ValidationContext ctx = stack.peek();
 		ctx.addVarUsage(term.getSymbol(), term);
 		return term;
@@ -852,7 +845,13 @@ public class Validator implements IASLanPPVisitor {
 	public NumericTerm visit(NumericTerm term) {
 		return term;
 	}
-
+	
+	private void checkActorAssignment(VariableTerm var) {
+		if (var.getSymbol().getName().equals(Entity.ACTOR_PREFIX)) {
+			err.addError(var.getLocation(), ErrorMessages.ACTOR_ASSIGNED, var.getSymbol().getOriginalName());
+		}
+	}
+	
 	private void checkVariableOwner(VariableSymbol var, LocationInfo location) {
 		Entity varEnt = var.getOwner().findFirstEntity();
 		if (!varEnt.equals(ent)) {

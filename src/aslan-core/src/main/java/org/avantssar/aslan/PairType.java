@@ -52,4 +52,11 @@ public class PairType extends AbstractRepresentable implements IType {
 		return false;
 	}
 
+	public String toString() {
+		String right = getRight().toString();
+		if (getRight() instanceof PairType) {
+			right = right.substring(1, right.length()-1);
+		}
+		return "("+getLeft().toString()+", "+right+")";
+	}
 }

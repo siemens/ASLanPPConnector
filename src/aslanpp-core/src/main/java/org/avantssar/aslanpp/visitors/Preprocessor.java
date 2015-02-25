@@ -97,7 +97,7 @@ public class Preprocessor implements IASLanPPVisitor {
 	}
 
 	private boolean inGuard   = false; // TODO maybe cleaner if this was a parameter of accept()
-	private boolean inPayload = false; // TODO maybe cleaner if this was a parameter of accept()
+	private boolean inReceivePayload = false; // TODO maybe cleaner if this was a parameter of accept()
 	
 	@Override
 	public void visit(ASLanPPSpecification spec) {
@@ -233,9 +233,7 @@ public class Preprocessor implements IASLanPPVisitor {
 
 	@Override
 	public void visit(AssertStatement stmt) {
-		inGuard = true;
 		stmt.getGuard().accept(this);
-		inGuard = false;
 	}
 
 	@Override
@@ -407,9 +405,11 @@ public class Preprocessor implements IASLanPPVisitor {
 	public CommunicationTerm visit(CommunicationTerm term) {
 		ITerm newSender = term.getSender().accept(this);
 		ITerm newReceiver = term.getReceiver().accept(this);
-		inPayload = true;
+		if (term.isReceive()) {
+			inReceivePayload = true;
+		}
 		ITerm newPayload = term.getPayload().accept(this);
-		inPayload = false;
+		inReceivePayload = false;
 		ITerm newChannel = (term.getChannel() != null ? term.getChannel().accept(this) : null);
 		CommunicationTerm t = new CommunicationTerm(term.getLocation(), term.getScope(), newSender, newReceiver, newPayload, newChannel, term.getChannelType(), term.getReceiveHint(), term.isRenderAsFunction(), term
 				.isRenderOOPStyle());
@@ -499,8 +499,8 @@ public class Preprocessor implements IASLanPPVisitor {
 		if (inGuard) {
 			err.addError(term.getLocation(), ErrorMessages.SET_LITERAL_IN_GUARD, t);
 		}
-		if (inPayload) {
-			err.addError(term.getLocation(), ErrorMessages.SET_LITERAL_IN_PAYLOAD, t);
+		if (inReceivePayload) {
+			err.addError(term.getLocation(), ErrorMessages.SET_LITERAL_IN_RECEIVE, t);
 		}
 		return t;
 	}

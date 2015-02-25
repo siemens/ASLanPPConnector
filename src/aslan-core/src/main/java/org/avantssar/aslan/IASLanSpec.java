@@ -28,7 +28,7 @@ public interface IASLanSpec extends IRepresentable {
 	static PrimitiveType PUBLIC_KEY = new PrimitiveType(null, null, "public_key", AGENT, true);
 	static PrimitiveType PRIVATE_KEY = new PrimitiveType(null, null, "private_key", MESSAGE, true);
 	static PrimitiveType SYMMETRIC_KEY = new PrimitiveType(null, null, "symmetric_key", MESSAGE, true);
-	static PrimitiveType FUNCTION = new PrimitiveType(null, null, "function", MESSAGE, true);
+//  static PrimitiveType FUNCTION = new PrimitiveType(null, null, "function", MESSAGE, true);
 	static PrimitiveType CHANNEL = new PrimitiveType(null, null, "channel", true);
 
 	static Function IKNOWS = new Function(null, null, "iknows", FACT, true, MESSAGE);
@@ -37,7 +37,7 @@ public interface IASLanSpec extends IRepresentable {
 	static Function CRYPT = new Function(null, null, "crypt", MESSAGE, true, PUBLIC_KEY, MESSAGE);
 	static Function SIGN = new Function(null, null, "sign", MESSAGE, true, PRIVATE_KEY, MESSAGE);
 	static Function SCRYPT = new Function(null, null, "scrypt", MESSAGE, true, SYMMETRIC_KEY, MESSAGE);
-	static Function HASH = new Function(null, null, "hash", MESSAGE, false, MESSAGE);
+//	static Function HASH = new Function(null, null, "hash", MESSAGE, false, MESSAGE);
 	static Function PAIR = new Function(null, null, "pair", MESSAGE, true, MESSAGE, MESSAGE);
 	static Function SECRET = new Function(null, null, "secret", FACT, true, MESSAGE, PROTOCOL_ID, new SetType(null, null, AGENT));
 	static Function REQUEST = new Function(null, null, "request", FACT, true, AGENT, AGENT, PROTOCOL_ID, MESSAGE, NAT);
@@ -49,10 +49,12 @@ public interface IASLanSpec extends IRepresentable {
 	static Function IMPLIES = new Function(null, null, "implies", FACT, true, FACT, FACT);
 	static Function EQUAL = new Function(null, null, "equal", FACT, true, MESSAGE, MESSAGE);
 	static Function LEQ = new Function(null, null, "leq", FACT, true, MESSAGE, MESSAGE);
-	static Function APPLY = new Function(null, null, "apply", MESSAGE, true, FUNCTION, MESSAGE);
-/*	
+//	static Function APPLY = new Function(null, null, "apply", MESSAGE, true, FUNCTION, MESSAGE);	
+
 	// for ACM:
-	static Function CONFIDENTIAL_TO = new Function(null, null, "confidential_to", FACT, true, CHANNEL, AGENT);
+	static Function SENT = new Function(null, null, "sent", FACT, false, AGENT, AGENT, AGENT, MESSAGE, CHANNEL);
+	static Function RCVD = new Function(null, null, "rcvd", FACT, false,        AGENT, AGENT, MESSAGE, CHANNEL);
+/*	static Function CONFIDENTIAL_TO = new Function(null, null, "confidential_to", FACT, true, CHANNEL, AGENT);
 	static Function WEAKLY_CONFIDENTIAL = new Function(null, null, "weakly_confidential", FACT, true, CHANNEL);
 	static Function AUTHENTIC_ON = new Function(null, null, "authentic_on", FACT, true, CHANNEL, AGENT);
 	static Function WEAKLY_AUTHENTIC = new Function(null, null, "weakly_authentic", FACT, true, CHANNEL);

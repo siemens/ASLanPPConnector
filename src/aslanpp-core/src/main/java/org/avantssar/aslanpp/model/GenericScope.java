@@ -265,6 +265,20 @@ public class GenericScope extends AbstractOwned implements IScope {
 		return getEntryInHierarchyMultipleTypes(name, FunctionSymbol.class, MacroSymbol.class);
 	}
 
+	protected <T extends IOwned> void checkDuplicate(String name, Class<T> type, String typeString, LocationInfo location) {	
+		if (getEntry(name, type) != null) {
+			getErrorGatherer().addError(location, ErrorMessages.DUPLICATE_SYMBOL_IN_SCOPE, typeString, name, getName());
+			//return null;
+		}
+		if (location != null && // only check for user-defined symbols
+			this.getOwner() != null && type != VariableSymbol.class) {
+			T existing = this.getOwner().getEntry(name, type);
+			if (existing != null) {
+				getErrorGatherer().addWarning(location, ErrorMessages.REDEFINING_SYMBOL_OF_SCOPE, typeString, name, existing.getOwner().getName());
+			}
+		}
+	}
+
 	public VariableSymbol addVariable(String name, IType type) {
 		return addVariable(name, type, null);
 	}
@@ -282,11 +296,7 @@ public class GenericScope extends AbstractOwned implements IScope {
 	}
 
 	private VariableSymbol addVariableEx(String name, IType type, LocationInfo location) {
-		VariableSymbol existing = getEntry(name, VariableSymbol.class);
-		if (existing != null) {
-			getErrorGatherer().addError(location, ErrorMessages.DUPLICATE_SYMBOL_IN_SCOPE, "variable", name, getName());
-			//return null;
-		}
+		checkDuplicate(name, VariableSymbol.class, "variable", location);
 		VariableSymbol sym;
 		if (type != null) {
 			sym = new VariableSymbol(this, location, name, type);
@@ -307,11 +317,7 @@ public class GenericScope extends AbstractOwned implements IScope {
 	}
 
 	private ConstantSymbol addConstant(LocationInfo location, IType type, String name) {
-		ConstantSymbol existing = getEntry(name, ConstantSymbol.class);
-		if (existing != null) {
-			getErrorGatherer().addError(location, ErrorMessages.DUPLICATE_SYMBOL_IN_SCOPE, "constant", name, getName());
-			//return null;
-		}
+		checkDuplicate(name, ConstantSymbol.class, "constant", location);
 		ConstantSymbol sym = new ConstantSymbol(this, location, name, type);
 		group(location, sym);
 		return sym;
@@ -330,11 +336,7 @@ public class GenericScope extends AbstractOwned implements IScope {
 	}
 
 	public FunctionSymbol addFunction(String name, IType retType, List<IType> argTypes, LocationInfo location) {
-		FunctionSymbol existing = getEntry(name, FunctionSymbol.class);
-		if (existing != null) {
-			getErrorGatherer().addError(location, ErrorMessages.DUPLICATE_SYMBOL_IN_SCOPE, "function", name, getName());
-			//return null;
-		}
+		checkDuplicate(name, FunctionSymbol.class, "function", location);
 		IType[] at = new IType[argTypes.size()];
 		FunctionSymbol sym = new FunctionSymbol(this, location, name, retType, argTypes.toArray(at));
 		group(location, sym);
@@ -350,11 +352,7 @@ public class GenericScope extends AbstractOwned implements IScope {
 	}
 
 	public MacroSymbol addMacro(LocationInfo location, String name) {
-		MacroSymbol existing = getEntry(name, MacroSymbol.class);
-		if (existing != null) {
-			getErrorGatherer().addError(location, ErrorMessages.DUPLICATE_SYMBOL_IN_SCOPE, "macro", name, getName());
-			//return null;
-		}
+		checkDuplicate(name, MacroSymbol.class, "macro", location);
 		return new MacroSymbol(location, this, name);
 	}
 
@@ -363,11 +361,7 @@ public class GenericScope extends AbstractOwned implements IScope {
 	}
 
 	public HornClause hornClause(LocationInfo location, String name) {
-		HornClause existing = getEntry(name, HornClause.class);
-		if (existing != null) {
-			getErrorGatherer().addError(location, ErrorMessages.DUPLICATE_SYMBOL_IN_SCOPE, "clause", name, getName());
-			return null;
-		}
+		checkDuplicate(name, HornClause.class, "clause", location);
 		return new HornClause(this, location, name);
 	}
 

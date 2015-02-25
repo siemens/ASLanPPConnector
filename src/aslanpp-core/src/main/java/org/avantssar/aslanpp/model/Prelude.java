@@ -140,7 +140,6 @@ public class Prelude {
 	private static final PredefinedTypeData TYPE_CHANNEL = new PredefinedTypeData(CHANNEL, false);
 	private static final PredefinedTypeData TYPE_PUBLIC_KEY = new PredefinedTypeData(PUBLIC_KEY, true, AGENT);
 	private static final PredefinedTypeData TYPE_SLABEL = new PredefinedTypeData(SLABEL, true, TEXT);
-	private static final PredefinedTypeData TYPE_SET = new PredefinedTypeData(SET, true, MESSAGE);
 	private static final Map<IType, SetType> sets = new HashMap<IType, SetType>();
 
 	public static final String TRUE = "true";
@@ -242,8 +241,8 @@ public class Prelude {
 
 	private static final PredefinedFunctionData FNC_SECRET = new PredefinedFunctionData(SECRET, TYPE_FACT, new PredefinedTypeData[] { TYPE_MESSAGE, TYPE_PROTOCOL_ID, TYPE_AGENT_SET }, true, true,
 			false, null);
-	private static final PredefinedFunctionData FNC_HEAR = new PredefinedFunctionData(HEAR, TYPE_FACT, new PredefinedTypeData[] { TYPE_AGENT, TYPE_MESSAGE }, true, true, false, null);
-	private static final PredefinedFunctionData FNC_WHISPER = new PredefinedFunctionData(WHISPER, TYPE_FACT, new PredefinedTypeData[] { TYPE_AGENT, TYPE_MESSAGE }, true, true, false, null);
+//	private static final PredefinedFunctionData FNC_HEAR = new PredefinedFunctionData(HEAR, TYPE_FACT, new PredefinedTypeData[] { TYPE_AGENT, TYPE_MESSAGE }, true, true, false, null);
+//	private static final PredefinedFunctionData FNC_WHISPER = new PredefinedFunctionData(WHISPER, TYPE_FACT, new PredefinedTypeData[] { TYPE_AGENT, TYPE_MESSAGE }, true, true, false, null);
 	private static final PredefinedFunctionData FNC_REQUEST = new PredefinedFunctionData(REQUEST, TYPE_FACT, new PredefinedTypeData[] { TYPE_AGENT, TYPE_AGENT, TYPE_PROTOCOL_ID, TYPE_MESSAGE,
 			TYPE_NAT }, true, true, false, null);
 	private static final PredefinedFunctionData FNC_WITNESS = new PredefinedFunctionData(WITNESS, TYPE_FACT, new PredefinedTypeData[] { TYPE_AGENT, TYPE_AGENT, TYPE_PROTOCOL_ID, TYPE_MESSAGE }, true,
@@ -252,7 +251,7 @@ public class Prelude {
 	private static final PredefinedFunctionData FNC_CHILD = new PredefinedFunctionData(CHILD, TYPE_FACT, new PredefinedTypeData[] { TYPE_NAT, TYPE_NAT }, false, true, false, null);
 	public static final PredefinedFunctionData FNC_DISHONEST = new PredefinedFunctionData(DISHONEST, TYPE_FACT, new PredefinedTypeData[] { TYPE_AGENT }, false, true, false, null);
 	public static final PredefinedFunctionData FNC_DEFAULT_PSEUDONYM = new PredefinedFunctionData(DEFAULT_PSEUDONYM, TYPE_PUBLIC_KEY, new PredefinedTypeData[] { TYPE_AGENT, TYPE_NAT }, false, true,
-			true, null);
+			true, ChannelModel.CCM);
 	// private static final PredefinedFunctionData FNC_IS_AGENT = new
 	// PredefinedFunctionData(IS_AGENT, TYPE_FACT, new PredefinedTypeData[] {
 	// TYPE_AGENT }, false, false, false, null);
@@ -274,7 +273,7 @@ public class Prelude {
 			false, true, true, ChannelModel.ACM);
 	private static final PredefinedFunctionData FNC_RCVD = new PredefinedFunctionData(RCVD, TYPE_FACT, new PredefinedTypeData[] { TYPE_AGENT, TYPE_AGENT, TYPE_MESSAGE, TYPE_CHANNEL }, false, true,
 			true, ChannelModel.ACM);
-	private static final PredefinedFunctionData FNC_HASH = new PredefinedFunctionData(HASH, TYPE_MESSAGE, new PredefinedTypeData[] { TYPE_MESSAGE }, false, false, true, null);
+//	private static final PredefinedFunctionData FNC_HASH = new PredefinedFunctionData(HASH, TYPE_MESSAGE, new PredefinedTypeData[] { TYPE_MESSAGE }, false, false, true, null);
 	private static final PredefinedFunctionData FNC_SUCC = new PredefinedFunctionData(SUCC, TYPE_NAT, new PredefinedTypeData[] { TYPE_NAT }, false, false, false, null);
 	private static final PredefinedFunctionData FNC_LEQ = new PredefinedFunctionData(LEQ, TYPE_FACT, new PredefinedTypeData[] { TYPE_MESSAGE, TYPE_MESSAGE }, true, false, true, null);
 
@@ -302,8 +301,13 @@ public class Prelude {
 						getType(pdt, scope);
 					}
 				}
-				catch (Exception e) {
-					Debug.logger.error("Failed to register default function type '" + f.getName() + "'.", e);
+				catch (NullPointerException e) {
+					Debug.logger.error("Failed to register default field '" + f.getName() + "'.", e);
+					throw e;
+				}
+				catch (IllegalAccessException e) {
+					Debug.logger.error("Failed to register default field '" + f.getName() + "'.", e);
+					throw new NullPointerException(); // TODO this is a hack; maybe throw other exception
 				}
 			}
 		}

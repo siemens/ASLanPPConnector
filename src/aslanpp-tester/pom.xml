@@ -7,7 +7,7 @@
   <parent>
     <groupId>avantssar</groupId>
     <artifactId>aslanpp-everything</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.9</version>
   </parent>
   <groupId>avantssar</groupId>
   <artifactId>aslanpp-tester</artifactId>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>avantssar</groupId>
       <artifactId>aslanpp-translator</artifactId>
-      <version>1.4.3</version>
+      <version>1.4.9</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>

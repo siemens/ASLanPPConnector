@@ -34,8 +34,7 @@ public class OutputFormatErrorMessages extends HashMap<String, String> implement
 	public static final String INVALID_CHANNEL_TYPE = "invalid_channel_type";
 	public static final String MULTIPLE_METAINFO = "multiple_meta_info";
 	public static final String RULES_AND_CLAUSES_DO_NOT_MATCH = "rules_and_clauses_do_not_match";
-	public static final String SET_SHOULD_NOT_BE_EMPTY = "set_should_not_be_empty";
-	public static final String SET_DOES_NOT_CONTAIN_ITEM = "set_does_not_contain_item";
+	public static final String SET_DOES_NOT_CONTAIN_ELEMENT = "set_does_not_contain_element";
 	public static final String LEXER_ERROR = "lexer_error";
 	public static final String PARSER_ERROR = "parser_error";
 	public static final String DUPLICATE_COMMENTS_SECTION = "duplicate_comments_section";
@@ -54,8 +53,7 @@ public class OutputFormatErrorMessages extends HashMap<String, String> implement
 		put(INVALID_CHANNEL_TYPE, "Invalid channel type: {0}.");
 		put(MULTIPLE_METAINFO, "Metainfo {0} appears more than once. Only the first occurence is considered.");
 		put(RULES_AND_CLAUSES_DO_NOT_MATCH, "Number of rule sets is {0} and does not match the number of clauses sets {1}.");
-		put(SET_SHOULD_NOT_BE_EMPTY, "Set \"{0}\" should not be empty.");
-		put(SET_DOES_NOT_CONTAIN_ITEM, "Set \"{0}\" does not contain item \"{1}\".");
+		put(SET_DOES_NOT_CONTAIN_ELEMENT, "On deletion of element \"{1}\" from set \"{0}\", cannot confirm that the element was in the set.");
 		put(LEXER_ERROR, "OF Lexer: {0}");
 		put(PARSER_ERROR, "OF Parser: {0}");
 		put(DUPLICATE_COMMENTS_SECTION, "The COMMENTS section appears twice.");

@@ -79,16 +79,7 @@ public class SymbolicInstanceStatement extends AbstractScopedStatement {
 	}
 
 	public void buildDummyValues() {
-		for (VariableSymbol sym : ent.getStateSymbols()) {
-			if (!ent.getParameters().contains(sym)) {
-				if (!sym.equals(ent.getStepSymbol()) && !sym.equals(ent.getIDSymbol())) {
-					String freshDummyName = ent.getFreshNamesGenerator().getFreshNameNumbered(sym.getType().getDummyName(), ConstantSymbol.class);
-					ConstantSymbol freshDummy = ent.constants(sym.getType(), freshDummyName);
-					freshDummy.setNonPublic(true);
-					dummyValues.put(sym, freshDummy);
-				}
-			}
-		}
+		ent.buildDummyValues(dummyValues);
 	}
 
 	public Map<VariableSymbol, ConstantSymbol> getDummyValues() {

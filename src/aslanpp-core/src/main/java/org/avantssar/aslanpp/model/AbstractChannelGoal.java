@@ -23,7 +23,7 @@ public abstract class AbstractChannelGoal extends AbstractOwned implements ISecr
 	private ITerm sender;
 	private ITerm receiver;
 	private final ChannelEntry type;
-	private FunctionSymbol setFunction;
+	private FunctionSymbol setSymbol;
 
 	public AbstractChannelGoal(LocationInfo location, IScope scope, String name, ITerm sender, ITerm receiver, ChannelEntry type) {
 		super(scope, name);
@@ -109,12 +109,12 @@ public abstract class AbstractChannelGoal extends AbstractOwned implements ISecr
 		return "secr_" + baseName;
 	}
 
-	public FunctionSymbol getSetFunction() {
-		return setFunction;
+	public FunctionSymbol getSetSymbol() {
+		return setSymbol;
 	}
 
-	public void setSetFunction(FunctionSymbol setFunction) {
-		this.setFunction = setFunction;
+	public void setSetSymbol(FunctionSymbol setSymbol) {
+		this.setSymbol = setSymbol;
 	}
 
 }

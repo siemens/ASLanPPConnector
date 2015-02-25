@@ -22,7 +22,7 @@ public class GenericSecrecyGoal extends AbstractNamed {
 
 	private final LocationInfo location;
 	private final List<ITerm> agents = new ArrayList<ITerm>();
-	private FunctionSymbol setFunction;
+	private FunctionSymbol setSymbol;
 
 	public GenericSecrecyGoal(LocationInfo location, String name, List<ITerm> agents) {
 		super(name);
@@ -59,12 +59,12 @@ public class GenericSecrecyGoal extends AbstractNamed {
 		return Util.lowerFirst(getName());
 	}
 
-	public FunctionSymbol getSetFunction() {
-		return setFunction;
+	public FunctionSymbol getSetSymbol() {
+		return setSymbol;
 	}
 
-	public void setSetFunction(FunctionSymbol setFunction) {
-		this.setFunction = setFunction;
+	public void setSetSymbol(FunctionSymbol setSymbol) {
+		this.setSymbol = setSymbol;
 	}
 
 }

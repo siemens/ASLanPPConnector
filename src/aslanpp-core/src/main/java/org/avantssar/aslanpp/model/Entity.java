@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.tree.CommonTree;
@@ -284,7 +286,7 @@ public class Entity extends GenericScope implements IEntityOwner {
 
 	public VariableSymbol addParameter(String varName, IType type, LocationInfo location) {
 		VariableSymbol sym = null;
-		if (ACTOR_PREFIX.equals(varName)) {
+		if (varName.equals(Entity.ACTOR_PREFIX)) {
 			actorSymbol.changeType(type);
 			sym = actorSymbol;
 			group(location, sym);
@@ -460,10 +462,15 @@ public class Entity extends GenericScope implements IEntityOwner {
 	}
 
 	private void checkExistingGoal(LocationInfo location, String name) {
-		IOwned existing = getEntryMultipleTypes(name, Goal.class,
-				InvariantGoal.class, SessionChannelGoal.class, SessionSecrecyGoal.class);
+		IOwned existing = getEntryMultipleTypes(name, Goal.class, InvariantGoal.class, SessionChannelGoal.class, SessionSecrecyGoal.class);
 		if (existing != null) {
 			getErrorGatherer().addError(location, ErrorMessages.DUPLICATE_SYMBOL_IN_SCOPE, "goal", name, getName());
+		}
+		if (this.getOwner() != null) {
+			existing = this.getOwner().getEntryMultipleTypes(name, Goal.class, InvariantGoal.class, SessionChannelGoal.class, SessionSecrecyGoal.class);
+			if (existing != null) {
+				getErrorGatherer().addWarning(location, ErrorMessages.REDEFINING_SYMBOL_OF_SCOPE, "goal", name, existing.getOwner().getName());
+			}
 		}
 	}
 
@@ -477,10 +484,7 @@ public class Entity extends GenericScope implements IEntityOwner {
 	}
 
 	public Constraint constraint(LocationInfo location, String name) {
-		Constraint existing = getEntry(name, Constraint.class);
-		if (existing != null) {
-			getErrorGatherer().addError(location, ErrorMessages.DUPLICATE_SYMBOL_IN_SCOPE, "constraint", name, getName());
-		}
+		checkDuplicate(name, Constraint.class, "constraint", location);
 		return new Constraint(location, this, name);
 	}
 
@@ -642,6 +646,25 @@ public class Entity extends GenericScope implements IEntityOwner {
 		return mapped[0];
 	}
 
+	public void buildDummyValues(Map<VariableSymbol, ConstantSymbol> dummyValues) {
+		GenericScope root = findRoot();
+		for (VariableSymbol sym : getStateSymbols()) {
+			if (!getParameters().contains(sym)) {
+				if (!sym.equals(getStepSymbol()) && !sym.equals(getIDSymbol())) {
+					boolean unique = sym.equals(getActorSymbol());
+					String freshDummyName = !unique ? sym.getType().getDummyName() :
+					  getFreshNamesGenerator().getFreshNameNumbered(sym.getType().getDummyName(), ConstantSymbol.class);
+					ConstantSymbol freshDummy = root.getEntry(freshDummyName, ConstantSymbol.class);
+					if (unique || freshDummy == null) {
+						freshDummy = (unique ? this : root).constants(sym.getType(), freshDummyName);
+						freshDummy.setNonPublic(true);
+					}
+					dummyValues.put(sym, freshDummy);
+				}
+			}
+		}
+	}
+
 	public NewEntityInstanceStatement newInstance(Entity ent, ITerm... args) {
 		return newInstance(null, ent, args);
 	}
@@ -736,15 +759,31 @@ public class Entity extends GenericScope implements IEntityOwner {
 		return symbol;
 	}
 
+	public VariableSymbol getSetSymbol(String name, IType setType, LocationInfo location) {
+		if (name == null) {
+			name = getFreshNamesGenerator().getFreshNameNumbered("Set", ISymbol.class);
+		}
+		if (setType == null) {
+			setType = Prelude.getSetOf(findType(Prelude.MESSAGE));
+		}
+		// TODO: ugly to have these globalized set names; is this unavoidable because of their type declarations?
+		GenericScope root = findRoot();
+		VariableSymbol symbol = root.findVariable(name);
+		if (symbol == null) {
+			symbol = root.addVariable(name, setType, location);
+		}
+		return symbol;
+	}
+
 	public FunctionTerm secrecyTerm(IScope session, ITerm sessionIDterm, Entity child, 
-			List<ITerm> knowers, ITerm payload, FunctionSymbol setFunction, String protName, LocationInfo location) {
+			List<ITerm> knowers, ITerm payload, FunctionSymbol setSymbol, String protName, LocationInfo location) {
 		IScope root = findRoot();
 		ConstantSymbol cProt = findConstant(protName);
 		if (cProt == null) {
 			cProt = constants(root.findType(Prelude.PROTOCOL_ID), protName);
 		}
-		SetLiteralTerm knowersSet = new SetLiteralTerm(location, session, knowers, setFunction.getOriginalName());
-		knowersSet.setTermAndSymbol(setFunction, setFunction.term(sessionIDterm));
+		SetLiteralTerm knowersSet = new SetLiteralTerm(location, session, knowers, setSymbol.getOriginalName());
+		knowersSet.setSymbolNameAndTerm(setSymbol.getName(), setSymbol.term(sessionIDterm));
 		return root.findFunction(Prelude.SECRET).term(location, child, payload, cProt.term(location, child), knowersSet);
 	}
 

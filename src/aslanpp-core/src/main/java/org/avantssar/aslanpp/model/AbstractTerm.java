@@ -133,6 +133,32 @@ public abstract class AbstractTerm implements ITerm {
 		return true;
 	}
 
+	public boolean isTypeCertainAll(List <ITerm> terms) {
+		boolean result = true;
+		for (ITerm t : terms) {
+			if (!t.isTypeCertain()) {
+				result = false;
+				break;
+			}
+		}
+		return result;
+	}
+
+	public boolean wasTypeSet() {
+		return true;
+	}
+
+	public boolean wasTypeSetAll(List <ITerm> terms) {
+		boolean result = true;
+		for (ITerm t : terms) {
+			if (!t.wasTypeSet()) {
+				result = false;
+				break;
+			}
+		}
+		return result;
+	}
+
 	@Override
 	public String getRepresentation() {
 		PrettyPrinter pp = new PrettyPrinter(true);

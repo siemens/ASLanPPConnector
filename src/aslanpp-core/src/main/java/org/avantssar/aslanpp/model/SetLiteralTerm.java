@@ -22,8 +22,8 @@ import org.avantssar.commons.LocationInfo;
 public class SetLiteralTerm extends AbstractTerm {
 
 	private final List<ITerm> terms;
-	private FunctionSymbol symbol;
-	private FunctionTerm setTerm;
+	private String symbolName;
+	private ITerm setTerm;
 	private IType elementsType;
 
 	private final String nameHint;
@@ -53,8 +53,8 @@ public class SetLiteralTerm extends AbstractTerm {
 		return terms;
 	}
 
-	public FunctionSymbol getSymbol() {
-		return symbol;
+	public String getSymbolName() {
+		return symbolName;
 	}
 
 	public IType getElementsType() {
@@ -65,8 +65,8 @@ public class SetLiteralTerm extends AbstractTerm {
 		this.elementsType = type;
 	}
 
-	public void setTermAndSymbol(FunctionSymbol sym, FunctionTerm term) {
-		this.symbol = sym;
+	public void setSymbolNameAndTerm(String sym, ITerm term) {
+		this.symbolName = sym;
 		this.setTerm = term;
 	}
 
@@ -74,7 +74,7 @@ public class SetLiteralTerm extends AbstractTerm {
 		return setTerm;
 	}
 
-	public FunctionTerm toTerm() {
+	public ITerm toTerm() {
 		return setTerm;
 	}
 
@@ -90,14 +90,16 @@ public class SetLiteralTerm extends AbstractTerm {
 	@Override
 	public void buildContext(ExpressionContext ctx, boolean isInNegatedCondition) {
 		super.buildContext(ctx, isInNegatedCondition);
-		if (!ctx.wereAuxiliaryTermsAdded(getSymbol().getName())) {
+		if (!ctx.wereAuxiliaryTermsAdded(symbolName)) {
 			FunctionSymbol fncContains = getScope().findFunction(Prelude.CONTAINS);
 			for (ITerm t : terms) {
 				ITerm containsTerm = new FunctionTerm(getLocation(), getScope(), fncContains, false, new ITerm[] { setTerm, t });
 				ctx.addAuxiliaryTerm(containsTerm);
 			}
-			ctx.markAuxiliaryTermsAdded(getSymbol().getName());
+			ctx.markAuxiliaryTermsAdded(symbolName);
 		}
+		ctx.addSetLiteralName(symbolName); // TODO better not add for secrecy goal statements
+		ctx.addSetLiteral(this);
 	}
 
 	public ITerm reduce(SymbolsState symState) {
@@ -105,8 +107,8 @@ public class SetLiteralTerm extends AbstractTerm {
 		for (ITerm t : terms) {
 			reducedTerms.add(t.reduce(symState));
 		}
-		SetLiteralTerm newTerm = new SetLiteralTerm(getLocation(), getScope(), reducedTerms, symbol.getName());
-		newTerm.setTermAndSymbol(getSymbol(), setTerm);
+		SetLiteralTerm newTerm = new SetLiteralTerm(getLocation(), getScope(), reducedTerms, symbolName);
+		newTerm.setSymbolNameAndTerm(symbolName, setTerm);
 		return newTerm;
 	}
 
@@ -117,13 +119,12 @@ public class SetLiteralTerm extends AbstractTerm {
 
 	@Override
 	public boolean isTypeCertain() {
-		boolean certain = true;
-		for (ITerm t : terms) {
-			if (!t.isTypeCertain()) {
-				certain = false;
-				break;
-			}
-		}
-		return certain;
+		return isTypeCertainAll(terms);
 	}
+
+	@Override
+	public boolean wasTypeSet() {
+		return wasTypeSetAll(terms);
+	}
+
 }

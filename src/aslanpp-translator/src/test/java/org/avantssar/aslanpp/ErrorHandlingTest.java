@@ -100,7 +100,7 @@ public class ErrorHandlingTest extends TestCase {
 			assertEquals(ErrorMessages.DUPLICATE_SYMBOL_IN_SCOPE, env.getErrorGatherer().remove(0).getCode());
 		}
 		catch (Throwable e) {
-			fail("Wrong type of exception");
+			fail("Expected DUPLICATE_SYMBOL_IN_SCOPE error");
 		}
 
 	}

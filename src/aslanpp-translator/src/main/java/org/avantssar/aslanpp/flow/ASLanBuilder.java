@@ -541,6 +541,12 @@ public class ASLanBuilder implements IASLanPPVisitor {
 
 	@Override
 	public void visit(CompoundType type) {
+		if (type.getName() == CompoundType.CONCAT) { // message concatenation has simple type message
+		//	TupleType t = new TupleType(type.getArgumentTypes());
+			SimpleType t = spec.findType(Prelude.MESSAGE);
+			visit(t);
+			return;
+		}
 		ASLanTypeWrapper tw = currentType();
 		List<org.avantssar.aslan.IType> argTypes = new ArrayList<org.avantssar.aslan.IType>();
 		for (IType t : type.getArgumentTypes()) {
@@ -789,7 +795,7 @@ public class ASLanBuilder implements IASLanPPVisitor {
 						int count = 0;
 						if (goal instanceof InvariantGoal) {
 							List<org.avantssar.aslan.ITerm> terms = getStateContext(conj);
-							if (terms.isEmpty()) {
+							if (terms.isEmpty() && goal.getOwner() != goal.getOwner().findRootEntity()) { // do not warn for goals defined in root entity (Environment)
 								String partInfo = (conjs.size() > 1 ? "The \""+conj+"\" (sub-)term of attack state for " : "");
 								err.addWarning(conj.getLocation(), ErrorMessages.INVARIANT_ALWAYS_ACTIVE, partInfo, goal.getOriginalName(), ent.getOriginalName());
 							}
@@ -885,7 +891,8 @@ public class ASLanBuilder implements IASLanPPVisitor {
 		IntroduceRetractEdge retractEdge = new IntroduceRetractEdge(ent, introduceEdge.getTargetNode(), f, false, stmt.getLocation(), this);
 		retractEdge.makeStandalone();
 		nodesStack.push(retractEdge.getTargetNode());
-
+		
+		// TODO DvO: why does this code replace the SL node? 
 		argTerms.set(argTerms.size() - 1, new NodeTerm(ent, introduceEdge.getTargetNode()));
 		f.setArguments(argTerms);
 	}
@@ -1166,7 +1173,7 @@ public class ASLanBuilder implements IASLanPPVisitor {
 	@Override
 	public void visit(SecrecyGoalStatement stmt) {
 		handleSecrecy(stmt.getSecrecyGoalName(), stmt.getOwner().findFirstEntity(), stmt.getAgents(), 
-				stmt.getPayload(), stmt.getSetFunction(), stmt.getSecrecyProtocolName(), null, stmt.getLocation());
+				stmt.getPayload(), stmt.getSetSymbol(), stmt.getSecrecyProtocolName(), null, stmt.getLocation());
 	}
 
 	@Override
@@ -1205,14 +1212,14 @@ public class ASLanBuilder implements IASLanPPVisitor {
 			knowers.add(goal.getSender());
 			knowers.add(goal.getReceiver());
 			FunctionTerm secrecyTerm = handleSecrecy(goal.getOriginalName(), goal.getOwner().findFirstEntity(), knowers, 
-					goal.getPayload(), goal.getSetFunction(), goal.getSecrecyProtocolName(), edge, goal.getLocation());
+					goal.getPayload(), goal.getSetSymbol(), goal.getSecrecyProtocolName(), edge, goal.getLocation());
 			Entity session = ent.getOwner().findFirstEntity();
 			if (session == null) {
 				ent.getErrorGatherer().addError(goal.getLocation(), ErrorMessages.SECRECY_GOAL_IN_UNNESTED_ENTITY);
 			}
 			else {
 				if (goal.getReceiver().holdsActor()) {
-					ITerm retractSecr = ent.findRoot().findFunction(Prelude.ADD).term(goal.getSetFunction().term(session.getIDSymbol().term()), session.findConstant(Prelude.INTRUDER).term());
+					ITerm retractSecr = ent.findRoot().findFunction(Prelude.ADD).term(goal.getSetSymbol().term(session.getIDSymbol().term()), session.findConstant(Prelude.INTRUDER).term());
 					secrecyTerm.addSessionGoalTerm(retractSecr);
 					// if (edge instanceof IntroduceRetractEdge) {
 					// ((IntroduceRetractEdge) edge).addFact(retractSecr, true);
@@ -1667,7 +1674,7 @@ public class ASLanBuilder implements IASLanPPVisitor {
 		}
 		else {
 			org.avantssar.aslan.Variable var = aslanSpec.findVariable(term.getSymbol().getName());
-			tw.value = var.term();
+			tw.value = var.term(term.getLocation());
 		}
 		return term;
 	}

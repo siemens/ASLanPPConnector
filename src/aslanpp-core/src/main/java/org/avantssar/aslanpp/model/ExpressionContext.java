@@ -39,6 +39,8 @@ public class ExpressionContext {
 	private final Statistics commStats = new Statistics();
 	private final List<ITerm> auxiliaryTerms = new ArrayList<ITerm>();
 	private final Set<String> auxiliaryTermsAdded = new TreeSet<String>();
+	private final List<String> setLiteralNames = new ArrayList<String>();
+	private final List<ITerm>  setLiterals = new ArrayList<ITerm>(); // used for assertions
 	private final Map<ISymbol, ISymbol> matches = new TreeMap<ISymbol, ISymbol>();
 	private final List<ITerm> sessionGoalsTerms = new ArrayList<ITerm>();
 
@@ -148,6 +150,22 @@ public class ExpressionContext {
 
 	public boolean wereAuxiliaryTermsAdded(String tag) {
 		return auxiliaryTermsAdded.contains(tag);
+	}
+
+	public void addSetLiteralName(String n) {
+		setLiteralNames.add(n);
+	}
+
+	public String[] getSetLiteralNames() {
+		return setLiteralNames.toArray(new String[setLiteralNames.size()]);
+	}
+
+	public void addSetLiteral(ITerm t) {
+		setLiterals.add(t);
+	}
+
+	public ITerm[] getSetLiterals() {
+		return setLiterals.toArray(new ITerm[setLiterals.size()]);
 	}
 
 	public void addMatch(ISymbol sym, ISymbol dummy) {

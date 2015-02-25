@@ -52,4 +52,9 @@ public class UnnamedMatchTerm extends AbstractTerm {
 		return false;
 	}
 
+	@Override
+	public boolean wasTypeSet() {
+		return false;
+	}
+
 }

@@ -27,7 +27,7 @@ public class TupleType implements IType {
 	}
 
 	public TupleType(List<IType> types) {
-		this.types = types;
+		this.types = CompoundType.flattenTupleOrConcatTypes(true, types);
 	}
 
 	public List<IType> getBaseTypes() {
@@ -46,13 +46,15 @@ public class TupleType implements IType {
 
 	@Override
 	public boolean isAssignableFrom(IType subType) {
-		if (subType instanceof TupleType) {
-			TupleType tt = (TupleType) subType;
-			if (tt.getBaseTypes().size() != this.getBaseTypes().size()) {
+		if (subType instanceof TupleType /* || 
+			(subType instanceof CompoundType && ((CompoundType) subType).getName() == CompoundType.CONCAT)*/) {
+			List<IType> types = subType instanceof TupleType ? ((TupleType) subType).getBaseTypes() : 
+				                                               ((CompoundType) subType).getArgumentTypes();
+			if (types.size() != this.getBaseTypes().size()) {
 				return false;
 			}
 			for (int i = 0; i < this.getBaseTypes().size(); i++) {
-				if (!this.getBaseTypes().get(i).isAssignableFrom(tt.getBaseTypes().get(i))) {
+				if (!this.getBaseTypes().get(i).isAssignableFrom(types.get(i))) {
 					return false;
 				}
 			}

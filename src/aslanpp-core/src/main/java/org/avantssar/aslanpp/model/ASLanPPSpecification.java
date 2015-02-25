@@ -125,7 +125,7 @@ public class ASLanPPSpecification extends GenericScope implements IEntityOwner, 
     }
 
     public ASLanPPSpecification(EntityManager manager, String name, ChannelModel cm) {
-        super(null, "");
+        super(null, "prelude");
         specName = name;
         this.cm = cm;
         this.comments = new CommentsHolder(err);

@@ -60,4 +60,14 @@ public class CompoundType extends AbstractNamed implements IType {
 		return false;
 	}
 
+	public String toString() {
+		String s = "";
+		for (IType t : getBaseTypes()) {
+			if (s != "") {
+				s += ", ";
+			}
+			s += t.toString();
+		}
+		return getName()+"("+s+")";
+	}
 }

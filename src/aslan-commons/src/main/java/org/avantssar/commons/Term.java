@@ -15,6 +15,6 @@ package org.avantssar.commons;
 
 public class Term {
 
-	public static final String STATE_PREFIX = "state";
+	public static final String STATE_PREFIX = "state";  // "state_"
 
 }

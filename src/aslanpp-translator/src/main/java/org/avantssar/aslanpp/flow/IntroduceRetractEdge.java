@@ -32,42 +32,22 @@ public class IntroduceRetractEdge extends GenericEdge {
 
 	public IntroduceRetractEdge(Entity ownerEntity, INode sourceNode, ITerm fact, boolean introduce, LocationInfo location, ASLanBuilder builder) {
 		super(ownerEntity, sourceNode, location, builder);
-		if (introduce) {
-			introducedFacts.add(fact);
-		}
-		else {
-			retractedFacts.add(fact);
-		}
+		(introduce ? introducedFacts : retractedFacts).add(fact);
 	}
 
 	public IntroduceRetractEdge(Entity ownerEntity, INode sourceNode, List<ITerm> facts, boolean introduce, LocationInfo location, ASLanBuilder builder) {
 		super(ownerEntity, sourceNode, location, builder);
-		if (introduce) {
-			introducedFacts.addAll(facts);
-		}
-		else {
-			retractedFacts.addAll(facts);
-		}
+		(introduce ? introducedFacts : retractedFacts).addAll(facts);
 	}
 
 	public IntroduceRetractEdge(Entity ownerEntity, INode sourceNode, INode targetNode, ITerm fact, boolean introduce, LocationInfo location, ASLanBuilder builder) {
 		super(ownerEntity, sourceNode, targetNode, location, builder);
-		if (introduce) {
-			introducedFacts.add(fact);
-		}
-		else {
-			retractedFacts.add(fact);
-		}
+		(introduce ? introducedFacts : retractedFacts).add(fact);
 	}
 
 	public IntroduceRetractEdge(Entity ownerEntity, INode sourceNode, INode targetNode, List<ITerm> facts, boolean introduce, LocationInfo location, ASLanBuilder builder) {
 		super(ownerEntity, sourceNode, targetNode, location, builder);
-		if (introduce) {
-			introducedFacts.addAll(facts);
-		}
-		else {
-			retractedFacts.addAll(facts);
-		}
+		(introduce ? introducedFacts : retractedFacts).addAll(facts);
 	}
 
 	protected IntroduceRetractEdge(IntroduceRetractEdge old, INode sourceNode) {
@@ -126,21 +106,11 @@ public class IntroduceRetractEdge extends GenericEdge {
 	}
 
 	public void addFact(ITerm fact, boolean introduce) {
-		if (introduce) {
-			introducedFacts.add(fact);
-		}
-		else {
-			retractedFacts.add(fact);
-		}
+		(introduce ? introducedFacts : retractedFacts).add(fact);
 	}
 
 	public void addFacts(List<ITerm> facts, boolean introduce) {
-		if (introduce) {
-			introducedFacts.addAll(facts);
-		}
-		else {
-			retractedFacts.addAll(facts);
-		}
+		(introduce ? introducedFacts : retractedFacts).addAll(facts);
 	}
 
 	protected boolean skipMetaInfo() {

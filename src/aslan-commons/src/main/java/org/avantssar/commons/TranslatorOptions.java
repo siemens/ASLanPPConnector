@@ -13,8 +13,6 @@
 
 package org.avantssar.commons;
 
-import java.io.File;
-
 import javax.xml.bind.annotation.XmlType;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -24,7 +22,8 @@ import org.kohsuke.args4j.Option;
 public class TranslatorOptions {
 
 	public static final String GOALS_AS_ATTACK_STATES = "-gas";
-	public static final String GOALS_AS_LTL_FORMULAS = "-ltl";
+	public static final String SETS_AS_MESSAGES = "-sam";
+ 	public static final String GOALS_AS_LTL_FORMULAS = "-ltl";
 	public static final String ORCHESTRATION_CLIENT = "-orch";
 	public static final String HORN_CLAUSES_LEVEL = "-hc";
 	public static final String OPTIMIZATION_LEVEL = "-opt";
@@ -64,6 +63,9 @@ public class TranslatorOptions {
 		 */
 		NONE
 	}
+
+	@Option(name = SETS_AS_MESSAGES, aliases = "--sets-as-messages", usage = "Generate support for using sets as message. The default is off, assuming support at the backend side.")
+	public static boolean setsAsMessages = false;
 
 	@Option(name = GOALS_AS_ATTACK_STATES, aliases = "--goals-as-attack-states", usage = "Request rendering ASLan++ goals as ASLan attack states whenever possible. This is the default. When an ASLan++ goal cannot be rendered as an ASLan attack state (for instance, if it uses non-trivial LTL operators) then it will be rendered as an ASLan LTL goal and a warning will be issued.")
 	private boolean goalsAsAttackStates = true;

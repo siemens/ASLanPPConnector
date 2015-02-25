@@ -84,12 +84,14 @@ import org.avantssar.commons.ChannelModel;
 import org.avantssar.commons.ErrorGatherer;
 import org.avantssar.commons.LocationInfo;
 import org.avantssar.commons.Term;
+import org.avantssar.commons.TranslatorOptions;
 
 public class PostProcessor implements IASLanPPVisitor {
 
 	private IScope ent;
 	private ChannelModel cm;
-	private ASLanPPSpecification spec;
+	@SuppressWarnings("unused")
+	private ASLanPPSpecification spec; // TODO not really used
 	private final ErrorGatherer err;
 	private boolean skipPublicAndInvertibleHornClauses;
 
@@ -168,17 +170,19 @@ public class PostProcessor implements IASLanPPVisitor {
 			hcDescDirect.setHead(root.findFunction(Prelude.DESCENDANT).term(hcDescA1.term(), hcDescA2.term()));
 			hcDescDirect.addBody(root.findFunction(Prelude.CHILD).term(hcDescA1.term(), hcDescA2.term()));
 */
-			HornClause hcContains = rootEnt.hornClause("iknows_contains");
-			hcContains.setPartOfPrelude(true);
-			String containsPrefix = "Contains_arg";
-			IType message = root.findType(Prelude.MESSAGE); 
-            VariableSymbol hcContainsE = hcContains.addVariable(spec.getFreshNamesGenerator().getFreshNameNumbered(containsPrefix, VariableSymbol.class), message);
-            VariableSymbol hcContainsS = hcContains.addVariable(spec.getFreshNamesGenerator().getFreshNameNumbered(containsPrefix, VariableSymbol.class), new SetType(message));
-			hcContains.addArgument(hcContainsE);
-			hcContains.addArgument(hcContainsS);
-			hcContains.setHead(root.findFunction(Prelude.IKNOWS).term(hcContainsE.term()));
-			hcContains.addBody(root.findFunction(Prelude.CONTAINS).term(hcContainsS.term(), hcContainsE.term()));
-			hcContains.addBody(root.findFunction(Prelude.IKNOWS).term(hcContainsS.term()));
+			if (TranslatorOptions.setsAsMessages) {
+				HornClause hcContains = rootEnt.hornClause("iknows_contains");
+				hcContains.setPartOfPrelude(true);
+				String containsPrefix = "Contains_arg";
+				IType message = root.findType(Prelude.MESSAGE); 
+				VariableSymbol hcContainsE = hcContains.addVariable(spec.getFreshNamesGenerator().getFreshNameNumbered(containsPrefix, VariableSymbol.class), message);
+				VariableSymbol hcContainsS = hcContains.addVariable(spec.getFreshNamesGenerator().getFreshNameNumbered(containsPrefix, VariableSymbol.class), new SetType(message));
+				hcContains.addArgument(hcContainsE);
+				hcContains.addArgument(hcContainsS);
+				hcContains.setHead(root.findFunction(Prelude.IKNOWS).term(hcContainsE.term()));
+				hcContains.addBody(root.findFunction(Prelude.CONTAINS).term(hcContainsS.term(), hcContainsE.term()));
+				hcContains.addBody(root.findFunction(Prelude.IKNOWS).term(hcContainsS.term()));
+			}
 			rootEnt.accept(this);
 		}
 	}
@@ -429,20 +433,34 @@ public class PostProcessor implements IASLanPPVisitor {
 		used.addAll(ctx.getVariables());
 		List<IType> argTypes = new ArrayList<IType>();
 		List<VariableTerm> pars = new ArrayList<VariableTerm>();
+		List<       ITerm> args = new ArrayList<       ITerm>();
 		for (VariableSymbol v : used) {
 			if (visible.contains(v) && v.getOriginalName() != "IID") {
 				argTypes.add(v.getType());
 				pars.add(v.term());
+				args.add(v.term());
 			}
 		}
-		argTypes.add(firstEnt.getIDSymbol().getType()); // IID
-		pars.add(firstEnt.getIDSymbol().term());
-		argTypes.add(firstEnt.getStepSymbol().getType()); // SL
-		pars.add(firstEnt.getStepSymbol().term());
+		for (String n : ctx.getSetLiteralNames()) {
+			VariableSymbol v = root.findVariable(n);   
+			argTypes.add(v.getType());
+			pars.add(v.term());
+		}
+		for (ITerm t : ctx.getSetLiterals()) {
+			args.add(t);
+		}
+		VariableSymbol IID = firstEnt.getIDSymbol();  
+		argTypes.add(IID.getType());
+ 		pars.add(IID.term());
+ 		args.add(IID.term());
+ 		VariableSymbol SL = firstEnt.getStepSymbol(); 
+		argTypes.add(SL.getType());
+		pars.add(SL.term());
+		args.add(SL.term());
 		String checkName = stmt.getOwner().getFreshNamesGenerator().getFreshName("check_" + stmt.getName(), FunctionSymbol.class);
 		FunctionSymbol fncCheck = stmt.getOwner().addFunction(checkName, root.findType(Prelude.FACT), argTypes.toArray(new IType[argTypes.size()]));
 		stmt.setCheckFunction(fncCheck);
-		stmt.setFirstTerms(pars.subList(0, pars.size() - 1));
+		stmt.setFirstTerms(args.subList(0, args.size() - 1));
 
 		// add goal
 		Goal g = firstEnt.goal(stmt.getLocation(), stmt.getName());
@@ -677,7 +695,7 @@ public class PostProcessor implements IASLanPPVisitor {
 					and(fIknows.term(gM.term()).expression()).
 					implies(fContains.term(gS.term(), cIntruder.term()).expression())));
 		}
-	    sg.setSetFunction(fset);
+	    sg.setSetSymbol(fset);
 	}
 
 	private void handleChannelGoal(AbstractChannelGoal goal, boolean useExisting) {
@@ -831,16 +849,17 @@ public class PostProcessor implements IASLanPPVisitor {
 				break;
 			}
 		}
-		FunctionSymbol symbol = term.getScope().findRootEntity().getSetFunction(name, setType, term.getLocation());
-		FunctionTerm setTerm;
+		VariableSymbol symbol = term.getScope().findRootEntity().getSetSymbol(name, setType, term.getLocation());
+		VariableTerm setTerm = symbol.freshTerm(term.getLocation()); //symbol.term(term.getLocation(), term.getScope());
+	/*	FunctionTerm setTerm;
 		Entity firstEnt = term.getScope().findFirstEntity();
 		if (firstEnt != null) {
 			setTerm = symbol.term(term.getLocation(), term.getScope(), firstEnt.getIDSymbol().term(term.getLocation(), term.getScope()));
 		}
 		else {
 			setTerm = symbol.term(term.getLocation(), term.getScope(), spec.getDummyConstant(root.findType(Prelude.NAT)).term(term.getLocation(), term.getScope()));
-		}
-		term.setTermAndSymbol(symbol, setTerm);
+		}*/
+		term.setSymbolNameAndTerm(symbol.getName(), setTerm);
 		term.visit();
 		return term;
 	}

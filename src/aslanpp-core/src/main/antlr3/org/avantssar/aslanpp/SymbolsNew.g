@@ -156,7 +156,7 @@ scope { List<IType> types; }
 	| ^(TUPLE (t=type[$scope] {$type::types.add($t.itype);})+) 
 	  { $itype = new TupleType($type::types); }
 	| ^(CONCAT (t=type[$scope] {$type::types.add($t.itype);})+) 
-	  { $itype = new TupleType($type::types); }
+	  { $itype = new CompoundType(new LocationInfo($CONCAT.token), CompoundType.CONCAT, $type::types); }
 	| ^(SET t=type[$scope])
 	  { $itype = new SetType($t.itype); } 
 	| ^(FCALL LOWERNAME (^(ARGS (t=type[$scope] {$type::types.add($t.itype);})+))?)

@@ -142,12 +142,12 @@ public class Annotation {
 	}
 	
 	private void handleSecrecy(Entity session, Entity child, List<ITerm> knowers, 
-		FunctionSymbol setFunction, String protName, ExpressionContext ctx, ITerm term) {
+		FunctionSymbol setSymbol, String protName, ExpressionContext ctx, ITerm term) {
 		LocationInfo loc = term.getLocation();
 		Entity rootEnt = session.findRootEntity();
 		FunctionTerm secrecyTerm = rootEnt.secrecyTerm(session, 
 				session.getIDSymbol().term(loc, child),
-				child, knowers, term/* = payload*/, setFunction, protName, loc);
+				child, knowers, term/* = payload*/, setSymbol, protName, loc);
 		// System.out.println("secrecy term: " + secrecyTerm.getRepresentation());
 
 		ctx.addSessionGoalTerm(secrecyTerm);
@@ -169,7 +169,7 @@ public class Annotation {
 		IScope root = session.findRoot();
 		if (goal instanceof SessionSecrecyGoal) {
 			SessionSecrecyGoal secrGoal = (SessionSecrecyGoal) goal;
-			handleSecrecy(session, current, knowers, secrGoal.getSetFunction(), secrGoal.getSecrecyProtocolName(), ctx, term);
+			handleSecrecy(session, current, knowers, secrGoal.getSetSymbol(), secrGoal.getSecrecyProtocolName(), ctx, term);
 		}
 		else {
 			SessionChannelGoal chGoal = (SessionChannelGoal) goal;
@@ -183,10 +183,10 @@ public class Annotation {
 						List<ITerm> knowers = new ArrayList<ITerm>();
 						knowers.add(sender);
 						knowers.add(receiver);
-						handleSecrecy(session, current, knowers, chGoal.getSetFunction(), chGoal.getSecrecyProtocolName(), ctx, term);
+						handleSecrecy(session, current, knowers, chGoal.getSetSymbol(), chGoal.getSecrecyProtocolName(), ctx, term);
 						// retract secrecy on receive (i.e. add intruder to set of knowers):
 						if (receiverIsActor) {
-							ITerm retractSecr = root.findFunction(Prelude.ADD).term(chGoal.getSetFunction().term(session.getIDSymbol().term()),
+							ITerm retractSecr = root.findFunction(Prelude.ADD).term(chGoal.getSetSymbol().term(session.getIDSymbol().term()),
 									root.findConstant(Prelude.INTRUDER).term());
 							ctx.addSessionGoalTerm(retractSecr);
 						}

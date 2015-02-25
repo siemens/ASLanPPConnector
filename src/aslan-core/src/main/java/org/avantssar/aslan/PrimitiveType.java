@@ -52,41 +52,25 @@ public class PrimitiveType extends AbstractNamed implements IType {
 	public boolean isAssignableFrom(IType subType, IASLanSpec spec) {
 		if (subType instanceof PrimitiveType) {
 			PrimitiveType ss = (PrimitiveType) subType;
-			if (equals(ss)) {
-				return true;
-			}
-			else {
-				return isAssignableFrom(ss.getSuperType(), spec);
-			}
+			return equals(ss) || isAssignableFrom(ss.getSuperType(), spec);
 		}
 		else if (subType instanceof SetType) {
-			if (equals(IASLanSpec.MESSAGE)) {
-				return true;
-			}
-			else {
-				return false;
-			}
+			return equals(IASLanSpec.MESSAGE);
 		}
 		else if (subType instanceof PairType) {
-			if (equals(IASLanSpec.MESSAGE)) {
-				return true;
-			}
-			else {
-				return false;
-			}
+			return equals(IASLanSpec.MESSAGE);
 		}
 		else if (subType instanceof CompoundType) {
 			String fname = ((CompoundType) subType).getName();
 			Function fnc = spec.findFunction(fname);
-			if (fnc != null) {
-				return isAssignableFrom(fnc.getType(), spec);
-			}
-			else {
-				return false;
-			}
+			return fnc != null && isAssignableFrom(fnc.getType(), spec);
 		}
 		else {
 			return false;
 		}
+	}
+	
+	public String toString() {
+		return getName();
 	}
 }

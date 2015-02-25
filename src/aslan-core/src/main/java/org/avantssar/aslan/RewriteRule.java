@@ -47,8 +47,10 @@ public class RewriteRule extends AbstractNamed implements IParameterized {
 	}
 
 	public RewriteRule addExists(Variable v) {
-		exists.add(v);
-		Collections.sort(exists);
+		if (!exists.contains(v)) {
+			exists.add(v);
+			Collections.sort(exists);
+		}
 		return this;
 	}
 

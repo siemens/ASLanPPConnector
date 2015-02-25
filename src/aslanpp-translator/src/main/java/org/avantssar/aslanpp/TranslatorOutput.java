@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlType;
 
-import org.avantssar.commons.Error;
-
 @XmlType(namespace = "http://aslanpp.avantssar.org/")
 public class TranslatorOutput {
 

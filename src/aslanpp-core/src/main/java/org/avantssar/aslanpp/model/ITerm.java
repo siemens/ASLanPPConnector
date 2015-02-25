@@ -45,6 +45,8 @@ public interface ITerm extends IReduceable<ITerm>, Comparable<ITerm> {
 
 	boolean isTypeCertain();
 
+	boolean wasTypeSet();
+
 	IScope getScope();
 
 	String getRepresentation();

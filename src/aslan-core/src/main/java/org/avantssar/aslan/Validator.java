@@ -84,15 +84,16 @@ public class Validator implements IASLanVisitor {
 		}
 		else {
 			if (type.getBaseTypes().size() != fnc.getArgumentsTypes().size()) {
-				err.addError(type.getLocation(), ASLanErrorMessages.FUNCTION_IN_COMPOUND_TYPE_WRONG_NUMBER_OF_ARGUMENTS, type.getRepresentation(), fnc.getArgumentsTypes().size(), type.getBaseTypes()
-						.size());
+				err.addError(type.getLocation(), ASLanErrorMessages.FUNCTION_IN_COMPOUND_TYPE_WRONG_NUMBER_OF_ARGUMENTS, 
+						type.getRepresentation(), fnc.getArgumentsTypes().size(), type.getBaseTypes().size());
 			}
 			else {
 				for (int i = 0; i < type.getBaseTypes().size(); i++) {
 					IType ctArg = type.getBaseTypes().get(i);
 					IType fncArg = fnc.getArgumentsTypes().get(i);
 					if (!ctArg.equals(fncArg)) {
-						err.addError(type.getLocation(), ASLanErrorMessages.COMPOUND_TYPE_ARGUMENT_DOES_NOT_MATCH, i, type.getRepresentation(), ctArg.getRepresentation(), fncArg.getRepresentation());
+						err.addError(type.getLocation(), ASLanErrorMessages.COMPOUND_TYPE_ARGUMENT_DOES_NOT_MATCH, 
+								i, type.getRepresentation(), ctArg.getRepresentation(), fncArg.getRepresentation());
 					}
 				}
 			}
@@ -110,8 +111,9 @@ public class Validator implements IASLanVisitor {
 			}
 			else if (!IASLanSpec.AGENT.isAssignableFrom(fnc.getArgumentsTypes().get(0), spec) || !IASLanSpec.NAT.equals(fnc.getArgumentsTypes().get(1))
 					|| !IASLanSpec.NAT.equals(fnc.getArgumentsTypes().get(2))) {
-				err.addError(fnc.getLocation(), ASLanErrorMessages.STATE_FUNCTION_WRONG_TYPED_ARGUMENTS, fnc.getName(), fnc.getArgumentsTypes().get(0).getRepresentation(), fnc.getArgumentsTypes()
-						.get(1).getRepresentation(), fnc.getArgumentsTypes().get(2).getRepresentation());
+				err.addError(fnc.getLocation(), ASLanErrorMessages.STATE_FUNCTION_WRONG_TYPED_ARGUMENTS, 
+						fnc.getName(), fnc.getArgumentsTypes().get(0).getRepresentation(), 
+						fnc.getArgumentsTypes().get(1).getRepresentation(), fnc.getArgumentsTypes().get(2).getRepresentation());
 			}
 		}
 	}
@@ -122,7 +124,7 @@ public class Validator implements IASLanVisitor {
 	@Override
 	public void visit(Variable var) {
 		if (IASLanSpec.FACT.isAssignableFrom(var.getType(), spec)) {
-			err.addError(var.getLocation(), ASLanErrorMessages.VARIABLE_OF_UNACCEPTED_TYPE, var.getName(), var.getType().getRepresentation(), IASLanSpec.FACT.getRepresentation());
+			err.addError(var.getLocation(), ASLanErrorMessages.ELEMENT_OF_UNACCEPTED_TYPE, var.getName(), var.getType().getRepresentation(), IASLanSpec.FACT.getRepresentation());
 		}
 	}
 
@@ -194,17 +196,27 @@ public class Validator implements IASLanVisitor {
 
 	@Override
 	public void visit(FunctionTerm term) {
-		checkActualType(term.getType(), term);
+		//if (term.getSymbol().getName() != "pair") { // TODO maybe add better check if tuple is assignable to expected type
+			checkActualType(term.getType(), term);
+		//}
 		if (term.getFunction().getArgumentsTypes().size() != term.getParameters().size()) {
-			err.addError(term.getLocation(), ASLanErrorMessages.WRONG_NUMBER_OF_PARAMETERS, "Function", term.getFunction().getName(), term.getFunction().getArgumentsTypes().size(), term
-					.getParameters().size());
+			err.addError(term.getLocation(), ASLanErrorMessages.WRONG_NUMBER_OF_PARAMETERS, "Function", 
+					term.getFunction().getName(), term.getFunction().getArgumentsTypes().size(), term.getParameters().size());
 		}
 		else {
 			for (int i = 0; i < term.getParameters().size(); i++) {
+				ITerm arg  = term.getParameters().get(i);
 				IType argT = term.getFunction().getArgumentsTypes().get(i);
-				expectedTypes.push(argT);
-				term.getParameters().get(i).accept(this);
-				expectedTypes.pop();
+				if (term.getSymbol().getName() != "pair") {
+					expectedTypes.push(argT);
+					arg.accept(this);
+					expectedTypes.pop();
+				}
+				else { // TODO maybe add better check if tuple argument is assignable to expected type
+					if (IASLanSpec.FACT.isAssignableFrom(argT, spec)) {
+						err.addError(arg.getLocation(), ASLanErrorMessages.ELEMENT_OF_UNACCEPTED_TYPE, arg, argT.getRepresentation(), IASLanSpec.FACT.getRepresentation());
+					}
+				}
 			}
 		}
 	}
@@ -238,7 +250,7 @@ public class Validator implements IASLanVisitor {
 	private void checkActualType(IType actualType, ITerm term) {
 		if (!expectedTypes.empty()) {
 			if (!expectedTypes.peek().isAssignableFrom(actualType, spec)) {
-				err.addError(term.getLocation(), ASLanErrorMessages.WRONG_TYPE_FOR_TERM, actualType.getRepresentation(), expectedTypes.peek().getRepresentation(), term.getRepresentation());
+				err.addError(term.getLocation(), ASLanErrorMessages.WRONG_TYPE_FOR_TERM, actualType, expectedTypes.peek(), term.toString());
 			}
 		}
 	}

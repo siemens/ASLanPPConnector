@@ -49,12 +49,12 @@ public class SessionSecrecyGoal extends AbstractOwned implements IASLanPPVisitab
 		return secr.getSecrecyProtocolName();
 	}
 
-	public FunctionSymbol getSetFunction() {
-		return secr.getSetFunction();
+	public FunctionSymbol getSetSymbol() {
+		return secr.getSetSymbol();
 	}
 
-	public void setSetFunction(FunctionSymbol setFunction) {
-		secr.setSetFunction(setFunction);
+	public void setSetSymbol(FunctionSymbol setSymbol) {
+		secr.setSetSymbol(setSymbol);
 	}
 
 	public String getSetFunctionName() {

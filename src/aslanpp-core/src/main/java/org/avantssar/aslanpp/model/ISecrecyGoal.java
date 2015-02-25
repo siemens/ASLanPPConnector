@@ -15,7 +15,6 @@
 package org.avantssar.aslanpp.model;
 
 
-import org.avantssar.aslanpp.model.FunctionSymbol;
 import org.avantssar.commons.LocationInfo;
 
 public interface ISecrecyGoal {
@@ -24,6 +23,6 @@ public interface ISecrecyGoal {
 	public String getSecrecyGoalName();
 	public String getSecrecyProtocolName();
 	public String getSetFunctionName();
-	public FunctionSymbol getSetFunction();
-	public void setSetFunction(FunctionSymbol setFunction);
+	public FunctionSymbol getSetSymbol();
+	public void setSetSymbol(FunctionSymbol setSymbol);
 }

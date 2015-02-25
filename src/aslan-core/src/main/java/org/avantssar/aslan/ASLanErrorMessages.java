@@ -25,7 +25,7 @@ public class ASLanErrorMessages extends HashMap<String, String> implements IErro
 	public static final String UNKNOWN_FUNCTION_USED_IN_COMPOUND_TYPE = "unknown_function_used_in_compound_type";
 	public static final String FUNCTION_IN_COMPOUND_TYPE_WRONG_NUMBER_OF_ARGUMENTS = "function_in_compound_type_wrong_number_of_arguments";
 	public static final String COMPOUND_TYPE_ARGUMENT_DOES_NOT_MATCH = "compound_type_argument_does_not_match";
-	public static final String VARIABLE_OF_UNACCEPTED_TYPE = "variable_of_unaccepted_type";
+	public static final String ELEMENT_OF_UNACCEPTED_TYPE = "element_of_unaccepted_type";
 	public static final String WRONG_NUMBER_OF_PARAMETERS = "wrong_number_or_parameters";
 	public static final String UNDEFINED_SYMBOL = "undefined_symbol";
 	public static final String INVALID_NUMERIC_CONSTANT = "invalid_numeric_constant";
@@ -50,11 +50,11 @@ public class ASLanErrorMessages extends HashMap<String, String> implements IErro
 	public static final ASLanErrorMessages DEFAULT = new ASLanErrorMessages();
 
 	private ASLanErrorMessages() {
-		put(WRONG_TYPE_FOR_TERM, "Term with type \"{0}\" should not appear in a place where type \"{1}\" (or a subtype of it) is expected: \"{2}\".");
+		put(WRONG_TYPE_FOR_TERM, "Term \"{2}\" with type \"{0}\" does not match type \"{1}\" (or a subtype of it).");
 		put(UNKNOWN_FUNCTION_USED_IN_COMPOUND_TYPE, "Compound type \"{0}\" references an unknown function: \"{1}\".");
 		put(FUNCTION_IN_COMPOUND_TYPE_WRONG_NUMBER_OF_ARGUMENTS, "Function referenced in compound type \"{0}\" expects {1} arguments, but the compound type has {2} arguments.");
 		put(COMPOUND_TYPE_ARGUMENT_DOES_NOT_MATCH, "Argument {0} of compound type \"{1}\" has type \"{2}\" while the same argument of referenced function has type \"{3}\".");
-		put(VARIABLE_OF_UNACCEPTED_TYPE, "Variable \"{0}\" is of type \"{1}\" which is not accepted. Variables cannot be of type \"{2}\" or its subtypes.");
+		put(ELEMENT_OF_UNACCEPTED_TYPE, "Element \"{0}\" is of type \"{1}\", but type \"{2}\" is not allowed here.");
 		put(WRONG_NUMBER_OF_PARAMETERS, "{0} \"{1}\" expects {2} parameters and receives {3}.");
 		put(UNDEFINED_SYMBOL, "Undefined {0}: \"{1}\".");
 		put(INVALID_NUMERIC_CONSTANT, "Invalid numeric constant: \"{0}\".");

@@ -13,6 +13,7 @@
 
 package org.avantssar.aslanpp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.avantssar.aslanpp.Util;
 import org.avantssar.aslanpp.visitors.IASLanPPVisitor;
@@ -20,12 +21,28 @@ import org.avantssar.commons.LocationInfo;
 
 public class CompoundType extends AbstractNamed implements IType {
 
+	public final static String CONCAT = "'"; // internal name of message concatenation
 	private final List<IType> argumentTypes;
 	private final LocationInfo location;
 
+	public static List<IType> flattenTupleOrConcatTypes(boolean tuple, List<IType> orig) {
+		List<IType> types = new ArrayList<IType>(orig); // clone it, because we modify it
+		while (types.size() >= 2 && (  tuple && types.get(types.size()-1) instanceof TupleType ||
+				                     (!tuple && types.get(types.size()-1) instanceof CompoundType
+                             && ((CompoundType) types.get(types.size()-1)).getName() == CONCAT))) {
+			IType t = types.get(types.size()-1);
+			List<IType> ts = (t instanceof TupleType ? ((   TupleType) t).getBaseTypes() 
+			                                         : ((CompoundType) t).getArgumentTypes());
+			types.remove(types.size()-1);
+			types.addAll(ts);
+		}
+		return types;
+	}
+	
 	public CompoundType(LocationInfo location, String name, List<IType> argTypes) {
 		super(name);
-		argumentTypes = argTypes;
+		argumentTypes = name == CONCAT ? flattenTupleOrConcatTypes(false, argTypes) // normalize concatenation of messages
+				                       : argTypes;
 		this.location = location;
 	}
 
@@ -60,15 +77,27 @@ public class CompoundType extends AbstractNamed implements IType {
 			if (!ct.getName().equals(this.getName())) {
 				return false;
 			}
-			if (ct.getArgumentTypes().size() != this.getArgumentTypes().size()) {
-				return false;
-			}
-			for (int i = 0; i < this.getArgumentTypes().size(); i++) {
-				if (!this.getArgumentTypes().get(i).isAssignableFrom(ct.getArgumentTypes().get(i))) {
+			List<IType> types = getArgumentTypes();
+			List<IType> subTypes = ct.getArgumentTypes();
+			if (getName() == CONCAT && types.size() == 0 && subTypes.size() == 0) {
+				return true;
+			} else if (getName() == CONCAT && types.size() >= 1 && subTypes.size() >= 1) {
+				if (!types.get(0).isAssignableFrom(subTypes.get(0))) {
 					return false;
 				}
+				return (new CompoundType(null, CONCAT,    types.subList(1,    types.size())).isAssignableFrom(
+					    new CompoundType(null, CONCAT, subTypes.subList(1, subTypes.size()))));
+			} else {
+				if (subTypes.size() != types.size()) {
+					return false;
+				}
+				for (int i = 0; i < types.size(); i++) {
+					if (!types.get(i).isAssignableFrom(subTypes.get(i))) {
+						return false;
+					}
+				}
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}

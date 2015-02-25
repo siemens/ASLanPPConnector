@@ -119,6 +119,11 @@ public class VariableTerm extends AbstractSymbolTerm<VariableSymbol> {
 	}
 
 	@Override
+	public boolean wasTypeSet() {
+		return getSymbol().wasTypeSet();
+	}
+
+	@Override
 	public boolean isTypeCertain() {
 		return !getSymbol().wasUntyped();
 	}

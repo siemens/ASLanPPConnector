@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.avantssar.commons.TranslatorOptions;
+
 public class PrettyPrinter implements IASLanVisitor {
 
 	private final StringBuffer sb = new StringBuffer();
@@ -41,6 +43,12 @@ public class PrettyPrinter implements IASLanVisitor {
 		endLine();
 		endLine();
 		indent();
+		if (TranslatorOptions.setsAsMessages) {
+			startLine();
+			sb.append("message > set");
+			endLine();
+		}
+		
 		for (PrimitiveType t : spec.getPrimitiveTypes()) {
 			if (!t.isPrelude() && t.getSuperType() != null) {
 				startLine();
@@ -69,18 +77,20 @@ public class PrettyPrinter implements IASLanVisitor {
 		InitialState init = spec.getInitialStates().get(0); // TODO assuming exactly one initial state
 		for (Variable v : spec.getVariables()) {
 			v.accept(this);
-			// add iknows(iknows_empty_ST) facts for every set type ST used for variables
-			IType vt = v.getType();
-			if(vt.toString().startsWith("set(") && !var_types.contains(v.getType())) {
-				var_types.add(vt);
-				String cn = "empty_".concat(vt.toString().replace('(','_').replace(')','_').replaceAll(", ", "___")); // TODO consolidate with org.avantssar.aslanpp.model.IType.IType.getDummyName();
-				/* not needed: 
-				startLine();
-				sb.append(cn);
-				sb.append(" : ");
-				vt.accept(this); */
-				init.addFact(IASLanSpec.IKNOWS.term(spec.constant(cn, vt).term()));
-				endLine(); 
+			if (TranslatorOptions.setsAsMessages) {
+				// add iknows(iknows_empty_ST) facts for every set type ST used for variables
+				IType vt = v.getType();
+				if(vt.toString().startsWith("set(") && !var_types.contains(v.getType())) {
+					var_types.add(vt);
+					String cn = "empty_".concat(vt.toString().replace('(','_').replace(')','_').replaceAll(", ", "___")); // TODO consolidate with org.avantssar.aslanpp.model.IType.IType.getDummyName();
+					/* not needed: 
+					startLine();
+					sb.append(cn);
+					sb.append(" : ");
+					vt.accept(this); */
+					init.addFact(IASLanSpec.IKNOWS.term(spec.constant(cn, vt).term()));
+					endLine();
+				}
 			}
 		}
 		for (Constant c : spec.getConstants()) {

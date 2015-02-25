@@ -390,7 +390,7 @@ public class ExpressionContextTest extends TestCase {
 		term.useContext(ctx, symState);
 
 		SetLiteralTerm redTerm = new SetLiteralTerm(null, ent, new ITerm[] { varA.freshTerm(), matchB.getDummySymbol().term(), constC.term(), varD.term(), ent.getActorSymbol().term() }, term
-				.getSymbol().getName());
+				.getSymbolName());
 		System.out.println(redTerm.getRepresentation() + "|");
 		System.out.println(term.reduce(symState).getRepresentation() + "|");
 		assertEquals(redTerm.getRepresentation(), term.reduce(symState).getRepresentation());

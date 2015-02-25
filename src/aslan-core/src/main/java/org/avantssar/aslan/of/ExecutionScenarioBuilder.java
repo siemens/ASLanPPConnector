@@ -17,9 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import org.avantssar.aslan.HornClause;
 import org.avantssar.aslan.IASLanSpec;
 import org.avantssar.aslan.IParameterized;
+import org.avantssar.aslan.ITerm;
 import org.avantssar.aslan.RewriteRule;
 import org.avantssar.aslan.Variable;
 import org.avantssar.commons.ErrorGatherer;
@@ -35,6 +37,48 @@ public class ExecutionScenarioBuilder implements IAnalysisResultVisitor {
 	private final ExecutionScenario exec;
 
 	public ExecutionScenarioBuilder(IASLanSpec aslanSpec, ExecutionScenario exec, ErrorGatherer err) {
+		RewriteRule rule = aslanSpec.findRule("step_001_ACM");
+		if (rule != null) { // using this as indication for ACM
+		//  rule.addCommentLine("@communication(entity=prelude; iid=0; line=0; sender=ACM_RS; receiver=ACM_Rcv; payload=ACM_Msg; channel=ACM_Ch; fact=sent(ACM_RS,ACM_OS,ACM_Rcv,ACM_Msg,ACM_Ch); direction=send)");
+		//  rule.addCommentLine("@communication(entity=prelude; iid=0; line=0; sender=ACM_OS; receiver=ACM_Rcv; payload=ACM_Msg; channel=ACM_Ch; fact=rcvd(ACM_Rcv,ACM_OS,ACM_Msg,ACM_Ch); direction=receive)");
+
+			Variable vA  = aslanSpec.variable("A" , IASLanSpec.AGENT);
+			Variable vR  = aslanSpec.variable("R" , IASLanSpec.AGENT);
+			Variable vM  = aslanSpec.variable("M" , IASLanSpec.MESSAGE);
+			Variable vCh = aslanSpec.variable("Ch", IASLanSpec.CHANNEL);
+			ITerm rcvd = IASLanSpec.RCVD.term(IASLanSpec.INTRUDER.term(), vA.term(), vM.term(), vCh.term());
+
+			rule = aslanSpec.rule("fake");
+			rule.addCommentLine("@guard(entity=prelude; iid=0; line=0; test=iknows(M))");
+			rule.addCommentLine("@guard(entity=prelude; iid=0; line=0; test=iknows(A))");
+			rule.addCommentLine("@guard(entity=prelude; iid=0; line=0; test=iknows(R))");
+		    rule.addCommentLine("@communication(entity=prelude; iid=0; line=0; sender=A; receiver=R; payload=M; channel=Ch; fact=sent(i, A, R, M, Ch); direction=send)");
+			rule.addParameter(vA); rule.addParameter(vR); rule.addParameter(vM); rule.addParameter(vCh);
+			ITerm sent = IASLanSpec.SENT.term(IASLanSpec.INTRUDER.term(), vA.term(), vR.term(), vM.term(), vCh.term());
+			rule.addLHS(IASLanSpec.IKNOWS.term(vM.term()));
+			rule.addLHS(IASLanSpec.IKNOWS.term(vA.term()));
+			rule.addLHS(IASLanSpec.IKNOWS.term(vR.term()));
+			rule.addRHS(sent); 
+
+			rule = aslanSpec.rule("intercept");
+		//  rule.addCommentLine("@communication(entity=prelude; iid=0; line=0; sender=A; receiver=R; payload=M; channel=Ch; fact=sent(A, A, R, M, Ch); direction=send)");
+			rule.addCommentLine("@retract(entity=prelude; iid=0; line=0; fact=sent(A, A, R, M, Ch))");
+			rule.addCommentLine("@communication(entity=prelude; iid=0; line=0; sender=A; receiver=i; payload=M; channel=Ch; fact=rcvd(i, A, M, Ch); direction=receive)");
+			rule.addCommentLine("@introduce(entity=prelude; iid=0; line=0; fact=iknows(M))");
+			rule.addParameter(vA); rule.addParameter(vR); rule.addParameter(vM); rule.addParameter(vCh);
+			sent = IASLanSpec.SENT.term(vA.term(), vA.term(), vR.term(), vM.term(), vCh.term());
+			rule.addLHS(sent);
+			                   rule.addRHS(rcvd); rule.addRHS(IASLanSpec.IKNOWS.term(vM.term()));
+
+			rule = aslanSpec.rule("overhear");
+		//  rule.addCommentLine("@communication(entity=prelude; iid=0; line=0; sender=A; receiver=R; payload=M; channel=Ch; fact=sent(A, A, R, M, Ch); direction=send)");
+			rule.addCommentLine("@communication(entity=prelude; iid=0; line=0; sender=A; receiver=i; payload=M; channel=Ch; fact=rcvd(i, A, M, Ch); direction=receive)");
+			rule.addCommentLine("@introduce(entity=prelude; iid=0; line=0; fact=iknows(M))");
+			rule.addParameter(vA); rule.addParameter(vR); rule.addParameter(vM); rule.addParameter(vCh);
+			sent = IASLanSpec.SENT.term(vA.term(), vA.term(), vR.term(), vM.term(), vCh.term());
+			rule.addLHS(sent);
+			rule.addRHS(sent); rule.addRHS(rcvd); rule.addRHS(IASLanSpec.IKNOWS.term(vM.term()));
+		}
 		this.aslanSpec = aslanSpec;
 		this.exec = exec;
 		this.err = err;

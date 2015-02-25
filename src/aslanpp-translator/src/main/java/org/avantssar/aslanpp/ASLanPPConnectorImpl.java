@@ -199,7 +199,9 @@ public class ASLanPPConnectorImpl implements ASLanPPConnector {
 						  spec.accept(builder);
 						}
 						catch (ASLanPPException ae) {
-							err.addAll(ae.getErrorGatherer());
+							if (err != ae.getErrorGatherer()) {
+								err.addAll(ae.getErrorGatherer());
+							}
 							throw ae;
 						}
 						finally {

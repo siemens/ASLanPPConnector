@@ -57,7 +57,10 @@ public class SetType implements IType {
 
 	@Override
 	public String toString() {
-		return getRepresentation();
+		IType bt = getBaseType();
+		String s = bt.toString();
+		boolean paren = !(bt instanceof org.avantssar.aslan.PrimitiveType);
+		return (paren ? "(" : "") + s + (paren ? ")" : "") + " set";
 	}
 
 }

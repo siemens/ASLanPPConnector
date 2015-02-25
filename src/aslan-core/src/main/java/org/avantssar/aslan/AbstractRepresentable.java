@@ -15,6 +15,7 @@ package org.avantssar.aslan;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.avantssar.commons.ErrorGatherer;
 import org.avantssar.commons.LocationInfo;
 
@@ -85,6 +86,10 @@ public abstract class AbstractRepresentable implements IRepresentable {
 	@Override
 	public String toString() {
 		return getRepresentation();
+		/* does not help to get original names:
+		PrettyPrinter pp = new PrettyPrinter(false);
+		accept(pp);
+		return pp.toString(); */
 	}
 
 }

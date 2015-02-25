@@ -44,6 +44,7 @@ import org.avantssar.aslanpp.model.FunctionTerm;
 import org.avantssar.aslanpp.model.Goal;
 import org.avantssar.aslanpp.model.HornClause;
 import org.avantssar.aslanpp.model.IExpression;
+import org.avantssar.aslanpp.model.IScope;
 import org.avantssar.aslanpp.model.IStatement;
 import org.avantssar.aslanpp.model.ITerm;
 import org.avantssar.aslanpp.model.IType;
@@ -74,6 +75,7 @@ import org.avantssar.aslanpp.model.UnnamedMatchTerm;
 import org.avantssar.aslanpp.model.VariableSymbol;
 import org.avantssar.aslanpp.model.VariableTerm;
 import org.avantssar.commons.ErrorGatherer;
+import org.avantssar.commons.LocationInfo;
 
 /**
  * Visits an ASLan++ specification (or a part of it) and assigns types to all
@@ -177,23 +179,7 @@ public class TypeAssigner implements IASLanPPVisitor {
 	}
 
 	public void visit(Equation equation) {
-		checkEmpty();
-		equation.getLeftTerm().accept(this);
-		equation.getRightTerm().accept(this);
-		IType commonType = null;
-		if (equation.getLeftTerm().isTypeCertain()) {
-			commonType = equation.getLeftTerm().inferType();
-		}
-		else if (equation.getRightTerm().isTypeCertain()) {
-			commonType = equation.getRightTerm().inferType();
-		}
-		else {
-			commonType = equation.getOwner().findType(Prelude.MESSAGE);
-		}
-		expectedTypes.push(commonType);
-		equation.getLeftTerm().accept(this);
-		equation.getRightTerm().accept(this);
-		expectedTypes.pop();
+		visitEqualityOrInequality(equation.getLeftTerm(), equation.getRightTerm());
 	}
 
 	@Override
@@ -390,39 +376,64 @@ public class TypeAssigner implements IASLanPPVisitor {
 
 	@Override
 	public void visit(EqualityExpression expr) {
-		IType commonType = visitEqualityOrInequlity(expr);
-		expectedTypes.push(commonType);
-		expr.getLeftTerm().accept(this);
-		expr.getRightTerm().accept(this);
-		expectedTypes.pop();
+		visitEqualityOrInequality(expr.getLeftTerm(), expr.getRightTerm());
 	}
 
 	@Override
 	public void visit(InequalityExpression expr) {
-		visitEqualityOrInequlity(expr);
-		expectedTypes.push(expr.getLeftTerm().getScope().findType(Prelude.MESSAGE));
-		expr.getLeftTerm().accept(this);
-		expr.getRightTerm().accept(this);
-		expectedTypes.pop();
+		visitEqualityOrInequality(expr.getLeftTerm(), expr.getRightTerm());
 	}
 
-	private IType visitEqualityOrInequlity(EqualityExpression expr) {
-		checkEmpty();
-		expr.getLeftTerm().accept(this);
-		expr.getRightTerm().accept(this);
+	public IType commonType(ITerm term1, ITerm term2) {
+		IType type1 = term1.inferType();
+		IType type2 = term2.inferType();
 		IType commonType = null;
-		if (expr.getLeftTerm().isTypeCertain()) {
-			commonType = expr.getLeftTerm().inferType();
+        if (term1.wasTypeSet()) {
+        	commonType = type1;
+        }
+        if (term2.wasTypeSet()) {
+        	if (commonType == null) {
+        		return type2;
+        	}
+        	else if (type2.isAssignableFrom(type1)) {
+        		return type2;
+        	}
+        	else if (type1.isAssignableFrom(type2)) {
+        		return type1;
+        	}
+        	commonType = null;
+        }
+        if (commonType == null) {
+        	commonType = term1.getScope().findType(Prelude.MESSAGE);
+        }
+        return commonType;
+ /*
+		if (type1.isAssignableFrom(type2)) {
+			return type1;
 		}
-		if (expr.getRightTerm().isTypeCertain()) {
-			if (commonType == null || expr.getRightTerm().inferType().isAssignableFrom(commonType)) {
-				commonType = expr.getRightTerm().inferType();
-			}
+		else if (type2.isAssignableFrom(type1)) {
+			return type2;
 		}
-		if (commonType == null) {
-			commonType = expr.getLeftTerm().getScope().findType(Prelude.MESSAGE);
+		else if (term1.isTypeCertain() && !term2.isTypeCertain()) {
+			return type1;
 		}
-		return commonType;
+		else if (term2.isTypeCertain() && !term1.isTypeCertain()) {
+			return type2;
+		}
+		else {
+			return term1.getScope().findType(Prelude.MESSAGE);
+		}*/
+	}
+	
+	private void visitEqualityOrInequality(ITerm term1, ITerm term2) {
+		checkEmpty();
+		term1.accept(this);
+		term2.accept(this);
+		IType commonType = commonType(term1, term2);
+		expectedTypes.push(commonType);
+		term1.accept(this);
+		term2.accept(this);
+		expectedTypes.pop();
 	}
 
 	@Override
@@ -562,6 +573,7 @@ public class TypeAssigner implements IASLanPPVisitor {
 			PrettyPrinter pp = new PrettyPrinter();
 			term.accept(pp);
 			IType et = expectedTypes.peek();
+			IType message = term.getScope().findType(Prelude.MESSAGE);
 			if (et instanceof SetType) {
 				SetType st = (SetType) et;
 				term.setElementsType(st.getBaseType());
@@ -571,8 +583,11 @@ public class TypeAssigner implements IASLanPPVisitor {
 				}
 				expectedTypes.pop();
 			}
-			else if (!et.equals(term.getScope().findType(Prelude.MESSAGE))) {
-				err.addError(term.getLocation(), ErrorMessages.WRONG_TYPE_FOR_TERM, "set", expectedTypes.peek(), pp.toString());
+			else if (!et.equals(message)) {
+				expectedTypes.push(message);
+				term.accept(this);
+				expectedTypes.pop();
+				err.addError(term.getLocation(), ErrorMessages.WRONG_TYPE_FOR_TERM, term.inferType(), expectedTypes.peek(), pp.toString());
 			}
 		}
 		else {
@@ -583,48 +598,91 @@ public class TypeAssigner implements IASLanPPVisitor {
 		return term;
 	}
 
-	private void visitTupleOrConcat(TupleType tt, ITerm term, List<ITerm> terms) {
-		if (tt.getBaseTypes().size() != terms.size()) {
-			PrettyPrinter pp = new PrettyPrinter();
-			term.accept(pp);
-			err.addError(term.getLocation(), ErrorMessages.WRONG_ARITY_FOR_TUPLE_TYPE, terms.size(), tt.getBaseTypes().size(), pp.toString());
-		}
-		else {
-			for (int i = 0; i < tt.getBaseTypes().size(); i++) {
-				IType currType = tt.getBaseTypes().get(i);
-				ITerm currTerm = terms.get(i);
-				expectedTypes.push(currType);
-				currTerm.accept(this);
-				expectedTypes.pop();
+	private ITerm visitTupleOrConcat(ITerm term, boolean tuple, List<ITerm> terms) {
+		boolean handled = false;
+		if (!expectedTypes.empty()) {
+			IType et = expectedTypes.peek();
+			if ( tuple && et instanceof TupleType ||
+			    !tuple && et instanceof CompoundType && ((CompoundType) et).getName() == CompoundType.CONCAT) {
+					List <IType> types = et instanceof TupleType ? ((TupleType) et).getBaseTypes()
+							                                     : ((CompoundType) et).getArgumentTypes();
+				if (tuple && types.size() > terms.size()) {
+					PrettyPrinter pp = new PrettyPrinter();
+					term.accept(pp);
+					err.addError(term.getLocation(), ErrorMessages.WRONG_ARITY_FOR_TUPLE_TYPE, terms.size(), types.size(), pp.toString());
+				}
+				else {
+					for (int i = 0; i < types.size() && i < terms.size(); i++) {
+						IType currType = types.get(i);
+						ITerm currTerm = terms.get(i);
+						if (i == types.size()-1 && i < terms.size()-1) {
+							LocationInfo loc = terms.get(i).getLocation();
+							IScope sc = terms.get(i).getScope();
+							List<ITerm> ts = terms.subList(i, terms.size());
+							currTerm = term instanceof TupleTerm ? new  TupleTerm(loc, sc, ts)
+					                                             : new ConcatTerm(loc, sc, ts);
+						}
+						if (i < types.size()-1 && i == terms.size()-1) { // this implies !tuple
+							currType = term.getScope().findType(Prelude.MESSAGE);
+						}
+						expectedTypes.push(currType);
+						currTerm.accept(this);
+						expectedTypes.pop();
+					}
+				}
+				handled = true;
+			}
+			else {
+				checkActualType(term.inferType(), term);
 			}
 		}
+		if (!handled) {
+			for (ITerm t : terms) {
+				if (tuple) {
+					IType type = t.inferType();
+					if (term.getScope().findType(Prelude.FACT).isAssignableFrom(type)) {
+						ent.getErrorGatherer().addError(t.getLocation(), ErrorMessages.ELEMENT_OF_TYPE_FACT_NOT_ACCEPTED, t, type);
+					}
+				}
+				else {
+					expectedTypes.push(term.getScope().findType(Prelude.MESSAGE));
+					t.accept(this);
+					expectedTypes.pop();
+				}
+			}
+		}
+		return term;
 	}
-
+	
 	@Override
 	public ITerm visit(ConcatTerm term) {
-		checkActualType(term.getScope().findType(Prelude.MESSAGE), term);
+		return visitTupleOrConcat(term, false, term.getTerms());
+	/*	checkActualType(term.getScope().findType(Prelude.MESSAGE), term);
 		expectedTypes.push(term.getScope().findType(Prelude.MESSAGE));
 		for (ITerm t : term.getTerms()) {
 			t.accept(this);
 		}
 		expectedTypes.pop();
-		return term;
+		return term;*/
 	}
 
 	@Override
 	public ITerm visit(TupleTerm term) {
-		boolean handled = false;
+		return visitTupleOrConcat(term, true, term.getTerms());
+	/*	boolean handled = false;
 		if (!expectedTypes.empty()) {
 			IType et = expectedTypes.peek();
 			if (et instanceof TupleType) {
-				TupleType tt = (TupleType) et;
-				visitTupleOrConcat(tt, term, term.getTerms());
+				visitTupleOrConcat(term, true, ((TupleType) et).getBaseTypes(), term.getTerms());
 				handled = true;
 			}
-			else if (!et.isAssignableFrom(term.inferType())) {
-				PrettyPrinter pp = new PrettyPrinter();
-				term.accept(pp);
-				err.addError(term.getLocation(), ErrorMessages.WRONG_TYPE_FOR_TERM, "tuple", expectedTypes.peek(), pp.toString());
+			else if (et instanceof CompoundType && ((CompoundType) et).getName() == CompoundType.CONCAT
+					 && term instanceof ConcatTerm) {
+				visitTupleOrConcat(term, false, ((CompoundType) et).getArgumentTypes(), term.getTerms());
+				handled = true;
+			}
+			else {
+				checkActualType(term.inferType(), term);
 			}
 		}
 		if (!handled) {
@@ -634,7 +692,7 @@ public class TypeAssigner implements IASLanPPVisitor {
 			}
 			expectedTypes.pop();
 		}
-		return term;
+		return term;*/
 	}
 
 	@Override

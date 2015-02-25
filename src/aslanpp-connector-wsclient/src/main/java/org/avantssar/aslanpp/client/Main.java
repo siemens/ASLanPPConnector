@@ -130,17 +130,7 @@ public class Main {
 				if (result.getSpecification() != null) {
 					output.print(result.getSpecification());
 				}
-
-				if (result.getErrors() != null && result.getErrors().size() > 0) {
-					for (Error e: result.getErrors()) {
-						System.err.println(e);
-					}
-				}
-				if (result.getWarnings() != null && result.getWarnings().size() > 0) {
-					for (Error e : result.getWarnings()) {
-						System.err.println(e);
-					}
-				}
+				result.printWarnErrors();
 			}
 		}
 		catch (Exception e) {

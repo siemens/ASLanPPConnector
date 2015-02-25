@@ -22,17 +22,17 @@ public class AssertStatement extends AbstractScopedStatement {
 
 	private IExpression guard;
 	private FunctionSymbol checkFunction;
-	private List<VariableTerm> firstTerms;
+	private List<ITerm> firstTerms;
 
 	protected AssertStatement(LocationInfo location, IScope owner, String name) {
 		super(location, owner, name);
 	}
 
-	public List<VariableTerm> getFirstTerms() {
+	public List<ITerm> getFirstTerms() {
 		return firstTerms;
 	}
 
-	public void setFirstTerms(List<VariableTerm> firstTerms) {
+	public void setFirstTerms(List<ITerm> firstTerms) {
 		this.firstTerms = firstTerms;
 	}
 

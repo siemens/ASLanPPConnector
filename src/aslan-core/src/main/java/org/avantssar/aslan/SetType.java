@@ -49,4 +49,11 @@ public class SetType extends AbstractRepresentable implements IType {
 		}
 	}
 
+	@Override
+	public String toString() {
+		IType bt = getBaseType();
+		String s = bt.toString();
+		boolean paren = !(bt instanceof org.avantssar.aslan.PrimitiveType);
+		return (paren ? "(" : "") + s + (paren ? ")" : "") + " set";
+	}
 }

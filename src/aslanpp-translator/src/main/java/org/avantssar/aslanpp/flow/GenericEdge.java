@@ -200,6 +200,14 @@ public abstract class GenericEdge extends AbstractEdge {
 		ExpressionContext ctx = new ExpressionContext();
 		fact.buildContext(ctx, false);
 		addMatches(ctx, tr);
+		for (String n : ctx.getSetLiteralNames()) {
+			org.avantssar.aslan.Variable v = builder.getASLanSpecification().findVariable(n);
+			// skip set literals of secrecy goal statements, which are translated as functions
+			// TODO better not use addSetLiteralName() for secrecy goal statements
+			if (v != null) { 
+				tr.addExists(v);
+			}
+		}
 		for (ITerm t : ctx.getAuxiliaryTerms()) {
 			MetaInfo addInfo = startMetaInfo(tr, MetaInfo.INTRODUCE);
 			addInfo.addParameter(MetaInfo.FACT, builder.transform(solveReduce(t, symState, false)).getRepresentation());

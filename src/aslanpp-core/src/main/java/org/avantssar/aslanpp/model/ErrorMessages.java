@@ -32,11 +32,12 @@ public class ErrorMessages extends HashMap<String, String> implements IErrorMess
 	public static final String CHANNEL_GOALS_ONE_TRANSMISSION = "channel_goals_one_transmission";
 	public static final String CIRCULAR_DEPENDENCY_DURING_IMPORT = "circular_dependency_during_import";
 	public static final String DUPLICATE_SYMBOL_IN_SCOPE = "duplicate_symbol_in_scope";
+	public static final String REDEFINING_SYMBOL_OF_SCOPE = "redefining symbol of scope";
 	public static final String GOAL_CANNOT_BE_RENDERED_AS_ATTACK_STATE = "cannot_render_goal_as_attack_state";
 	public static final String GOAL_FORMULA_IS_NOT_GLOBAL = "goal_formual_is_not_global";
 	public static final String INTEGER_LITERAL_EXCEEDS_MAX_SUCC_NESTING = "integer_literal_exceeds_max_succ_nesting";
 	public static final String SET_LITERAL_IN_GUARD = "set_literal_in_guard";
-	public static final String SET_LITERAL_IN_PAYLOAD = "set_literal_in_payload";
+	public static final String SET_LITERAL_IN_RECEIVE = "set_literal_in_payload";
 	public static final String INVALID_SPECIFICATION_NAME = "invalid_specification_name";
 	public static final String INVALID_CHANNEL_MODEL_CODE = "invalid_channel_model_code";
 	public static final String MATCHES_CAN_ONLY_BE_USED_IN_GUARDS_AND_RECEIVES = "matches_can_only_be_used_in_guards_and_receives";
@@ -51,7 +52,7 @@ public class ErrorMessages extends HashMap<String, String> implements IErrorMess
 	public static final String UNDEFINED_VARIABLE = "undefined_variable";
 	public static final String UNDEFINED_CHANNEL = "undefined_channel";
 	public static final String VARIABLE_NOT_UNIFORMLY_MATCHES = "variable_not_uniformly_matched";
-	public static final String VARIABLE_OF_TYPE_FACT_NOT_ACCEPTED = "variable_of_type_fact_not_accepted";
+	public static final String ELEMENT_OF_TYPE_FACT_NOT_ACCEPTED = "element_of_type_fact_not_accepted";
 	public static final String LOCAL_VARIABLE_IN_INVARIANT = "local variable in invariant";
 	public static final String INHERITED_VARIABLE_IN_INVARIANT = "inherited_variable_in_invariant";
 	public static final String INHERITED_VARIABLE_USED = "inherited_variable_used";
@@ -82,8 +83,6 @@ public class ErrorMessages extends HashMap<String, String> implements IErrorMess
 	public static final String TRUE_FALSE_CANNOT = "true_false_cannot_be_introduced_or_retracted";
 	public static final String CANNOT_APPEAR_IN_HEAD_OF_HORN_CLAUSE = "cannot_appear_in_head_of_horn_clause";
 	public static final String TERM_CANNOT_BE_RETRACTED = "term_cannot_be_retracted";
-	public static final String FACT_TYPE_EXPECTED_IN_GUARD_OR_FORMULA = "fact_type_expected_in_guard_or_formula";
-	public static final String MESSAGE_TYPE_EXPECTED_IN_EQUALITY_OR_INEQUALITY = "message_type_expected_in_equality_or_inequality";
 	public static final String DUPLICATE_TYPE = "duplicate_type";
 	public static final String WRONG_TAG_IN_METAINFO = "wrong_tag_in_metainfo";
 	public static final String CANNOT_CHANGE_TYPE_OF_VARIABLE = "cannot_change_type_of_variable";
@@ -134,15 +133,17 @@ public class ErrorMessages extends HashMap<String, String> implements IErrorMess
 
 	public static final String VARIABLE_APPEARS_IN_MORE_THAN_ONE_CONJUNCT = "variable_appears_in_more_than_one_conjunct";
 	public static final String VARIABLE_NOT_IN_OTHER_DISJUNCT = "variable_not_in_other_disjunct";
+	public static final String ACTOR_ASSIGNED = "actor_assigned";
 
 	public static final ErrorMessages DEFAULT = new ErrorMessages();
 
 	private ErrorMessages() {
 		put(WRONG_NUMBER_OF_PARAMETERS, "{0} \"{1}\" expects {2} parameters and receives {3}.");
-		put(WRONG_TYPE_FOR_TERM, "Term \"{2}\" has type \"{0}\", but expected type \"{1}\" (or a subtype).");
+		put(WRONG_TYPE_FOR_TERM, "Term \"{2}\" has type \"{0}\", but the expected type is \"{1}\" (or a subtype).");
 		put(WRONG_COMPOUND_TYPE_FOR_TERM, "Term \"{0}\" does not match compound type \"{1}\".");
-		put(WRONG_ARITY_FOR_TUPLE_TYPE, "Tuple term with arity {0} should not appear in a place where a tuple term with arity {1} is expected: \"{2}\".");
+		put(WRONG_ARITY_FOR_TUPLE_TYPE, "Tuple term \"{2}\" has arity {0}, but the expected arity is {1}.");
 		put(DUPLICATE_SYMBOL_IN_SCOPE, "Duplicate {0} \"{1}\" in scope \"{2}\".");
+		put(REDEFINING_SYMBOL_OF_SCOPE, "Redefinition of {0} hiding \"{1}\" of scope \"{2}\".");
 		put(SENDS_ONLY_IN_TRANSMISSIONS, "Sends can only be used in transmission statements: \"{0}\".");
 		put(RECEIVES_ONLY_IN_SELECT_GUARDS_AND_TRANSMISSIONS, "Receives can only be used in select guards and send/receive statements: \"{0}\".");
 		put(MATCHES_CAN_ONLY_BE_USED_IN_GUARDS_AND_RECEIVES, "Variable patterns using ''?'' may only be used in guards, retract, and receive statements: \"{0}\".");
@@ -156,8 +157,8 @@ public class ErrorMessages extends HashMap<String, String> implements IErrorMess
 		put(GOAL_CANNOT_BE_RENDERED_AS_ATTACK_STATE, "Cannot render goal \"{0}\" as an ASLan attack state and will keep the LTL formula instead.");
 		put(GOAL_FORMULA_IS_NOT_GLOBAL, "Goal \"{0}\" is not recognized as an invariant. Maybe what you meant was \"[]({1})\" ?");
 		put(INTEGER_LITERAL_EXCEEDS_MAX_SUCC_NESTING, "Value of integer literal \"{0}\" is greater than {1}. It will be treated as uninterpreted nonpublic constant.");
-		put(SET_LITERAL_IN_GUARD, "Set literal \"{0}\" cannot appear in a guard or assertion, sorry.");
-		put(SET_LITERAL_IN_PAYLOAD, "Set literal \"{0}\" cannot appear in transmission payload, sorry.");
+		put(SET_LITERAL_IN_GUARD, "Set literal \"{0}\" cannot appear in guard, sorry.");
+		put(SET_LITERAL_IN_RECEIVE, "Set literal \"{0}\" cannot appear in payload of receive statement, sorry.");
 		put(ACTOR_TERM_ON_BOTH_SIDES_OF_CHANNEL_GOAL, "Actor is both {0}sender and {1}receiver of channel goal.");
 		put(ACTOR_TERM_ON_NO_SIDE_OF_CHANNEL_GOAL, "Actor is missing as {0}sender or {1}receiver of channel goal.");
 		put(FRESHNESS_GOAL_WITHOUT_AUTHENTICATION, "Freshness goal can be used only with authentication.");
@@ -169,7 +170,7 @@ public class ErrorMessages extends HashMap<String, String> implements IErrorMess
 		put(PARSER_ERROR, "Parser: {0}");
 		put(SET_SYMBOL_NAME_ALREADY_IN_USE, "Symbol \"{0}\" needed for set is already used for another function which has a different signature. Name \"{1}\" was picked instead.");
 		put(CIRCULAR_DEPENDENCY_DURING_IMPORT, "Circular dependency during import: {0}.");
-		put(VARIABLE_OF_TYPE_FACT_NOT_ACCEPTED, "Variable \"{0}\" is of type \"{1}\" which is not accepted. Variables cannot be of type \"{2}\" or its subtypes.");
+		put(ELEMENT_OF_TYPE_FACT_NOT_ACCEPTED, "Element \"{0}\" is of type \"{1}\", but type \"" + Prelude.FACT + "\" is not allowed here.");
 		put(UNDEFINED_TYPE, "Type \"{0}\" is not defined.");
 		put(UNDEFINED_VARIABLE, "Variable \"{0}\" is not defined in the scope of \"{1}\".");
 		put(UNDEFINED_FUNCTION_OR_MACRO, "Function or macro \"{0}\" is not defined in the scope of \"{1}\".");
@@ -196,13 +197,10 @@ public class ErrorMessages extends HashMap<String, String> implements IErrorMess
 		put(VARIABLE_MUST_APPEAR_IN_HEAD_OR_ARGS_OF_HORN_CLAUSE, "Variable \"{0}\" in the body of clause \"{1}\" must appear in its head or argument list.");
 		put(VARIABLE_MUST_APPEAR_QUANTIFIED_OR_ARG_OF_HORN_CLAUSE, "Variable \"{0}\" in the head of clause \"{1}\" must appear in argument list or quantified.");
 		put(PARAMETER_SHOULD_BE_USED_IN_HORN_CLAUSE, "Parameter \"{0}\" is not used in clause \"{1}\".");
-		put(ONLY_FACTS_CAN, "Term \"{1}\" cannot {0} because its type is \"{2}\", while it should be \"" + Prelude.FACT + "\" (or a subtype of it).");
+		put(ONLY_FACTS_CAN, "Term \"{1}\" cannot {0} because its type is \"{2}\", while type \"" + Prelude.FACT + "\" is expected.");
 		put(TRUE_FALSE_CANNOT, "The constant symbols \"" + Prelude.TRUE + "\" and \"" + Prelude.FALSE + "\" cannot {0}.");
 		put(CANNOT_APPEAR_IN_HEAD_OF_HORN_CLAUSE, "Fact symbol \"{0}\" cannot appear in the head of a clause");
 		put(TERM_CANNOT_BE_RETRACTED, "The term \"{0}\" cannot be retracted.");
-		put(FACT_TYPE_EXPECTED_IN_GUARD_OR_FORMULA, "Term \"{0}\" cannot appear in guard/formula because it has type \"{1}\" while it should have type \"" + Prelude.FACT + "\" (or a subtype of it).");
-		put(MESSAGE_TYPE_EXPECTED_IN_EQUALITY_OR_INEQUALITY, "Term \"{0}\" cannot appear in equality/inequality because it has type \"{1}\" while it should have type \"" + Prelude.MESSAGE
-				+ "\" (or a subtype of it).");
 		put(DUPLICATE_TYPE, "Type \"{0}\" was already defined in this or another entity.");
 		put(WRONG_TAG_IN_METAINFO, "Wrong tag \"@{0}\" in metainfo comment. Recognized tags are: {1}.");
 		put(CANNOT_CHANGE_TYPE_OF_VARIABLE, "Variable \"{0}\" has type \"{1}\". Cannot change its type to \"{2}\".");
@@ -237,7 +235,7 @@ public class ErrorMessages extends HashMap<String, String> implements IErrorMess
 		put(SECRECY_GOAL_NUM_USED       , "Secrecy goal \"{0}\" should be used at least {1} times, but only {2} use(s) found.");
 		put(SESSION_GOAL_TERM_NOT_FOUND, "Term \"{0}\" in {1} goal \"{2}\" of \"{4}\" not found as argument of sub-entity \"{3}\".");
 		put(SECRECY_GOAL_IN_UNNESTED_ENTITY, "Secrecy goal can be used only in nested entity (e.g. entities inside a session).");
-		put(INLINE_SECRECY_GOAL_ASSUMPTION, "For deprecated inline secrecy goal \"{0}\", assuming that all related goals are declared in direct sub-entities of \"{1}\", that is, in siblings of the \"{2}\" entity. Please check yourself if this matches!");
+		put(INLINE_SECRECY_GOAL_ASSUMPTION, "For deprecated inline secrecy goal \"{0}\", assuming that all related goals are declared in direct sub-entities of \"{1}\", that is, in siblings of the \"{2}\" entity. Please check.");
 		put(INLINE_SECRECY_GOALS_DEPRECATED, "Inline secrecy goals are deprecated. Better switch to session level secrecy goals.");
 		put(INLINE_CHANNEL_GOALS_DEPRECATED, "Inline channel goals are deprecated. Better switch to session level channel goals.");
 		put(INLINE_CHANNEL_GOAL_TYPE_MISMATCH, "Type of inline channel goal at {0} is inconsistent with this channel goal.");
@@ -254,6 +252,7 @@ public class ErrorMessages extends HashMap<String, String> implements IErrorMess
 
 		put(VARIABLE_APPEARS_IN_MORE_THAN_ONE_CONJUNCT, "In the DNF of the guard \"{0}\", variable \"{1}\" appears in more than one conjunct: \"{2}\" and \"{3}\" within the same disjunct. If this guard <G> is in a trailing ''if'' statement without an ''else'', you may replace the ''if(<G>) <S>'' by ''select '{ on(<G>): <S>'}''");
 		put(VARIABLE_NOT_IN_OTHER_DISJUNCT, "In the DNF of the {0}guard \"{1}\", variable \"{2}\" is assigned in some situations but not in disjunct \"{3}\"");
+		put(ACTOR_ASSIGNED, "The \"Actor\" parameter may not be assigned to.");
 	}
 
 	public String fill(String key, Object... values) {

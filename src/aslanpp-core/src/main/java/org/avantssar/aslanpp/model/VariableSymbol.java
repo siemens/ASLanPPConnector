@@ -33,6 +33,9 @@ public class VariableSymbol extends AbstractSymbol {
 
 	protected VariableSymbol(IScope owner, LocationInfo location, String name, IType type) {
 		super(owner, location, name, type);
+		if (getOwner().findType(Prelude.FACT).isAssignableFrom(type)) {
+			getOwner().getErrorGatherer().addError(getLocation(), ErrorMessages.ELEMENT_OF_TYPE_FACT_NOT_ACCEPTED, getOriginalName(), type.getRepresentation());
+		}
 		typeSet = true;
 		unknownType = false;
 	}
@@ -100,10 +103,10 @@ public class VariableSymbol extends AbstractSymbol {
 
 	public void setType(IType newType) {
 		if (!unknownType) {
-			getOwner().getErrorGatherer().addException(getLocation(), ErrorMessages.CANNOT_CHANGE_TYPE_OF_VARIABLE, getOriginalName(), getType().getRepresentation(), newType.getRepresentation());
+			getOwner().getErrorGatherer().addError(getLocation(), ErrorMessages.CANNOT_CHANGE_TYPE_OF_VARIABLE, getOriginalName(), getType().getRepresentation(), newType.getRepresentation());
 		}
 		if (getOwner().findType(Prelude.FACT).isAssignableFrom(newType)) {
-			getOwner().getErrorGatherer().addException(getLocation(), ErrorMessages.VARIABLE_OF_TYPE_FACT_NOT_ACCEPTED, getOriginalName(), newType.getRepresentation(), Prelude.FACT);
+			getOwner().getErrorGatherer().addError(getLocation(), ErrorMessages.ELEMENT_OF_TYPE_FACT_NOT_ACCEPTED, getOriginalName(), newType.getRepresentation());
 		}
 		type = newType;
 		typeSet = true;

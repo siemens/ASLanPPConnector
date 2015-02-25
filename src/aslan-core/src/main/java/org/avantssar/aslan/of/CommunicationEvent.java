@@ -138,22 +138,27 @@ public class CommunicationEvent extends AbstractExecutionEvent {
 		LocationInfo loc = mi.getLocation(err);
 		Bundle b = extractBasicFromMetaInfo(mi, err, assigned, new String[] { MetaInfo.COMMUNICATION, MetaInfo.COMMUNICATION_GUARD }, LABEL);
 		IGroundTerm sender   = str2termEx(mi, MetaInfo.SENDER  , err, assigned, "Sender"  , LABEL);
+		if (mi.getParameters().get("fact").equals("sent(i, A, R, M, Ch)") // ACM "fake" rule
+				&& !sender.toString().equals("i")) {
+			sender = new GroundFunction(sender.getLocation(), "i", sender);
+		}
 		IGroundTerm receiver = str2termEx(mi, MetaInfo.RECEIVER, err, assigned, "Receiver", LABEL);
 		IGroundTerm payload  = str2termEx(mi, MetaInfo.PAYLOAD , err, assigned, "Payload" , LABEL);
-		IGroundTerm channel  = null;
-							 //str2termEx(mi, MetaInfo.CHANNEL , err, assigned, "Channel" , LABEL); 
+		IGroundTerm channel  = null; 
+		                    // str2termEx(mi, MetaInfo.CHANNEL , err, assigned, "Channel" , LABEL); 
 		String chType = mi.getParameters().get(MetaInfo.CHANNEL);
-		ChannelEntry /*ch;
+		ChannelEntry ch;
 		if (chType == null) {
 			ch = ChannelEntry.regular;
 		}
-		else {*/
-		ch = ChannelEntry.getByKey(chType, false);
-		if (ch == null) {
-			channel = str2term(chType, err, assigned);
-			ch = ChannelEntry.getByKey(chType, true);
+		else {
+			ch = ChannelEntry.getByKey(chType, false);
 			if (ch == null) {
-				err.addException(loc, OutputFormatErrorMessages.INVALID_CHANNEL_TYPE, chType);
+				channel = str2term(chType, err, assigned);
+				ch = ChannelEntry.getByKey(channel.toString(), true);
+				if (ch == null) {
+					err.addException(loc, OutputFormatErrorMessages.INVALID_CHANNEL_TYPE, chType);
+				}
 			}
 		}
 		String dir = mi.getParameters().get(MetaInfo.DIRECTION);

@@ -13,6 +13,9 @@
 
 package org.avantssar.aslanpp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.avantssar.aslanpp.Util;
 import org.avantssar.aslanpp.visitors.IASLanPPVisitor;
 import org.avantssar.commons.LocationInfo;
@@ -58,26 +61,32 @@ public class SimpleType extends AbstractOwned implements IType {
 		return this.getName().equals(name);
 	}
 
+	private boolean assignableToMessage(List<IType> args) {
+		for (IType t : args) {
+			if (!this.getOwner().findType(Prelude.MESSAGE).isAssignableFrom(t))
+				return false;
+		}
+		return getName().equals(Prelude.MESSAGE);
+	}
+	
 	public boolean isAssignableFrom(IType subType) {
 		if (subType instanceof SimpleType) {
 			SimpleType ss = (SimpleType) subType;
-			if (equals(ss)) {
-				return true;
-			}
-			else {
-				return isAssignableFrom(ss.getSuperType());
-			}
+			return equals(ss) || isAssignableFrom(ss.getSuperType());
 		}
-		else if (subType instanceof SetType || subType instanceof TupleType) {
-			if (getName().equals(Prelude.MESSAGE)) {
-				return true;
-			}
-			else {
-				return false;
-			}
+		else if (subType instanceof SetType) {
+			List<IType> ts = new ArrayList<IType>(1);
+			ts.add(((SetType) subType).getBaseType());
+			return assignableToMessage(ts);
+		}
+		else if (subType instanceof TupleType) {
+			return assignableToMessage(((TupleType) subType).getBaseTypes());
 		}
 		else if (subType instanceof CompoundType) {
 			String fname = ((CompoundType) subType).getName();
+			if (fname == CompoundType.CONCAT) {
+				return assignableToMessage(((CompoundType) subType).getArgumentTypes());
+			}
 			IType ftype = getOwner().findCompoundType(fname);
 			return isAssignableFrom(ftype);
 		}

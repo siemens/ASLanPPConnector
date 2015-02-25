@@ -368,17 +368,29 @@ public class PrettyPrinter implements IASLanPPVisitor {
 	}
 
 	public void visit(CompoundType type) {
-		sb.append(type.getName());
-		sb.append("(");
+		boolean isConcat = type.getName() == CompoundType.CONCAT;
+		if (!isConcat) {
+			sb.append(type.getName());
+			sb.append("(");
+		}
 		boolean first = true;
 		for (IType t : type.getArgumentTypes()) {
 			if (!first) {
-				sb.append(", ");
+				sb.append(isConcat ? "." : ", ");
+			}
+			boolean isConcatArg = t instanceof CompoundType && ((CompoundType) t).getName() == CompoundType.CONCAT;
+			if (isConcatArg) {
+				sb.append("(");
 			}
 			t.accept(this);
+			if (isConcatArg) {
+				sb.append(")");
+			}
 			first = false;
 		}
-		sb.append(")");
+		if (!isConcat) {
+			sb.append(")");
+		}
 	}
 
 	public void visit(SetType type) {
@@ -1139,7 +1151,13 @@ public class PrettyPrinter implements IASLanPPVisitor {
 			if (!first) {
 				sb.append(".");
 			}
+			if (t instanceof ConcatTerm) {
+				sb.append("(");
+			}
 			t.accept(this);
+			if (t instanceof ConcatTerm) {
+				sb.append(")");
+			}
 			first = false;
 		}
 		endAnnotations(term);
@@ -1258,7 +1276,7 @@ public class PrettyPrinter implements IASLanPPVisitor {
 		if (term.isMatched()) {
 			sb.append("?");
 		}
-		putName(term.getSymbol());
+		visit(term.getSymbol());
 		endAnnotations(term);
 		return term;
 	}

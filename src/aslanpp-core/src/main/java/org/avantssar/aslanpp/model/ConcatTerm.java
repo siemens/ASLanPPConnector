@@ -37,9 +37,22 @@ public class ConcatTerm extends AbstractTerm {
 		this(location, scope, Arrays.asList(terms));
 	}
 
-	protected ConcatTerm(LocationInfo location, IScope scope, List<ITerm> terms) {
+    public static List<ITerm> flattenTupleOrConcatTerms(boolean tuple, List<ITerm> orig) {
+        List<ITerm> terms = new ArrayList<ITerm>(orig); // clone it, because we modify it
+        while (terms.size() >= 2 && (  tuple && terms.get(terms.size()-1) instanceof TupleTerm ||
+                                             (!tuple && terms.get(terms.size()-1) instanceof ConcatTerm))) {
+                ITerm t = terms.get(terms.size()-1);
+                List<ITerm> ts = (t instanceof TupleTerm ? (( TupleTerm) t).getTerms() 
+                                                         : ((ConcatTerm) t).getTerms());
+                terms.remove(terms.size()-1);
+                terms.addAll(ts);
+        }
+        return terms;
+}
+
+	public ConcatTerm(LocationInfo location, IScope scope, List<ITerm> terms) {
 		super(location, scope, false);
-		this.terms = terms;
+		this.terms = flattenTupleOrConcatTerms(false, terms);
 		for (ITerm t : terms) {
 			super.addChildrenTerm(t);
 		}
@@ -64,5 +77,15 @@ public class ConcatTerm extends AbstractTerm {
 	@Override
 	public ITerm accept(IASLanPPVisitor visitor) {
 		return visitor.visit(this);
+	}
+	
+	@Override
+	public boolean isTypeCertain() {
+		return isTypeCertainAll(terms);
+	}
+
+	@Override
+	public boolean wasTypeSet() {
+		return wasTypeSetAll(terms);
 	}
 }

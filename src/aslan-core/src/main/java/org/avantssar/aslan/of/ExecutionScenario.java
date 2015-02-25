@@ -132,19 +132,14 @@ public class ExecutionScenario implements ISetProvider {
 				}
 				else {
 					Set<IGroundTerm> current = sets.get(set);
-					if (current != null) {
-						if (current.contains(item)) {
-							current.remove(item);
-							if (current.size() == 0) {
-								sets.remove(set);
-							}
-						}
-						else {
-							err.addError(set.getLocation(), OutputFormatErrorMessages.SET_DOES_NOT_CONTAIN_ITEM, set.getRepresentation(aslanSpec), item.getRepresentation(aslanSpec));
+					if (current != null && current.contains(item)) {
+						current.remove(item);
+						if (current.size() == 0) {
+							sets.remove(set);
 						}
 					}
 					else {
-						err.addError(set.getLocation(), OutputFormatErrorMessages.SET_SHOULD_NOT_BE_EMPTY, set.getRepresentation(aslanSpec));
+						err.addWarning(set.getLocation(), OutputFormatErrorMessages.SET_DOES_NOT_CONTAIN_ELEMENT, set.getRepresentation(aslanSpec), item.getRepresentation(aslanSpec));
 					}
 				}
 			}

@@ -53,7 +53,7 @@ public abstract class AbstractSymbol extends AbstractOwned implements ISymbol {
 
 	@Override
 	public String toString() {
-		return "<" + getOriginalName() + ">_<" + getName() + ">";
+		return getOriginalName() + "_<" + getName() + " : " + getType() + (this instanceof VariableSymbol && ((VariableSymbol) this).wasTypeSet() ? "" : "?") + ">";
 	}
 
 }

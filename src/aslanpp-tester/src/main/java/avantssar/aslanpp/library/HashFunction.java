@@ -70,7 +70,7 @@ public class HashFunction extends AbstractSpecProvider {
 		RewriteRule step1 = spec.rule(getNextStepName("Environment"));
 		step1.addLHS(fsEnv.term(vEnvActor.term(), vEnvIID.term(), spec.numericTerm(1)));
 		step1.addRHS(fsEnv.term(vEnvActor.term(), vEnvIID.term(), spec.numericTerm(2)));
-		step1.addRHS(fTagged.term(IASLanSpec.HASH.term(cPeter.term())));
+		step1.addRHS(fTagged.term(IASLanSpec.PK.term(cPeter.term())));
 
 		AttackState as = spec.attackState("no_tagging");
 		as.addTerm(fTagged.term(vGoalE.term()));
