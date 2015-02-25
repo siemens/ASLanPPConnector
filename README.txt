@@ -66,7 +66,7 @@ should be "~/.m2/repository/" under Linux.
 
 If you need to re-generate the Eclipse project files, go into the "src"
 folder and type
-    mvn eclipse:eclipse -DdownloadSources=true -DdownloadJavadocs=true
+    mvn eclipse:clean eclipse:eclipse -DdownloadSources=true -DdownloadJavadocs=true
 
 The translator is based on:
 - ANTLR: http://www.antlr.org/

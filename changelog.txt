@@ -11,6 +11,45 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+1.4.9 (released on 2013-08-12)
+==============================
+- for -ar option, improved sender output for ACM 'fake' rule
+
+1.4.8 (released on 2013-07-19)
+==============================
+- added implicit declarations of ACM intruder rules for -ar option
+- corrected channel information in OF++ (-ar option)
+- removed pre-declaration of 'hash', 'whisper', 'hear', 'function', 'apply'
+- pre-declaration of 'DefaultPseudonym' only for CCM
+- added warning for redefinition of symbols (except variables)
+- removed warning on invariants in root entity
+
+1.4.7 (released on 2013-06-26)
+==============================
+- fixed bug 230: Clauses with the same name produce a NullPointerException
+- made type checking of tuple arguments more permissive at ASLan level
+
+1.4.6 (released on 2013-06-24)
+==============================
+- corrected type checking for tuples, message concatenation, and equations
+- improved various error messages
+- fixed NPE introduced in v1.4.4 for set literals in secrecy goal statements
+
+1.4.5 (released on 2013-06-16)
+==============================
+- uninitialized variables are now assigned the same dummy value (per type)
+- fixed bug 227: turned wrong error on set element deletion into warning
+- lifted restrictions: set literals now allowed in assertions and sends
+- printing of type terms in error messages is now in ASLan++ syntax
+- improved error message on type mismatch for set literals
+- added check for assignment to Actor, which should not be allowed
+- corrected check for Actor as sender of broadcast message
+
+1.4.4 (released on 2013-06-07)
+==============================
+- corrected translation of set literals (fixing bug 223)
+- made support for sets as messages optional: -sam, --sets-as-messages
+
 1.4.3 (released on 2013-06-06)
 ==============================
 - added Horn clause for iknows(Element) derived from iknows(Set)
