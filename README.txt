@@ -25,6 +25,8 @@ $ java -jar aslanpp-connector.jar -h
 
 for initial help.
 
+Example specifications, including the official case studies, may be found at 
+http://www.avantssar.eu/index.php?option=com_content&task=view&id=19&Itemid=40
 
 GETTING STARTED WITH THE SOURCES
 ================================
